@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da"><head><meta charset="utf-8">
+<html lang="da"><head><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vagtplan – tid, løn og overenskomsttjek</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
@@ -177,6 +177,7 @@ function askV(){return ASK?`<div style="position:fixed;inset:0;z-index:30;backgr
 function render(){const n=check().reduce((a,r)=>a+r.v.filter(x=>!S.ack[x]).length,0),tabs=[['work','Kalender'],...(emp()&&R().evac?[['ev','Evakuering']]:[]),['pay','Løn'],['reg','Regnskab'],['stat','Statistik'],['check','Overenskomsttjek']],SET=[['shifts','Vagtformer'],['sc','Importér'],['emps','Ansættelser'],['data','Kalenderfil']],inSet=SET.some(t=>t[0]===S.tab);
  if(!tabs.concat(SET).some(t=>t[0]===S.tab))S.tab='work';
  $('#nav').innerHTML='<b>Vagtplan</b>'+tabs.map(([k,l])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';save();render()">${l}${k==='check'&&n?`<span class="badge">${n}</span>`:''}</button>`).join('')+`<button class="${inSet?'on':''}" onclick="S.tab='${inSet?S.tab:(emp()?'shifts':'emps')}';save();render()">⚙ Opsætning</button>`;
+ $('#nav').insertAdjacentHTML('beforeend',`<button style="margin-left:auto" title="Skift mellem lys og mørk" onclick="themeNext()">${themeGet()==='dark'?'☀ Lys':'☾ Mørk'}</button>`);
  const v={work,ev:evV,pay:payV,reg:regV,stat:statV,check:checkV,shifts:shiftsV,sc:scV,emps:empsV,data:dataV}[S.tab]||work;
  $('#m').style.maxWidth=S.tab==='work'?'1180px':'';$('#m').innerHTML=(S.emps.length>1&&['ev','pay','check','shifts','sc'].includes(S.tab)?`<div class="row" style="margin-bottom:12px"><label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:600">Ansættelse<select onchange="S.cur=this.value;save();render()" style="max-width:260px">${S.emps.map(e=>`<option value="${e.id}" ${e.id===S.cur?'selected':''}>${esc(e.dep)}${e.kind==='vikar'?' (vikar)':''}</option>`).join('')}</select></label><span class="note">Gælder denne side.</span></div>`:'')+(inSet?`<div class="row" style="margin-bottom:12px;gap:6px"><span class="note" style="margin-right:4px">Opsætning:</span>${SET.map(([k,l])=>`<button class="b ${S.tab===k?'p':''}" onclick="S.tab='${k}';save();render()">${l}</button>`).join('')}</div>`:'')+((!emp()&&S.tab!=='emps'&&S.tab!=='data'&&S.tab!=='inst'&&S.tab!=='acct')?'<div class="card"><h2>Kom i gang</h2><p>Opret først en ansættelse, så du kan oprette vagtformer og planlægge vagter.</p><button class="b p" onclick="S.tab=\'emps\';render()">Opret ansættelse</button> <button class="b" onclick="demoLoad()">Prøv med eksempeldata</button></div>':v().replace(/kr\.\.(?!\.)/g,'kr.').replace(/kr\.,/g,'kr,'))+askV()}
 function work(){const[y,mo]=S.ym.split('-').map(Number),dim=new Date(y,mo,0).getDate(),pl=S.plan;let html='',mt=0;const accD=new Set(check().flatMap(r=>r.v).filter(y=>S.ack[y]).map(y=>y.slice(0,10))),wkH={},any=S.emps.some(e=>(S.shifts[e.id]||[]).length);
@@ -448,6 +449,10 @@ function explainV(){const r=R(),x=r.ext,k=n=>kr(n),sp=(v,i)=>i&&v[1]!==v[0]?` <s
  if(r.ul)h+=`<div class="xg">Timetillæg, regnes automatisk</div>`+row('Lavt tillæg',k(r.ul.lo[0])+' pr. time'+sp(r.ul.lo,1),'Hverdage kl. 20–08<br>Fredage kl. 20–24<br>Weekend og helligdage kl. 08–20')+row('Højt tillæg',k(r.ul.hi[0])+' pr. time'+sp(r.ul.hi,1),'Weekend og helligdage kl. 20–08<br>Mandage og dage efter en helligdag kl. 00–08');
  if(r.ulMode==='fo')h+=`<div class="xg">Holddriftstillæg, regnes automatisk</div>`+row('Tillæg I','satsen indtastes under Løn','Mandag–torsdag kl. 18–08<br>Fredag kl. 18–24')+row('Tillæg II','satsen indtastes under Løn','Lørdag kl. 00 til mandag kl. 08<br>Helligdage kl. 08–08<br>Juleaften, nytårsaften og Ólavsøkuaftan');
  return`<details class="card xp"><summary><b>Hvad udløser tillæggene?</b></summary>${h}</details>`}
+const themeGet=()=>{try{return localStorage.getItem('vp_theme')==='dark'?'dark':'light'}catch(e){return'light'}};
+function themeApply(t){document.documentElement.setAttribute('data-theme',t)}
+function themeNext(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('vp_theme',t)}catch(e){}themeApply(t);render()}
+themeApply(themeGet());
 const ser=()=>JSON.stringify(S,(k,v)=>k==='oks'?undefined:v);
 function mAgo(n){const d=new Date();d.setMonth(d.getMonth()-n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function evSE(v){return[Math.round(new Date(v.sd+'T00:00')/864e5)*1440+tm(v.st),Math.round(new Date(v.ed+'T00:00')/864e5)*1440+tm(v.et)]}
