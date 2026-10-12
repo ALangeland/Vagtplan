@@ -149,7 +149,7 @@ function check(){const A0=entries().filter(e=>e.work).concat(evs()).sort((a,b)=>
  const fr=[];if(A.length){let last=A[0].st;for(let i=0;i<A.length;i++){if(i&&(A[i].st-A[i-1].en)/60>=r.freeH)last=A[i].st;if(A[i].en-last>r.freeDays*1440){fr.push(`${f(A[i])}: mere end ${r.freeDays} døgn siden sidste fridøgn (${r.freeH} timers hvile)`);last=A[i].en}}}
  const lt=E.filter(late),hy=[];for(let i=0;i<lt.length;i++)for(let j=i+1;j<lt.length;j++){const a=lt[i],b=lt[j],gap=b.day-a.day,oa=a.s.oncall,ob=b.s.oncall,need=(oa==='off'&&ob==='off')?r.lateGap.off:(oa!==ob&&(oa==='off'||ob==='off'))?r.lateGap.mix:r.lateGap.on;if(gap<need)hy.push(`${f(a)} og ${f(b)}: ${gap} døgn imellem (kræver ${need})`);if(gap>=6)break}
  const wk=E.filter(e=>e.wd>=5),wset=new Set(wk.map(e=>Math.floor((e.day+3)/7))),days=new Set(E.map(e=>e.day)),fw=[],comp=[],sun=[],ln=[];
- if(E.length){const a=Math.floor((E[0].day+3)/7),b=Math.floor((E[E.length-1].day+3)/7),tot=b-a+1;if(wset.size*r.weekendShare>tot)fw.push(`Arbejder ${wset.size} af ${tot} weekender (max hver ${r.weekendShare}.)`)}
+ for(const w of [...wset].sort((a,b)=>a-b)){let n=0;for(let k=1;k<r.weekendShare;k++)if(wset.has(w+k))n++;if(n){const x=wk.filter(e=>Math.floor((e.day+3)/7)===w+1||Math.floor((e.day+3)/7)>w&&Math.floor((e.day+3)/7)<w+r.weekendShare)[0];if(x)fw.push(`${f(x)}: arbejder to weekender tæt på hinanden (max hver ${r.weekendShare}. weekend)`)}}
  const free=(a,b)=>{for(let d=a;d<=b;d++)if(((d+3)%7)<5&&!days.has(d))return true;return false};
  for(const e of wk){const m=e.day-e.wd;if(!free(m,m+4)&&!free(m+7,m+11))comp.push(`${f(e)}: ingen hverdagsfridag i ugen eller ugen efter`)}
  for(const e of E.filter(e=>e.wd===6))if(!free(e.day+1,e.day+5))sun.push(`${f(e)}: intet fridøgn i ugen efter`);
