@@ -169,7 +169,7 @@ const dd=x=>x?x.split('-').reverse().join('.'):'';
 function entries(){const out=[];for(const k in S.plan){const[eid,sid]=S.plan[k].split('|'),s=(S.shifts[eid]||[]).find(x=>x.id===sid);if(!s)continue;const d=new Date(k+'T00:00'),t=times(s,d);if(!t)continue;const day=Math.round(d/864e5),st=day*1440+tm(t[0]);out.push({k,d,s,t,day,st,en:st+dur(t)+Math.round((+(S.otd||{})[k]||0)*60),wd:wdi(d),emp:eid,work:!s.leave,fl:(S.flag||{})[k]||'',ot:+(S.otd||{})[k]||0})}return out.sort((a,b)=>a.st-b.st)}
 const late=e=>e.work&&(tm(e.t[1])>R().lateAfter*60||nx(e.t));
 /* ===== Overenskomsttjek ===== */
-const empAct=id=>{const e=S.emps.find(x=>x.id===id);return!!e&&(!e.off||id===S.cur)};
+const empAct=id=>{const e=S.emps.find(x=>x.id===id);return!!e&&(id===S.cur||(!e.off&&!(e.to&&e.to<dkey(new Date()))))};
 function check(){const A0=entries().filter(e=>e.work).concat(evs()).filter(e=>empAct(e.emp)).sort((a,b)=>a.st-b.st),E=A0.filter(e=>e.emp===S.cur&&!e.ev),A=[],r=R();for(const x of A0){const l=A[A.length-1];if(l&&l.emp===x.emp&&(l.ev||x.ev)&&x.st<l.en)l.en=Math.max(l.en,x.en);else A.push({...x})}
  const f=e=>e.k+(e.ev?' (evakuering)':''),hs=h=>h.toFixed(1).replace('.',',');
  const rest=[],red=[],lim=r.restMin||r.restHours;for(let i=1;i<A.length;i++){const g=(A[i].st-A[i-1].en)/60;if(g<lim)rest.push(`${f(A[i-1])} → ${f(A[i])}: kun ${hs(g)} t hvile`);else if(g<r.restHours)red.push(A[i])}
