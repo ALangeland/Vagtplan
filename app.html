@@ -528,8 +528,10 @@ function mergeUpdate(j,ex){let pl=0;S.cmt=S.cmt||{};S.otd=S.otd||{};S.flag=S.fla
  for(const e of ex){const c=S.emps.find(x=>x.llId&&x.llId===e.llId);if(!c)continue;const fs=JSON.parse(JSON.stringify((j.shifts||{})[e.id]||[])),old=S.shifts[c.id]||[];
   const idMap={};for(const f of fs){const m=old.find(o=>o.ab===f.ab&&JSON.stringify(o.t)===JSON.stringify(f.t));if(m)idMap[f.id]=m.id;else{const nid=old.some(o=>o.id===f.id)?f.id+'_n':f.id;idMap[f.id]=nid;old.push(Object.assign(f,{id:nid}))}}
   S.shifts[c.id]=old;
+  const keep=new Set(Object.values(idMap));
   if(Array.isArray(e.periods)&&e.periods.length)c.periods=JSON.parse(JSON.stringify(e.periods));
-  for(const k in j.plan||{}){if(k<e.from||k>e.to)continue;const v=j.plan[k],[ei,si]=v.split('|');if(ei!==e.id)continue;S.plan[k]=c.id+'|'+(idMap[si]||si);pl++;if(j.otd&&j.otd[k])S.otd[k]=j.otd[k];if(j.flag&&j.flag[k])S.flag[k]=j.flag[k];if(j.cmt&&j.cmt[k])S.cmt[k]=j.cmt[k]}}
+  for(const k in j.plan||{}){if(k<e.from||k>e.to)continue;const v=j.plan[k],[ei,si]=v.split('|');if(ei!==e.id)continue;S.plan[k]=c.id+'|'+(idMap[si]||si);pl++;if(j.otd&&j.otd[k])S.otd[k]=j.otd[k];if(j.flag&&j.flag[k])S.flag[k]=j.flag[k];if(j.cmt&&j.cmt[k])S.cmt[k]=j.cmt[k]}
+  const used=new Set(Object.values(S.plan).map(v=>v.split('|')).filter(v=>v[0]===c.id).map(v=>v[1]));S.shifts[c.id]=S.shifts[c.id].filter(o=>keep.has(o.id)||used.has(o.id)||!fs.some(f=>f.ab===o.ab&&f.name===o.name))}
  save();render();tell('Opdaterede '+ex.length+' ansættelser og '+pl+' planlagte dage fra filen.')}
 function mergeFile(f){if(!f)return;f.text().then(t=>{try{mergeImport(JSON.parse(t))}catch(e){tell('Filen kunne ikke læses.')}})}
 function mergeUrl(u){fetch(u).then(r=>{if(!r.ok)throw 0;return r.json()}).then(mergeImport).catch(()=>tell('Filen kunne ikke hentes.'))}
