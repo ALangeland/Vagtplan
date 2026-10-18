@@ -202,7 +202,7 @@ function work(){const[y,mo]=S.ym.split('-').map(Number),dim=new Date(y,mo,0).get
   if(w===6||i===dim){const h=(wkH[Math.floor((d/864e5+3)/7)]||0)/60,ov=false;html+=`<div class="week ${ov?'over':''}"><span>Uge ${isoWeek(d)}</span><span>${h.toFixed(1).replace('.',',')} t${ov?' (over '+R().weekHours+')':''}</span></div>`}}
  return`<div class="row"><h2 class="sp">Kalender</h2><button class="b" onclick="mv(-1)">‹</button><input type="month" value="${S.ym}" onchange="S.ym=this.value;save();render()"><button class="b" onclick="mv(1)">›</button></div>
  <div class="wk2"><div style="min-width:0"><div class="onlyM">${empSel()}</div>${warnV()}<div class="card">${any?html:'<p>Opret en vagtform under <b>Vagtformer</b> først. Vagter fra vikarbureauer oprettes under deres egen ansættelse og vælges her på samme måde.</p>'}<p class="row"><b class="sp">Månedstimer (alle ansættelser)</b><b class="big">${fmt(mt)}</b></p></div></div><div class="side"><div class="onlyD">${empSel()}</div>${legV()}${explainV()}</div></div>`}
-const empLab=e=>esc(e.dep)+(e.hos?' · '+esc(e.hos):'')+(e.kind==='vikar'?' (vikar)':'');
+const empLab=e=>esc(e.dep)+(e.hos?' · '+esc(e.hos):'')+(e.kind==='vikar'?' (vikar)':'')+(S.emps.filter(x=>x.dep===e.dep&&x.hos===e.hos).length>1&&e.from?' · '+e.from.slice(0,7)+(e.to?' til '+e.to.slice(0,7):''):'');
 const vis=()=>S.emps.filter(e=>!e.off||e.id===S.cur);
 function setActive(id,on){const e=S.emps.find(x=>x.id===id);if(!e)return;e.off=!on;if(!on&&S.cur===id){const n=S.emps.find(x=>!x.off&&x.id!==id);if(n)S.cur=n.id}save();render()}
 function empSel(){const e=emp();if(!e)return'';const dup=n=>S.emps.filter(x=>x.dep===n).length>1,lab=x=>empLab(x),per=e.kind==='vikar'&&!e.from?'Vikar':(dd(e.from)||'?')+' – '+(dd(e.to)||'?');
@@ -341,7 +341,7 @@ function scParse(t){const a=t.indexOf('{'),b=t.lastIndexOf('}');let j;try{if(a<0
 function scSame(s,x){return!s.byDay&&s.t[0][0]===x.st&&s.t[0][1]===x.en&&s.ab.toUpperCase()===x.ab&&!!s.leave===x.leave&&(s.oncall||'')===x.oncall}
 function scPlan(r){const sh=shifts(),forms=[],map={};for(const x of r.days){const key=[x.ab,x.st,x.en,x.oncall,x.leave].join('|');if(!map[key]){const old=sh.find(s=>scSame(s,x));map[key]=old?{s:old,isNew:false}:{s:null,isNew:true,x};forms.push(map[key])}x.m=map[key]}
  const ex=r.days.filter(x=>S.plan[x.k]).length;return{forms,ex,map}}
-function scRead(){sc.res=scParse(sc.txt);sc.done='';render()}
+function scRead(){try{const t=sc.txt||'',x=t.indexOf('{'),y=t.lastIndexOf('}'),q=JSON.parse(t.slice(x,y+1));if(q&&q.format==='vagtplan-import-v1'){sc.txt='';mergeImport(q);return}}catch(e){}sc.res=scParse(sc.txt);sc.done='';render()}
 function scDo(){const r=sc.res;if(!r||!r.days)return;const sh=shifts(),used=new Set(sh.map(s=>s.color)),pal=COLORS.slice(3).filter(c=>!used.has(c));let ci=0,n=0,skip=0;const P=scPlan(r);
  for(const m of P.forms){if(!m.isNew)continue;const x=m.x;m.s={id:uid(),ab:x.ab,name:x.name,color:pal[ci++%Math.max(1,pal.length)]||COLORS[ci%COLORS.length],byDay:false,t:Array.from({length:7},()=>[x.st,x.en]),oncall:x.oncall,leave:x.leave,effH:x.effH};sh.push(m.s)}
  for(const x of r.days){if(S.plan[x.k]&&!sc.over){skip++;continue}S.plan[x.k]=S.cur+'|'+x.m.s.id;n++}
@@ -452,7 +452,7 @@ function mergeFile(f){if(!f)return;f.text().then(t=>{try{mergeImport(JSON.parse(
 function mergeUrl(u){fetch(u).then(r=>{if(!r.ok)throw 0;return r.json()}).then(mergeImport).catch(()=>tell('Filen kunne ikke hentes.'))}
 function exp(){dl('vagtplan.json',ser())}
 async function dl(n,d,t){try{const a=document.createElement('a'),u=URL.createObjectURL(new Blob([d],{type:t||'text/plain'}));a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(e){tell('Filen kunne ikke gemmes.')}}
-function imp(f){if(!f)return;f.text().then(t=>{try{S=fix(JSON.parse(t));save();render()}catch(e){tell('Filen kunne ikke læses.')}})}
+function imp(f){if(!f)return;f.text().then(t=>{try{const q=JSON.parse(t);if(q&&q.format==='vagtplan-import-v1'){mergeImport(q);return}S=fix(q);save();render()}catch(e){tell('Filen kunne ikke læses.')}})}
 const R=()=>PF(emp()||{});
 const REG=['Region Nordjylland','Region Midtjylland','Region Syddanmark','Region Sjælland','Region Hovedstaden','Grønland','Færøerne','Andet'];
 const LV=[['kbu','Klinisk basisuddannelse (KBU)','Første år efter studiet.'],['intro','Reservelæge – introduktion','Første stilling i speciale-forløbet, typisk 1 år.'],['hoved','Reservelæge – hoveduddannelse','Den specialespecifikke uddannelse over flere år.'],['spec','Speciallæge / afdelingslæge','Færdig speciallæge uden lederansvar.'],['over','Overlæge','Senior speciallæge.'],['andet','Andet / vikarbureau','Fx en timeløn aftalt direkte.']];
