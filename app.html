@@ -92,7 +92,7 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
 <nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:0 auto;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
 const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='96';
+const REV='97';
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
 const COLORS=['#8b95a5','#4a78e8','#22b5a8','#2fb36d','#e8bf1a','#f09a2a','#e5605a','#9b5de5'],COLORS_OLD=['#8b95a5','#5b6678','#14213d','#e5605a','#c8352f','#f08a8a','#f09a2a','#f5b971','#e8bf1a','#a8c92f','#2fb36d','#1f8a5b','#22b5a8','#3a9bd0','#4a78e8','#6a5acd','#9b5de5','#d96fb5'];
@@ -655,7 +655,7 @@ function npSave(){const e=emp(),r=R(),g=k=>$('#'+k).value,from=g('npf'),to=g('np
  const o={from,to,weeks:Math.max(1,Math.round(wk)),hrs:hrs&&hrs!==r.weekHours?hrs:'',vt,tof,lag};
  const isNew=NPE.id==='new';if(isNew)e.periods.push(Object.assign({id:uid()},o));else{const p=e.periods.find(x=>x.id===NPE.id);if(p)Object.assign(p,o)}NPE=null;save();render();if(isNew&&typeof npOffer==='function')npOffer(o)}
 function delPeriod(id){const e=emp();NPE=null;e.periods=e.periods.filter(x=>x.id!==id);save();render()}
-const PRE=[['Forvagt kirurgi/medicin',10.5],['Forvagt psykiatri',3],['Mellemvagt kirurgi',7],['Bagvagt speciallæge: anæstesiologi',7],['Bagvagt: gynækologi og obstetrik',5],['Bagvagt: kirurgi',4],['Bagvagt: ortopædkirurgi',3.5],['Bagvagt: intern medicin',5],['Bagvagt: psykiatri',1.5],['Bagvagt: pædiatri',5],['Bagvagt: radiologi',2],['Bagvagt: ØNH',2]];
+const PRE=[['Forvagt kirurgi/medicin',10.5],['Forvagt psykiatri',3],['Mellemvagt kirurgi',7],['Mellemvagt medicin',7.5],['Bagvagt speciallæge: anæstesiologi',7],['Bagvagt: gynækologi og obstetrik',5],['Bagvagt: kirurgi',4],['Bagvagt: ortopædkirurgi',3.5],['Bagvagt: intern medicin',5],['Bagvagt: psykiatri',1.5],['Bagvagt: pædiatri',5],['Bagvagt: radiologi',2],['Bagvagt: ØNH',2]];
 function band(r,d,h,w,H){const y=d.getFullYear(),pd=new Date(y,d.getMonth(),d.getDate()-1);
  if(r.ulMode==='fo'){const sp=(d.getMonth()===11&&(d.getDate()===24||d.getDate()===31))||(d.getMonth()===6&&d.getDate()===28);if(sp||w>=5||(w===0&&h<8)||(H&&h>=8)||(isHol('fo',pd)&&h<8))return'hi';return h>=18||h<8?'lo':null}
  if(w>=5||H)return h>=8&&h<20?'lo':'hi';if(h<8)return(w===0||isHol(r.holi,pd))?'hi':'lo';return h>=20?'lo':null}
