@@ -659,10 +659,8 @@ async function fbapi(a,b){b=b||{};const s=FBS.get();
  if(a==='login'){const j=await fbSignIn(b.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
   const l=await fbj(FBIT+'lookup?key='+FB.apiKey,{idToken:j.idToken});if(!(l.users&&l.users[0]&&l.users[0].emailVerified)){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);return{error:'Din e-mail er ikke bekræftet endnu. Vi har sendt et nyt bekræftelseslink. Tjek også spam.',_status:403}}
   fbSave(j,b.email);return{user:{email:b.email},_status:200}}
- if(a==='register'){const code=String(b.code||'').trim();if(!code)return{error:'Skriv invitationskoden.',_status:400};
+ if(a==='register'){
   const j=await fbj(FBIT+'signUp?key='+FB.apiKey,{email:b.email,password:b.password,returnSecureToken:true});if(!j.idToken)return{error:fbMsg(j),_status:400};
-  const m=await fbj(FBFS+'/members/'+j.localId+'?currentDocument.exists=false',{fields:{code:{stringValue:code}}},j.idToken,'PATCH');
-  if(m._status!==200){await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});return{error:m._status===403?'Forkert invitationskode.':'Kontoen kunne ikke oprettes ('+m._status+').',_status:403}}
   await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);
   return{pending:true,msg:'Kontoen er oprettet. Vi har sendt et bekræftelseslink til din e-mail (tjek også spam). Klik på det, og log så ind her.',_status:200}}
  if(!s)return{error:'Ikke logget ind.',_status:401};const t=await fbTok();if(!t)return{error:'Ikke logget ind.',_status:401};const u=FBS.get().uid,url=FBFS+'/states/'+u;
@@ -676,7 +674,7 @@ async function fbapi(a,b){b=b||{};const s=FBS.get();
  if(a==='password'){const x=FBS.get(),j=await fbSignIn(x.email,b.current);if(!j.idToken)return{error:fbMsg(j),_status:401};
   const n=await fbj(FBIT+'update?key='+FB.apiKey,{idToken:j.idToken,password:b.next,returnSecureToken:true});if(!n.idToken)return{error:fbMsg(n),_status:400};fbSave(n,x.email);return{ok:true,_status:200}}
  if(a==='delete'){const x=FBS.get(),j=await fbSignIn(x.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
-  await fbj(url,null,j.idToken,'DELETE');await fbj(FBFS+'/members/'+u,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
+  await fbj(url,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
  return{error:'Ukendt handling.',_status:400}}
 
 /* ===== Konto og synkronisering (kun i den hostede version) ===== */
@@ -703,11 +701,11 @@ async function push(now){if(!AUTH.user)return;if(AUTH.busy){AUTH.dirty=true;retu
 function authV(){const m=AUTH.mode,E=s=>esc(s||''),tab=(k,l)=>`<button type="button" class="b ${m===k?'p':''}" onclick="AUTH.mode='${k}';AUTH.msg='';render()">${l}</button>`;
  return`<div id="auth" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:24px 14px"><div style="max-width:420px;margin:6vh auto 0"><h1 style="margin:0 0 4px;font-size:30px;letter-spacing:-.03em">${esc(APP)}</h1><p class="note" style="margin:0 0 16px">Dit eget overblik over vagter, løn og overenskomst. Log ind for at gemme dine data på tværs af enheder.</p>
  <form class="card" onsubmit="authGo(event)">${m==='reset'?'<h3>Vælg en ny adgangskode</h3>':`<div class="row" style="margin-bottom:12px">${tab('login','Log ind')}${AUTH.open?tab('reg','Opret konto'):''}${tab('forgot','Glemt adgangskode')}</div>`}
- ${m==='reg'&&FB?'<label style="margin-bottom:10px">Invitationskode<input name="code" autocomplete="off" required style="width:100%"></label>':''}${m!=='reset'?`<label>E-mail<input type="email" name="email" value="${E(AUTH.email)}" autocomplete="email" required style="width:100%"></label>`:''}
+ ${m!=='reset'?`<label>E-mail<input type="email" name="email" value="${E(AUTH.email)}" autocomplete="email" required style="width:100%"></label>`:''}
  ${m!=='forgot'?`<label style="margin-top:10px">${m==='reset'?'Ny adgangskode':'Adgangskode'}<input type="password" name="password" autocomplete="${m==='login'?'current-password':'new-password'}" ${m==='login'?'':'minlength="10"'} required style="width:100%"></label>${m==='login'?'':'<p class="note">Mindst 10 tegn.</p>'}`:'<p class="note">Du får en e-mail med et link, hvis adressen findes.</p>'}
  ${AUTH.msg?`<p style="color:${AUTH.ok?'var(--ok)':'var(--bad)'};margin:10px 0 0"><b>${E(AUTH.msg)}</b></p>`:''}
  <p style="margin:14px 0 0"><button class="b p" style="width:100%">${m==='login'?'Log ind':m==='reg'?'Opret konto':m==='forgot'?'Send link':'Gem adgangskode'}</button></p></form>
- <p style="text-align:center"><button class="b" onclick="AUTH.guest=true;gset(1);render()">Fortsæt uden konto</button></p><p class="note" style="text-align:center">Uden konto gemmes dine data kun i denne browser.</p></div></div>`}
+ <p style="text-align:center"><button class="b" onclick="AUTH.guest=true;gset(1);if(!S.emps.length)demoLoad();render()">Se appen med eksempler (uden konto)</button></p><p class="note" style="text-align:center">Uden konto gemmes dine data kun i denne browser.</p></div></div>`}
 async function authGo(ev){ev.preventDefault();const f=new FormData(ev.target),m=AUTH.mode;AUTH.msg='';AUTH.ok=false;
  const b={email:f.get('email'),password:f.get('password'),code:f.get('code')};let r;if(b.email)AUTH.email=b.email;
  if(m==='reset'){r=await api('reset',{token:AUTH.token,password:b.password});if(r.ok){history.replaceState(null,'',location.pathname);AUTH.mode='login';AUTH.msg='Adgangskoden er ændret. Log ind med den nye.';AUTH.ok=true}else AUTH.msg=r.error||'Noget gik galt.'}
