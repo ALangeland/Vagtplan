@@ -167,7 +167,8 @@ const wdi=d=>(d.getDay()+6)%7;
 function times(sh,d){const t=sh.byDay?sh.t[wdi(d)]:sh.t[0];return t&&t[0]&&t[1]?t:null}
 const nx=t=>!!t[2]||tm(t[1])<=tm(t[0]);
 function dur(t){let a=tm(t[0]),b=tm(t[1]);if(nx(t))b+=1440;return b-a}
-const tt=t=>t[0]+'–'+t[1]+(tm(t[1])>tm(t[0])&&t[2]?' (+1 dag)':tm(t[1])<=tm(t[0])?' (+1 dag)':'');
+const nxd=t=>tm(t[1])>tm(t[0])&&t[2]||tm(t[1])<=tm(t[0]);
+const tt=t=>nxd(t)?t[0]+' → '+t[1]:t[0]+'–'+t[1];
 const dd=x=>x?x.split('-').reverse().join('.'):'';
 /* Flad liste over planlagte vagter med absolutte minutter fra epoch-dag */
 function entries(){const out=[];for(const k in S.plan){const[eid,sid]=S.plan[k].split('|'),s=(S.shifts[eid]||[]).find(x=>x.id===sid);if(!s)continue;const d=new Date(k+'T00:00'),t=times(s,d);if(!t)continue;const day=Math.round(d/864e5),st=day*1440+tm(t[0]);out.push({k,d,s,t,day,st,en:st+dur(t)+Math.round((+(S.otd||{})[k]||0)*60),wd:wdi(d),emp:eid,work:!s.leave,fl:(S.flag||{})[k]||'',ot:+(S.otd||{})[k]||0})}return out.sort((a,b)=>a.st-b.st)}
@@ -244,12 +245,12 @@ function setActive(id,on){const e=S.emps.find(x=>x.id===id);if(!e)return;e.off=!
 function empSel(){const e=emp();if(!e)return'';const dup=n=>S.emps.filter(x=>x.dep===n).length>1,lab=x=>empLabC(x),per=e.kind==='vikar'&&!e.from?'Vikar':(dd(e.from)||'?')+' – '+(dd(e.to)||'?');
  return`<div class="card" style="padding:10px 12px">${vis().length>1?`<select onchange="S.cur=this.value;save();render()" style="width:100%;font-weight:600">${vis().map(x=>`<option value="${x.id}" ${x.id===S.cur?'selected':''}>${lab(x)}</option>`).join('')}</select>`:`<b>${esc(e.dep)}</b>`}<div class="note" style="margin-top:5px">${per}${e.hos?' · '+esc(e.hos):''}</div></div>`}
 function legV(){const g=S.emps.filter(e=>e.id===S.cur).map(e=>({e,l:(S.shifts[e.id]||[])})).filter(x=>x.l.length);if(!g.length)return'';
- const row=x=>`<div class="lg ${x.name?'nn':''}" style="--c:${x.color}">${x.name?'':`<span class="lga">${esc(x.ab)}</span>`}<span class="lgt"><b>${esc(x.name||x.ab)}</b><span>${x.byDay?'varierer fra dag til dag':tt(x.t[0])}</span></span><span class="lgh">${x.byDay?'':fmt(dur(x.t[0]))}${x.leave?'<i>fravær</i>':''}</span></div>`,ov=x=>!x.byDay&&/\+1 dag/.test(tt(x.t[0]));
+ const row=x=>`<div class="lg ${x.name?'nn':''}" style="--c:${x.color}">${x.name?'':`<span class="lga">${esc(x.ab)}</span>`}<span class="lgt"><b>${esc(x.name||x.ab)}</b><span>${x.byDay?'varierer fra dag til dag':tt(x.t[0])}</span></span><span class="lgh">${x.byDay?'':fmt(dur(x.t[0]))}${x.leave?'<i>fravær</i>':''}</span></div>`,ov=x=>!x.byDay&&nxd(x.t[0]);
  return`<div class="card"><h3>Vagtformer</h3>${g.map(({e,l})=>{const dg=l.filter(x=>!ov(x)),nt=l.filter(ov);return`${g.length>1?`<div class="note" style="margin:8px 0 4px">${esc(e.dep)}${e.kind==='vikar'?' (vikar)':''}</div>`:''}${dg.length?`<div class="lgs">☀️ Dagvagter</div>${dg.map(row).join('')}`:''}${nt.length?`<div class="lgs">🌙 Over midnat (+1 døgn)</div>${nt.map(row).join('')}`:''}`}).join('')}</div>`}
 function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));t.setUTCDate(t.getUTCDate()+4-(t.getUTCDay()||7));return Math.ceil(((t-Date.UTC(t.getUTCFullYear(),0,1))/864e5+1)/7)}
 function pickOpen(k,btn){pickClose();const[y,m,dd]=k.split('-').map(Number),d=new Date(y,m-1,dd),v=S.plan[k]||'',cur=(v||'|').split('|')[0];
  const btn1=(e,s)=>`<button type="button" class="po ${v===e.id+'|'+s.id?'sel':''}" onclick="pickSet('${k}','${e.id}|${s.id}')"><i class="dt" style="background:${s.color}"></i><b>${esc(s.name||s.ab)}</b><span class="tm">${tt(times(s,d))}</span></button>`;
- const grp=S.emps.filter(e=>e.id===S.cur||e.id===cur).sort((a,b)=>(b.id===S.cur)-(a.id===S.cur)).map(e=>{const all=(S.shifts[e.id]||[]).filter(s=>times(s,d)),ov=s=>/\+1 dag/.test(tt(times(s,d))),dg=all.filter(s=>!ov(s)),nt=all.filter(ov);if(!all.length)return'';
+ const grp=S.emps.filter(e=>e.id===S.cur||e.id===cur).sort((a,b)=>(b.id===S.cur)-(a.id===S.cur)).map(e=>{const all=(S.shifts[e.id]||[]).filter(s=>times(s,d)),ov=s=>nxd(times(s,d)),dg=all.filter(s=>!ov(s)),nt=all.filter(ov);if(!all.length)return'';
   return`<div class="pg">${esc(e.dep)}${e.kind==='vikar'?' (vikar)':''} · ${empPer(e)}</div>${dg.length?`<div class="ps">☀️ Dagvagter</div>${dg.map(s=>btn1(e,s)).join('')}`:''}${nt.length?`<div class="ps">🌙 Over midnat (+1 døgn)</div>${nt.map(s=>btn1(e,s)).join('')}`:''}`}).join('');
  const o=document.createElement('div');o.id='pk';o.innerHTML=`<div class="pbk" onclick="pickClose()"></div><div class="pm" role="listbox"><div class="ph2"><b>${DAYS[wdi(d)]} ${dd}.</b><button type="button" class="b" onclick="pickClose()">Luk</button></div><button type="button" class="po ${v?'':'sel'}" onclick="pickSet('${k}','')"><i class="dt" style="background:transparent;border:1.5px dashed var(--mut)"></i><b>Ingen vagt</b></button>${grp}<div class="pg">Andet</div><button type="button" class="po ${v==='_|fri'?'sel':''}" onclick="pickSet('${k}','_|fri')"><i class="dt" style="background:var(--line)"></i><b>Fri</b></button><button type="button" class="po ${v==='_|syg'?'sel':''}" onclick="pickSet('${k}','_|syg')"><i class="dt" style="background:var(--bad)"></i><b>Syg</b></button></div>`;
  document.body.appendChild(o);const pm=o.querySelector('.pm'),r=btn.getBoundingClientRect();
@@ -460,7 +461,7 @@ function warnV(){if(!WARN.length)return'';return`<div style="position:sticky;top
 function warnAcc(){WARN.forEach(w=>S.ack[w.x]=1);WARN=[];save();render()}
 
 let ed=null;
-const isOv=x=>!x.byDay&&/\+1 dag/.test(tt(x.t[0]));
+const isOv=x=>!x.byDay&&nxd(x.t[0]);
 function mvShift(id,d){const sh=shifts(),a=sh.findIndex(x=>x.id===id);if(a<0)return;const g=isOv(sh[a]);let b=a+d;while(b>=0&&b<sh.length&&isOv(sh[b])!==g)b+=d;if(b<0||b>=sh.length)return;[sh[a],sh[b]]=[sh[b],sh[a]];save();render();setTimeout(()=>{const h=document.querySelector('.sgr[data-id="'+id+'"] .sgh');if(h)h.focus()},0)}
 function sgCommit(box){const ids=[...box.querySelectorAll('.sgr')].map(x=>x.dataset.id),sh=shifts(),g=box.dataset.g==='n',slots=[];sh.forEach((x,i)=>{if(isOv(x)===g)slots.push(i)});const by=Object.fromEntries(sh.map(x=>[x.id,x])),out=sh.slice();slots.forEach((pos,n)=>{out[pos]=by[ids[n]]});S.shifts[S.cur]=out;save();render()}
 function sgDown(e,id){if(e.button>0)return;const row=e.currentTarget.closest('.sgr'),box=row.parentNode;e.preventDefault();const W=window; row.classList.add('drag');let moved=false;const mv=ev=>{const y=ev.clientY;const sib=[...box.querySelectorAll('.sgr')].filter(x=>x!==row);for(const o of sib){const r=o.getBoundingClientRect();if(y>r.top&&y<r.bottom){const before=y<r.top+r.height/2;if(before&&o.previousElementSibling!==row)box.insertBefore(row,o);else if(!before&&o.nextElementSibling!==row)box.insertBefore(row,o.nextSibling);moved=true;break}}},
