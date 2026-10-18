@@ -92,7 +92,7 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
 <nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:0 auto;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
 const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='94';
+const REV='95';
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
 const COLORS=['#8b95a5','#4a78e8','#22b5a8','#2fb36d','#e8bf1a','#f09a2a','#e5605a','#9b5de5'],COLORS_OLD=['#8b95a5','#5b6678','#14213d','#e5605a','#c8352f','#f08a8a','#f09a2a','#f5b971','#e8bf1a','#a8c92f','#2fb36d','#1f8a5b','#22b5a8','#3a9bd0','#4a78e8','#6a5acd','#9b5de5','#d96fb5'];
@@ -723,15 +723,27 @@ async function fbj(url,body,tok,method,loc){let r;try{r=await fetch(url,{method:
 function fbSave(j,email){const o={idToken:j.idToken||j.id_token,refreshToken:j.refreshToken||j.refresh_token,exp:Date.now()+(+(j.expiresIn||j.expires_in)||3600)*1000,uid:j.localId||j.user_id,email:email||j.email||(FBS.get()||{}).email};FBS.set(o);return o}
 async function fbTok(){let s=FBS.get();if(!s)return null;if(Date.now()>s.exp-60000){let r;try{r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(s.refreshToken)})}catch(e){return s.idToken}const j=await r.json().catch(()=>({}));if(!r.ok){FBS.set(null);return null}s=fbSave(j,s.email)}return s.idToken}
 async function fbSignIn(email,pw){return fbj(FBIT+'signInWithPassword?key='+FB.apiKey,{email,password:pw,returnSecureToken:true})}
+
+/* Anonym brugsstatistik for indloggede (kun uid, dato, om appen er installeret). Respekterer Do Not Track. */
+async function fbTouch(force){if(!FB||navigator.doNotTrack==='1')return;const s=FBS.get();if(!s)return;
+ try{const last=+localStorage.getItem('vp_touch')||0;if(!force&&Date.now()-last<30*60*1000)return;localStorage.setItem('vp_touch',String(Date.now()))}catch(e){}
+ const t=await fbTok();if(!t)return;const day=new Date().toISOString().slice(0,10);let inst=false;try{inst=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}
+ let dev='d',oks='';try{dev=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?'m':'d';oks=[...new Set((S.emps||[]).filter(e=>!e.demo).map(e=>e.ok||'dk'))].sort().join(',').slice(0,30)}catch(e){}
+ const P='projects/'+FB.projectId+'/databases/(default)/documents/',sv=x=>({stringValue:x}),doc=FBFS+'/users/'+s.uid;
+ const j=await fbj(doc+'?currentDocument.exists=false',{fields:{c:sv(day),last:sv(day),inst:{booleanValue:inst},dev:sv(dev),oks:sv(oks),days:{arrayValue:{values:[sv(day)]}},opens:{integerValue:'1'}}},t,'PATCH');
+ const hit={update:{name:P+'hits/'+day,fields:{}},updateMask:{fieldPaths:[]},updateTransforms:[{fieldPath:'n',increment:{integerValue:'1'}}]};
+ if(j._status===200){await fbj(FBFS+':commit',{writes:[hit]},t);return}
+ await fbj(FBFS+':commit',{writes:[{update:{name:P+'users/'+s.uid,fields:{last:sv(day),inst:{booleanValue:inst},dev:sv(dev),oks:sv(oks)}},updateMask:{fieldPaths:['last','inst','dev','oks']},currentDocument:{exists:true},updateTransforms:[{fieldPath:'days',appendMissingElements:{values:[sv(day)]}},{fieldPath:'opens',increment:{integerValue:'1'}}]},hit]},t)}
+try{addEventListener('appinstalled',()=>{fbTouch(true)})}catch(e){}
 async function fbapi(a,b){b=b||{};const s=FBS.get();
  if(a==='hit'||a==='cal_info'||a==='cal_off')return{ok:true,_status:200};
  if(a==='cal_set')return{error:'Kalenderabonnement er ikke slået til endnu.',_status:501};
- if(a==='me'){const t=await fbTok();const x=FBS.get();return{user:t&&x?{email:x.email}:null,open:true,_status:200}}
+ if(a==='me'){const t=await fbTok();const x=FBS.get();if(t&&x)setTimeout(fbTouch,2500);return{user:t&&x?{email:x.email}:null,open:true,_status:200}}
  if(a==='logout'){FBS.set(null);return{ok:true,_status:200}}
  if(a==='forgot'){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'PASSWORD_RESET',email:b.email},null,null,1);return{ok:true,_status:200}}
  if(a==='login'){const j=await fbSignIn(b.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
   const l=await fbj(FBIT+'lookup?key='+FB.apiKey,{idToken:j.idToken});if(!(l.users&&l.users[0]&&l.users[0].emailVerified)){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);return{error:'Din e-mail er ikke bekræftet endnu. Vi har sendt et nyt bekræftelseslink. Tjek også spam.',_status:403}}
-  fbSave(j,b.email);return{user:{email:b.email},_status:200}}
+  fbSave(j,b.email);setTimeout(()=>fbTouch(true),2500);return{user:{email:b.email},_status:200}}
  if(a==='register'){
   const j=await fbj(FBIT+'signUp?key='+FB.apiKey,{email:b.email,password:b.password,returnSecureToken:true});if(!j.idToken)return{error:fbMsg(j),_status:400};
   await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);
@@ -747,7 +759,7 @@ async function fbapi(a,b){b=b||{};const s=FBS.get();
  if(a==='password'){const x=FBS.get(),j=await fbSignIn(x.email,b.current);if(!j.idToken)return{error:fbMsg(j),_status:401};
   const n=await fbj(FBIT+'update?key='+FB.apiKey,{idToken:j.idToken,password:b.next,returnSecureToken:true});if(!n.idToken)return{error:fbMsg(n),_status:400};fbSave(n,x.email);return{ok:true,_status:200}}
  if(a==='delete'){const x=FBS.get(),j=await fbSignIn(x.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
-  await fbj(url,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
+  await fbj(url,null,j.idToken,'DELETE');await fbj(FBFS+'/users/'+x.uid,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
 
  if(a==='np_list'){const q={structuredQuery:{from:[{collectionId:'normshare'}],where:{compositeFilter:{op:'AND',filters:[{fieldFilter:{field:{fieldPath:'dk'},op:'EQUAL',value:{stringValue:String(b.dk||'')}}},{fieldFilter:{field:{fieldPath:'lv'},op:'EQUAL',value:{stringValue:String(b.lv||'')}}}]}},limit:200}};
   const j=await fbj(FBFS+':runQuery',q,t);if(!Array.isArray(j))return{error:j._status===403?'Din e-mail skal være bekræftet, og reglerne for deling skal være lagt ind i Firebase.':'Kunne ikke hente normperioder.',_status:j._status||500};

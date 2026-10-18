@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="da"><head><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Admin – Vagtplan</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#14213d;--mut:#3f4b5e;--line:#dde2ea;--acc:#0b6e8a;--bad:#c8352f;--ok:#1f8a5b}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#c3cddb;--line:#2a3547;--acc:#4fb4d0;--bad:#ff7b72;--ok:#4cc38a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#c3cddb;--line:#2a3547;--acc:#4fb4d0;--bad:#ff7b72;--ok:#4cc38a;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+header{background:#14213d;color:#fff;padding:12px 18px;display:flex;gap:14px;align-items:center}header b{font-size:18px}header a{color:#bfe9f6;margin-left:auto;font-size:14px}
+main{max-width:1100px;margin:0 auto;padding:18px 14px 50px}h2{font-size:17px;margin:28px 0 10px}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.k div,.c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}.k b{display:block;font-size:26px;letter-spacing:-.02em;line-height:1.15}.k span{font-size:13px;color:var(--mut)}.k i{display:block;font-style:normal;font-size:12px;color:var(--mut);margin-top:2px}
+.g2{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.bars{display:flex;align-items:flex-end;gap:2px;height:110px;margin-top:8px}.bars div{flex:1;background:var(--acc);border-radius:2px 2px 0 0;min-height:1px;opacity:.9;position:relative}.bars div:hover{opacity:1;outline:1px solid var(--ink)}
+.ax{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:3px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--mut)}button{font:inherit;padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.err{color:var(--bad);font-weight:600}
+</style></head><body>
+<header><b>Admin</b><span class="note" style="color:#aab6c8" id="who"></span><a href="app.html">Til appen</a></header>
+<main id="m"><p class="note">Henter ...</p></main>
+<script>
+const FB={"apiKey":"AIzaSyA2SjjHOZqIqUdWWehd8bl4UtkFZrmAFA0","authDomain":"vagtplan-ac408.firebaseapp.com","projectId":"vagtplan-ac408","storageBucket":"vagtplan-ac408.firebasestorage.app","messagingSenderId":"767385990576","appId":"1:767385990576:web:be8895c861ca495c6f1275"};
+const FBFS=`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents`;
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function sess(){try{return JSON.parse(localStorage.getItem('vp_fb')||'null')}catch(e){return null}}
+async function tok(){let s=sess();if(!s)return null;if(Date.now()>s.exp-60000){const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(s.refreshToken)});const j=await r.json().catch(()=>({}));if(!r.ok)return null;s={idToken:j.id_token,refreshToken:j.refresh_token,exp:Date.now()+(+j.expires_in||3600)*1000,uid:j.user_id,email:s.email};try{localStorage.setItem('vp_fb',JSON.stringify(s))}catch(e){}}return s.idToken}
+async function post(url,body,t){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw{status:r.status,j};return j}
+const rows=async(col,t,extra)=>(await post(FBFS+':runQuery',{structuredQuery:Object.assign({from:[{collectionId:col}],limit:5000},extra||{})},t)).filter(x=>x.document).map(x=>({id:x.document.name.split('/').pop(),f:x.document.fields||{}}));
+const cnt=async(col,t,where)=>{const j=await post(FBFS+':runAggregationQuery',{structuredAggregationQuery:{structuredQuery:Object.assign({from:[{collectionId:col}]},where?{where}:{}),aggregations:[{alias:'n',count:{}}]}},t);return +(((j[0]||{}).result||{}).aggregateFields||{}).n?.integerValue||0};
+const S=(f,k)=>f[k]&&f[k].stringValue||'',N=(f,k)=>+(f[k]&&(f[k].integerValue||f[k].doubleValue)||0),B=(f,k)=>!!(f[k]&&f[k].booleanValue),A=(f,k)=>((f[k]&&f[k].arrayValue&&f[k].arrayValue.values)||[]).map(x=>x.stringValue||x.integerValue);
+const eq=(k,v)=>({fieldFilter:{field:{fieldPath:k},op:'EQUAL',value:v}});
+const dAgo=n=>{const d=new Date();d.setUTCDate(d.getUTCDate()-n);return d.toISOString().slice(0,10)};
+const kpi=(l,v,s)=>`<div><b>${v}</b><span>${l}</span>${s?`<i>${s}</i>`:''}</div>`,pc=(a,b)=>b?Math.round(a/b*100)+' %':'–';
+const bars=(vals,labels,unit)=>`<div class="bars">${vals.map((v,i)=>`<div title="${esc(labels[i])}: ${v} ${unit}" style="height:${Math.max(1,v/Math.max(1,...vals)*100)}%"></div>`).join('')}</div><div class="ax"><span>${esc(labels[0])}</span><span>${esc(labels[labels.length-1])}</span></div>`;
+const OKN={dk:'Danmark',gl:'Grønland',fo:'Færøerne',stud:'Studentervikar',own:'Egen aftale'};
+async function main(){const m=$('#m'),s=sess();
+ if(!s){m.innerHTML='<div class="c"><p><b>Du er ikke logget ind.</b></p><p class="note">Log ind i appen med din admin-konto, og åbn så denne side igen.</p><p><a href="app.html">Åbn appen</a></p></div>';return}
+ $('#who').textContent='';let t;try{t=await tok();if(!t)throw 0}catch(e){m.innerHTML='<div class="c"><p class="err">Sessionen er udløbet. Log ind i appen igen.</p></div>';return}
+ try{
+  const [U,H,SS,NS,nInst,nCal]=await Promise.all([rows('users',t),rows('hits',t,{orderBy:[{field:{fieldPath:'__name__'},direction:'DESCENDING'}],limit:30}),rows('shiftshare',t),rows('normshare',t),cnt('users',t,eq('inst',{booleanValue:true})),cnt('users',t,eq('cal',{booleanValue:true}))]);
+  const today=dAgo(0),d7=dAgo(6),d30=dAgo(29),days30=[...Array(30)].map((_,i)=>dAgo(29-i));
+  const use=U.map(u=>({c:S(u.f,'c'),last:S(u.f,'last'),days:A(u.f,'days'),opens:N(u.f,'opens'),inst:B(u.f,'inst'),dev:S(u.f,'dev'),oks:S(u.f,'oks')}));
+  const act=(a)=>use.filter(u=>u.days.some(d=>d>=a)).length,dau=use.filter(u=>u.days.includes(today)).length,wau=act(d7),mau=act(d30);
+  const ret=use.filter(u=>u.c<=dAgo(7)),retN=ret.filter(u=>u.days.some(d=>d>=d7)).length;
+  const series=days30.map(d=>use.filter(u=>u.days.includes(d)).length),signup=days30.map(d=>use.filter(u=>u.c===d).length);
+  const hitMap=Object.fromEntries(H.map(h=>[h.id,N(h.f,'n')])),opens30=days30.map(d=>hitMap[d]||0),opens7=days30.slice(-7).reduce((a,d)=>a+(hitMap[d]||0),0);
+  const mob=use.filter(u=>u.dev==='m').length,oks={};use.forEach(u=>u.oks.split(',').filter(Boolean).forEach(k=>oks[k]=(oks[k]||0)+1));
+  const by=a=>a.reduce((x,d)=>x+(A(d.f,'by').length||0),0),dep={};
+  SS.concat(NS).forEach(d=>{const k=S(d.f,'dk');dep[k]=dep[k]||{sf:0,np:0};});SS.forEach(d=>dep[S(d.f,'dk')].sf++);NS.forEach(d=>dep[S(d.f,'dk')].np++);
+  const lag={};NS.forEach(d=>{const k=S(d.f,'lag')||'(uden vagtlag)';lag[k]=(lag[k]||0)+1});
+  const lastAct=use.map(u=>u.last).sort().pop()||'–';
+  m.innerHTML=`<h2 style="margin-top:0">Brugere</h2><div class="k">${kpi('Brugere i alt',U.length,'har åbnet appen logget ind')}${kpi('Aktive i dag',dau)}${kpi('Aktive 7 dage',wau,pc(wau,U.length)+' af alle')}${kpi('Aktive 30 dage',mau,pc(mau,U.length)+' af alle')}${kpi('Vender tilbage',pc(retN,ret.length),'oprettet for over 7 dage siden og aktiv i uge')}${kpi('Åbninger i alt',use.reduce((a,u)=>a+u.opens,0),opens7+' de seneste 7 dage')}</div>
+  <h2>Installation og kalender</h2><div class="k">${kpi('Installeret som webapp',nInst,pc(nInst,U.length)+' af brugerne')}${kpi('Kalenderabonnement aktive',nCal,nCal?'':'Kalenderabonnement er ikke slået til endnu')}${kpi('Bruger mobil',mob,pc(mob,U.length))}${kpi('Senest set',lastAct)}</div>
+  <div class="g2"><div class="c"><b>Aktive brugere pr. dag (30 dage)</b>${bars(series,days30,'brugere')}</div><div class="c"><b>Åbninger pr. dag (30 dage)</b>${bars(opens30,days30,'åbninger')}</div><div class="c"><b>Nye brugere pr. dag (30 dage)</b>${bars(signup,days30,'nye')}</div></div>
+  <h2>Deling</h2><div class="k">${kpi('Delte vagtformer',SS.length,by(SS)+(by(SS)===1?' deling':' delinger')+' i alt')}${kpi('Delte normperioder',NS.length,by(NS)+(by(NS)===1?' deling':' delinger')+' i alt')}${kpi('Afdelinger med deling',Object.keys(dep).length)}</div>
+  <div class="g2"><div class="c"><b>Normperioder pr. vagtlag</b><table>${Object.entries(lag).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v}</td></tr>`).join('')||'<tr><td class="note">Ingen endnu.</td></tr>'}</table></div>
+  <div class="c"><b>Overenskomster i brug</b><table>${Object.entries(oks).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(OKN[k]||k)}</td><td class="n">${v} brugere</td></tr>`).join('')||'<tr><td class="note">Ingen endnu.</td></tr>'}</table></div></div>
+  <div class="c" style="margin-top:12px"><b>Afdelinger</b><table><tr><th>Afdeling (SHAK eller navn)</th><th class="n">Vagtformer</th><th class="n">Normperioder</th></tr>${Object.entries(dep).sort((a,b)=>b[1].sf+b[1].np-a[1].sf-a[1].np).slice(0,30).map(([k,v])=>`<tr><td>${esc(k.replace(/^(shak|navn):/,''))}</td><td class="n">${v.sf}</td><td class="n">${v.np}</td></tr>`).join('')||'<tr><td class="note" colspan="3">Ingen endnu.</td></tr>'}</table></div>
+  <p class="note" style="margin-top:20px">Tallene bygger på brugere, der er logget ind med bekræftet e-mail. Besøg uden konto og besøgende med Do Not Track tælles ikke. Der gemmes kun et tilfældigt bruger-id, datoer, om appen er installeret, om det er mobil, og hvilke overenskomster der er i brug, aldrig e-mail, vagter eller løn. Datoer er i UTC.</p>`;
+ }catch(e){m.innerHTML=`<div class="c"><p class="err">${e&&e.status===403?'Ingen adgang. Tjek at reglerne i Firebase er opdateret, og at din e-mail står i isAdmin-reglen.':'Kunne ikke hente tallene ('+esc((e&&e.status)||'fejl')+').'}</p></div>`;console.error(e)}}
+main();
+</script></body></html>
