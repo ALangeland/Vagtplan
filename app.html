@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="da"><head><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Gratis og privat overblik over vagter, løn og overenskomst for yngre læger i Danmark, Grønland og Færøerne.">
+<meta name="theme-color" content="#14213d"><link rel="manifest" href="manifest.webmanifest"><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Vagtplan"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no">
 <title>Vagtplan – tid, løn og overenskomsttjek</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f6f8;--card:#fff;--ink:#14213d;--mut:#5b6678;--line:#dde2ea;--acc:#0b6e8a;--ok:#1f8a5b;--bad:#c8352f;--badbg:#fdecea;--okbg:#e6f5ee;--warn:#8a6100;--warnbg:#fff3c4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--ok:#4cc38a;--bad:#ff7b72;--badbg:#3a1f22;--okbg:#17332a;--warn:#f2c94c;--warnbg:#3a3114}}
 :root[data-theme="dark"]{--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--ok:#4cc38a;--bad:#ff7b72;--badbg:#3a1f22;--okbg:#17332a;--warn:#f2c94c;--warnbg:#3a3114}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Figtree,system-ui,-apple-system,Segoe UI,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#14213d;display:flex;gap:2px;overflow-x:auto;padding:0 12px}
 nav b{color:#fff;padding:14px 14px 14px 4px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
 .tg{position:relative;width:48px;height:26px;border-radius:13px;border:0;padding:0;cursor:pointer;background:rgba(255,255,255,.28);flex:none;transition:background .2s}
@@ -82,9 +83,10 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 }
 @media(max-width:380px){.day{grid-template-columns:24px 28px minmax(0,1fr) 70px}}
 body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-</style></head><body><div style="background:#fff4d6;color:#5b4300;border-bottom:1px solid #e6c766;padding:8px 14px;font:14px/1.4 system-ui,sans-serif;text-align:center">Testversion til gennemsyn. Satserne er fra OK24 for Danmark, Grønland er aflæst fra en scanning, og Færøerne kræver egne satser. Brug den ikke til at kontrollere en rigtig lønseddel. Dine data gemmes kun i denne browser. <a href="#" onclick="gateOut();return false" style="color:inherit;font-weight:600">Log ud</a> · <a href="index.html" style="color:inherit;font-weight:600">Til forsiden</a></div>
-<nav id="nav"></nav><main id="m"></main>
+</style></head><body>
+<nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:0 auto;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
+const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
 const COLORS=['#8b95a5','#4a78e8','#22b5a8','#2fb36d','#e8bf1a','#f09a2a','#e5605a','#9b5de5'],COLORS_OLD=['#8b95a5','#5b6678','#14213d','#e5605a','#c8352f','#f08a8a','#f09a2a','#f5b971','#e8bf1a','#a8c92f','#2fb36d','#1f8a5b','#22b5a8','#3a9bd0','#4a78e8','#6a5acd','#9b5de5','#d96fb5'];
@@ -147,7 +149,7 @@ for(const k in PROFILES){PROFILES[k].id=k;for(const ro of PROFILES[k].roles)if(r
 const def={goalH:0,emps:[],cur:null,shifts:{},plan:{},oks:PROFILES,shak:[],ym:new Date().toISOString().slice(0,7),tab:'work'};
 let S;
 function load(){try{const r=localStorage.getItem('vagtplan3')||localStorage.getItem('vagtplan2');if(r)return fix(JSON.parse(r))}catch(e){}return fix({})}
-function save(){try{localStorage.setItem('vagtplan3',ser())}catch(e){}if(DB){clearTimeout(sT);sT=setTimeout(()=>DB.set({s:ser()}).catch(()=>{}),800)}}
+function save(){try{localStorage.setItem('vagtplan3',ser())}catch(e){}if(AUTH.user){clearTimeout(sT);sT=setTimeout(push,800)}}
 const $=s=>document.querySelector(s);
 const emp=()=>S.emps.find(e=>e.id===S.cur);
 const shifts=()=>(S.shifts[S.cur]=S.shifts[S.cur]||[]);
@@ -206,12 +208,12 @@ function tell(m){ASK={msg:m,fn:null};render()}
 function askYes(){const f=ASK&&ASK.fn;ASK=null;render();if(f)f()}
 function askNo(){ASK=null;render()}
 function askV(){return ASK?`<div style="position:fixed;inset:0;z-index:30;background:rgba(10,20,35,.5);display:flex;align-items:center;justify-content:center;padding:16px"><div class="card" style="max-width:420px;margin:0"><p style="margin:0 0 14px">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end">${ASK.fn?'<button class="b" onclick="askNo()">Annullér</button>':''}<button class="b ${ASK.fn?'d':'p'}" onclick="askYes()">${ASK.fn?'Ja, fortsæt':'OK'}</button></div></div></div>`:''}
-function render(){const n=check().reduce((a,r)=>a+r.v.filter(x=>!S.ack[x]).length,0),tabs=[['work','Kalender'],...(emp()&&R().evac?[['ev','Evakuering']]:[]),['pay','Løn'],['reg','Regnskab'],['stat','Statistik'],['rt','Rettigheder'],['check','Overenskomsttjek']],SET=[['shifts','Vagtformer'],['sc','Importér'],['emps','Ansættelser'],['data','Kalenderfil']],inSet=SET.some(t=>t[0]===S.tab);
+function render(){const n=check().reduce((a,r)=>a+r.v.filter(x=>!S.ack[x]).length,0),tabs=[['work','Kalender'],...(emp()&&R().evac?[['ev','Evakuering']]:[]),['pay','Løn'],['reg','Regnskab'],['stat','Statistik'],['rt','Rettigheder'],['check','Overenskomsttjek']],SET=[['shifts','Vagtformer'],['sc','Importér'],['emps','Ansættelser'],['data','Kalenderfil'],['inst','Hjemmeskærm']].concat(AUTH.api?[['acct','Konto']]:[]),inSet=SET.some(t=>t[0]===S.tab);
  if(!tabs.concat(SET).some(t=>t[0]===S.tab))S.tab='work';
- $('#nav').innerHTML='<b>Vagtplan</b>'+tabs.map(([k,l])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';save();render()">${l}${k==='check'&&n?`<span class="badge">${n}</span>`:''}</button>`).join('')+`<button class="${inSet?'on':''}" onclick="S.tab='${inSet?S.tab:(emp()?'shifts':'emps')}';save();render()">⚙ Opsætning</button>`;
+ $('#nav').innerHTML='<b>'+APP+'</b>'+tabs.map(([k,l])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';save();render()">${l}${k==='check'&&n?`<span class="badge">${n}</span>`:''}</button>`).join('')+`<button class="${inSet?'on':''}" onclick="S.tab='${inSet?S.tab:(emp()?'shifts':'emps')}';save();render()">⚙ Opsætning</button>`+(AUTH.api?`<button class="${S.tab==='acct'?'on':''}" onclick="S.tab='acct';save();render()">${AUTH.user?'Konto':'Log ind'}</button>`:'');
  $('#nav').insertAdjacentHTML('beforeend',`<button class="tg" role="switch" aria-checked="${themeGet()==='dark'}" aria-label="Mørk tilstand" title="${themeGet()==='dark'?'Skift til lys tilstand':'Skift til mørk tilstand'}" onclick="themeNext()"><span class="tgk"></span></button>`);
- const v={work,ev:evV,pay:payV,reg:regV,stat:statV,rt:rtV,check:checkV,shifts:shiftsV,sc:scV,emps:empsV,data:dataV}[S.tab]||work;
- $('#m').style.maxWidth=S.tab==='work'?'1180px':'';$('#m').innerHTML=(vis().length>1&&['ev','pay','rt','check','shifts','sc'].includes(S.tab)?`<div class="row" style="margin-bottom:12px"><label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:600">Ansættelse<select onchange="S.cur=this.value;save();render()" style="max-width:min(100%,380px)">${vis().map(e=>`<option value="${e.id}" ${e.id===S.cur?'selected':''}>${empLab(e)}</option>`).join('')}</select></label><span class="note">Gælder denne side.</span></div>`:'')+(inSet?`<div class="row" style="margin-bottom:12px;gap:6px"><span class="note" style="margin-right:4px">Opsætning:</span>${SET.map(([k,l])=>`<button class="b ${S.tab===k?'p':''}" onclick="S.tab='${k}';save();render()">${l}</button>`).join('')}</div>`:'')+((!emp()&&S.tab!=='emps'&&S.tab!=='data'&&S.tab!=='inst'&&S.tab!=='acct')?'<div class="card"><h2>Kom i gang</h2><p>Opret først en ansættelse, så du kan oprette vagtformer og planlægge vagter.</p><button class="b p" onclick="S.tab=\'emps\';render()">Opret ansættelse</button> <button class="b" onclick="demoLoad()">Prøv med eksempeldata</button></div>':v().replace(/kr\.\.(?!\.)/g,'kr.').replace(/kr\.,/g,'kr,'))+askV()+(GATE.ok?'':gateV())}
+ const v={work,ev:evV,pay:payV,reg:regV,stat:statV,rt:rtV,check:checkV,shifts:shiftsV,sc:scV,emps:empsV,data:dataV,inst:instV,acct:acctV}[S.tab]||work;
+ $('#m').style.maxWidth=S.tab==='work'?'1180px':'';$('#m').innerHTML=instBanner()+(vis().length>1&&['ev','pay','rt','check','shifts','sc'].includes(S.tab)?`<div class="row" style="margin-bottom:12px"><label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:600">Ansættelse<select onchange="S.cur=this.value;save();render()" style="max-width:min(100%,380px)">${vis().map(e=>`<option value="${e.id}" ${e.id===S.cur?'selected':''}>${empLab(e)}</option>`).join('')}</select></label><span class="note">Gælder denne side.</span></div>`:'')+(inSet?`<div class="row" style="margin-bottom:12px;gap:6px"><span class="note" style="margin-right:4px">Opsætning:</span>${SET.map(([k,l])=>`<button class="b ${S.tab===k?'p':''}" onclick="S.tab='${k}';save();render()">${l}</button>`).join('')}</div>`:'')+((!emp()&&S.tab!=='emps'&&S.tab!=='data'&&S.tab!=='inst'&&S.tab!=='acct')?'<div class="card"><h2>Kom i gang</h2><p>Opret først en ansættelse, så du kan oprette vagtformer og planlægge vagter.</p><button class="b p" onclick="S.tab=\'emps\';render()">Opret ansættelse</button> <button class="b" onclick="demoLoad()">Prøv med eksempeldata</button></div>':v().replace(/kr\.\.(?!\.)/g,'kr.').replace(/kr\.,/g,'kr,'))+askV()+((AUTH.api&&!AUTH.user&&!AUTH.guest)?authV():'')}
 function work(){const[y,mo]=S.ym.split('-').map(Number),dim=new Date(y,mo,0).getDate(),pl=S.plan;let html='',mt=0;const accD=new Set(check().flatMap(r=>r.v).filter(y=>S.ack[y]).map(y=>y.slice(0,10))),wkH={},any=S.emps.some(e=>(S.shifts[e.id]||[]).length);
  for(const e of entries().filter(e=>e.work)){const w=Math.floor((e.day+3)/7);wkH[w]=(wkH[w]||0)+dur(e.t)+Math.round((e.ot||0)*60)}
  const opts=(d,v)=>S.emps.filter(e=>e.id===S.cur||e.id===(v||'').split('|')[0]).sort((a,b)=>(b.id===S.cur)-(a.id===S.cur)).map(e=>{const o=(S.shifts[e.id]||[]).filter(s=>times(s,d)).map(s=>`<option value="${e.id}|${s.id}">${s.ab} ${tt(times(s,d))}</option>`).join('');return o?`<optgroup label="${e.dep}${e.kind==='vikar'?' (vikar)':''} · ${empPer(e)}">${o}</optgroup>`:''}).join('');
@@ -420,12 +422,6 @@ function demoLoad(){demoClear();const M=new Date('2026-08-31T00:00'),dk=(w,d)=>d
  S.emps.push(D,G);S.cur=D.id;genPeriods();S.cur=D.id;S.ym='2026-10';S.tab='work';WARN=[];save();render()}
 
 function demoClear(){const ids=S.emps.filter(e=>e.demo).map(e=>e.id);for(const k in S.plan)if(ids.includes(S.plan[k].split('|')[0])){delete S.plan[k];delete(S.flag||{})[k]}ids.forEach(i=>delete S.shifts[i]);S.emps=S.emps.filter(e=>!e.demo)}
-function demoAsb(){demoClear();const f=(id,ab,color,a,b,x)=>Object.assign({id,ab,name:ab,color,byDay:false,t:Array.from({length:7},()=>[a,b]),oncall:'',leave:false},x||{}),wk=(id,ab,color,wa,wb,xa,xb,x)=>f(id,ab,color,wa,wb,Object.assign({byDay:true,t:[0,1,2,3,4,5,6].map(i=>i<5?[wa,wb]:[xa,xb])},x||{}));
- const E={id:'demo_asb',demo:true,from:'2026-10-01',to:'2027-03-31',dep:'Eksempel: Alb Akut- og Traumecenter',hos:'Aalborg Universitetshospital',shak:'',region:'Region Nordjylland',kind:'fast',ok:'dk',pos:'hu1',qual:'',ancFrom:'2024-02-01',monthly:0,hourly:0,pay:{},periods:[],extras:[],slips:{},evacs:[]};
- S.shifts.demo_asb=[f('a1','ASANAT','#f7c948','15:00','08:30',{oncall:'on'}),f('a2','ASADAG','#9b5de5','08:00','15:30'),wk('a3','FERIE','#8b95a5','08:00','15:24','','',{leave:true}),f('a4','FVVAGT','#22b5a8','15:30','08:30',{oncall:'on'}),f('a5','KO-NAT','#f7c948','16:30','08:30',{oncall:'on'}),f('a6','KO-DAG','#9b5de5','08:00','17:00'),f('a7','KURSUS','#4a78e8','08:00','15:30'),wk('a8','TEAM1','#e5605a','08:00','17:30','08:00','16:00'),wk('a9','TEAM2','#f09a2a','08:00','17:30','08:00','16:00'),f('a10','TEAM3','#e8bf1a','08:00','15:30'),f('a11','TEAM4','#2fb36d','08:00','15:30'),f('a12','ASVAGT','#3a9bd0','15:00','08:30',{oncall:'on'})];
- const m={'a1':'a1'},P={1:'a7',2:'a11',5:'a8',6:'a11',7:'a8',8:'a7',9:'a11',10:'a4',13:'a11',14:'a11',15:'a4',19:'a11',20:'a11',21:'a4',24:'a9',25:'a9',29:'a11',30:'a11',31:'a12'};
- for(const d in P)S.plan['2026-10-'+pad(+d)]='demo_asb|'+P[d];
- S.emps.push(E);S.cur=E.id;genPeriods();S.cur=E.id;S.ym='2026-10';S.tab='work';WARN=[];save();render()}
 function demoDel(){ask('Fjern de to eksempelansættelser med deres vagter?',()=>{const ids=S.emps.filter(e=>e.demo).map(e=>e.id);for(const k in S.plan)if(ids.includes(S.plan[k].split('|')[0])){delete S.plan[k];delete(S.flag||{})[k]}ids.forEach(i=>delete S.shifts[i]);S.emps=S.emps.filter(e=>!e.demo);if(!S.emps.some(e=>e.id===S.cur))S.cur=S.emps[0]?.id||null;WARN=[];save();render()})}
 /* ===== Advarsel ved overenskomstbrud ===== */
 let WARN=[];
@@ -461,7 +457,7 @@ function sync(){for(let i=1;i<7;i++)ed.t[i]=[...ed.t[0]]}
 function upd(){render()}
 function saveShift(){if(!ed.ab&&ed.name)ed.ab=abbr(ed.name);gsync();if(!ed.ab||!ed.t.some(t=>t[0]&&t[1])){tell('Udfyld navn og tider.');return}delete ed.G;const sh=shifts(),i=sh.findIndex(x=>x.id===ed.id);delete ed._new;if(i>=0)sh[i]=ed;else sh.push(ed);ed=null;save();render()}
 function delShift(){ask('Slet vagtformen og fjern den fra planen?',()=>{const id=ed.id;S.shifts[S.cur]=shifts().filter(x=>x.id!==id);for(const k in S.plan)if(S.plan[k].endsWith('|'+id))delete S.plan[k];ed=null;save();render()})}
-function DEMOCARD(){return'';return`<div class="card"><h3>Eksempeldata</h3><p class="note">Indlæser to eksempelansættelser efter hinanden: en dansk yngre læge (september til midt i oktober 2026) og en grønlandsk (resten af oktober og november), med vagtformer fra overenskomsterne, evakuering og nogle bevidste regelbrud. Du kan fjerne dem igen uden at røre dine egne data.</p>${S.emps.some(e=>e.demo)?'<button class="b d" onclick="demoDel()">Fjern eksempeldata</button>':'<button class="b p" onclick="demoLoad()">Indlæs eksempeldata</button>'} <button class="b" onclick="demoAsb()">Indlæs vagtformer og vagter fra Lægeløn (oktober 2026)</button></div>`}
+function DEMOCARD(){return`<div class="card"><h3>Eksempeldata</h3><p class="note">Indlæser to eksempelansættelser efter hinanden: en dansk yngre læge (september til midt i oktober 2026) og en grønlandsk (resten af oktober og november), med vagtformer fra overenskomsterne, evakuering og nogle bevidste regelbrud. Du kan fjerne dem igen uden at røre dine egne data.</p>${S.emps.some(e=>e.demo)?'<button class="b d" onclick="demoDel()">Fjern eksempeldata</button>':'<button class="b p" onclick="demoLoad()">Indlæs eksempeldata</button>'}</div>`}
 function efRole(){const rs=(S.oks[ef.ok]||S.oks.dk).roles,pos=rs.find(x=>x.k===ef.pos)||rs[0];return`<div class="row" style="margin-top:10px"><label class="sp">Stilling<select onchange="ef.pos=this.value;render()">${rs.map(x=>`<option value="${x.k}" ${x.k===pos.k?'selected':''}>${x.n}</option>`).join('')}</select></label>${pos.byTrin?`<label>Løntrin nu<select onchange="ef.trin=+this.value"><option value="">Vælg</option>${pos.tiers.map((t,i)=>`<option value="${i+pos.tb}" ${+ef.trin===i+pos.tb?'selected':''}>Løntrin ${i+pos.tb}</option>`).join('')}</select></label><label>Dato for næste løntrin<input type="date" value="${ef.trinNext||''}" onchange="ef.trinNext=this.value"></label>`:pos.tiers?`<label>Anciennitetsdato (kandidateksamen)<input type="date" value="${ef.ancFrom||''}" onchange="ef.ancFrom=this.value"></label>`:''}${!pos.a&&!pos.tiers?`<label>Månedsløn (kr.)<input type="number" step="0.01" value="${ef.monthly||''}" onchange="ef.monthly=+this.value" style="width:130px"></label>`:''}</div><p class="note">${pos.d||''} Kvalifikationstillæg og andre tillæg vælger du bagefter her på siden.</p>`}
 let newEmp=false,empOpen=null;
 function openEmp(id){if(empOpen===id)empOpen=null;else{empOpen=id;S.cur=id;save()}render()}
@@ -482,7 +478,7 @@ function newEmpV(){return`<div class="card"><h3>Ny ansættelse</h3><div class="r
  <div class="row" style="margin-top:10px;align-items:flex-end"><label>Start<input type="date" value="${ef.from||''}" onchange="ef.from=this.value"></label><label>Slut<input type="date" value="${ef.to||''}" onchange="ef.to=this.value"></label><button class="b p" onclick="addEmp()">Tilføj</button><button class="b" onclick="newEmp=false;render()">Annuller</button></div></div>`}
 function addEmp(){if(!ef.dep||(ef.kind==='fast'&&(!ef.from||!ef.to))){tell('Udfyld afdeling, og start og slut for en fast ansættelse.');return}const e={id:uid(),from:ef.from||'',to:ef.to||'',dep:ef.dep,hos:ef.hos||'',shak:'',region:ef.region,kind:ef.ok==='stud'?'vikar':ef.kind,ok:ef.ok,pos:((S.oks[ef.ok]||S.oks.dk).roles.find(x=>x.k===ef.pos)||(S.oks[ef.ok]||S.oks.dk).roles[0]).k,ancFrom:ef.ancFrom||'',trin:+ef.trin||0,trinNext:ef.trinNext||'',monthly:+ef.monthly||0,hourly:0,pay:{},periods:[],extras:[],slips:{}};S.emps.push(e);S.cur=e.id;ef={region:ef.region,kind:'fast',ok:ef.ok};newEmp=false;empOpen=e.id;S.tab='emps';save();render()}
 function delEmp(id){ask('Slet ansættelsen med alle vagtformer og planer?',()=>{S.emps=S.emps.filter(e=>e.id!==id);delete S.shifts[id];for(const k in S.plan)if(S.plan[k].startsWith(id+'|'))delete S.plan[k];if(S.cur===id)S.cur=S.emps[0]?.id||null;save();render()})}
-function dataV(){return`<h2>Kalenderfil</h2>${typeof calCard==='function'?calCard():'<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et link, der opdaterer din kalender automatisk i Apple Kalender, Google Kalender eller Outlook, kræver en konto og kommer med den hostede version. I denne testversion kan du hente en kalenderfil.</p></div>'}<div class="card"><h3>Kalenderfil (engangshentning)</h3><p>Hent alle planlagte vagter som en kalenderfil, og åbn den i Apple Kalender eller importér den i Google Kalender. Filen hedder vagter.ics. Den er et øjebliksbillede og opdaterer sig ikke selv.</p><button class="b p" onclick="ics()">Hent kalenderfil</button></div><div class="card"><h3>Flet data ind</h3><p class="note">Læg ansættelser, vagtformer og planlagte vagter fra en importfil ind sammen med dine nuværende. Intet af det, du allerede har, bliver overskrevet.</p><div class="row"><label>Importfil (.json)<input type="file" accept=".json,application/json" onchange="mergeFile(this.files[0])"></label>${location.hostname.endsWith('github.io')?'<button class="b p" onclick="mergeUrl(\'import/laegeloen.json\')">Hent mine data fra lægeløn</button>':''}</div></div>`}
+function dataV(){return`<h2>Kalenderfil</h2>${typeof calCard==='function'?calCard():'<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et link, der opdaterer din kalender automatisk i Apple Kalender, Google Kalender eller Outlook, kræver en konto og kommer med den hostede version. I denne testversion kan du hente en kalenderfil.</p></div>'}<div class="card"><h3>Kalenderfil (engangshentning)</h3><p>Hent alle planlagte vagter som en kalenderfil, og åbn den i Apple Kalender eller importér den i Google Kalender. ${ONHOST?'Filen hedder vagter.ics. Den er et øjebliksbillede, så hent en ny, når planen ændres.':'Filen gemmes som tekstfil (vagter-kalender.txt). Omdøb den til vagter.ics, og importér den i Apple Kalender eller Google Kalender.'}</p><button class="b p" onclick="ics()">Hent kalenderfil</button></div><div class="card"><h3>Flet data ind</h3><p class="note">Læg ansættelser, vagtformer og planlagte vagter fra en importfil ind sammen med dine nuværende. Intet af det, du allerede har, bliver overskrevet.</p><div class="row"><label>Importfil (.json)<input type="file" accept=".json,application/json" onchange="mergeFile(this.files[0])"></label>${location.hostname.endsWith('github.io')?'<button class="b p" onclick="mergeUrl(\'import/laegeloen.json\')">Hent mine data fra lægeløn</button>':''}</div></div>`}
 function mergeImport(j){if(!j||j.format!=='vagtplan-import-v1'||!Array.isArray(j.emps)){tell('Det er ikke en gyldig importfil.');return}
  const nw=j.emps.filter(e=>!S.emps.some(x=>x.llId&&x.llId===e.llId));if(!nw.length){tell('Alle ansættelser i filen er allerede importeret.');return}
  let pl=0;S.cmt=S.cmt||{};S.otd=S.otd||{};S.flag=S.flag||{};
@@ -492,7 +488,8 @@ function mergeImport(j){if(!j||j.format!=='vagtplan-import-v1'||!Array.isArray(j
 function mergeFile(f){if(!f)return;f.text().then(t=>{try{mergeImport(JSON.parse(t))}catch(e){tell('Filen kunne ikke læses.')}})}
 function mergeUrl(u){fetch(u).then(r=>{if(!r.ok)throw 0;return r.json()}).then(mergeImport).catch(()=>tell('Filen kunne ikke hentes.'))}
 function exp(){dl('vagtplan.json',ser())}
-async function dl(n,d,t){try{const a=document.createElement('a'),u=URL.createObjectURL(new Blob([d],{type:t||'text/plain'}));a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(e){tell('Filen kunne ikke gemmes.')}}
+const ONHOST=typeof claude==='undefined';
+async function dl(n,d,t){if(ONHOST){const a=document.createElement('a'),u=URL.createObjectURL(new Blob([d],{type:t||'text/plain'}));a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);return}try{const D=await claude.use('downloads');if(!D){alert('Download er ikke tilgængelig her.');return}await D.save({filename:n,data:d})}catch(e){if(!e||e.code!=='declined')alert('Filen kunne ikke gemmes ('+(e&&e.code||'fejl')+').')}}
 function imp(f){if(!f)return;f.text().then(t=>{try{const q=JSON.parse(t);if(q&&q.format==='vagtplan-import-v1'){mergeImport(q);return}S=fix(q);save();render()}catch(e){tell('Filen kunne ikke læses.')}})}
 const R=()=>PF(emp()||{});
 const REG=['Region Nordjylland','Region Midtjylland','Region Syddanmark','Region Sjælland','Region Hovedstaden','Grønland','Færøerne','Andet'];
@@ -537,7 +534,7 @@ function icsText(){const z=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate(
  for(const e of entries()){const en=nx(e.t)?new Date(e.d.getFullYear(),e.d.getMonth(),e.d.getDate()+1):e.d,j=S.emps.find(x=>x.id===e.emp)||{};o.push('BEGIN:VEVENT','UID:'+e.k+e.s.id+'@vagtplan','DTSTAMP:'+st,'DTSTART:'+z(e.d)+'T'+e.t[0].replace(':','')+'00','DTEND:'+z(en)+'T'+e.t[1].replace(':','')+'00','SUMMARY:'+esc(e.s.ab+(e.s.name?' – '+e.s.name:'')+' ('+(j.dep||'')+')'),'END:VEVENT')}
  for(const e of S.emps)for(const v of e.evacs||[]){if(!v.sd||!v.ed)continue;const z2=s=>s.replace(/-/g,'');o.push('BEGIN:VEVENT','UID:ev'+v.id+'@vagtplan','DTSTAMP:'+st,'DTSTART:'+z2(v.sd)+'T'+v.st.replace(':','')+'00','DTEND:'+z2(v.ed)+'T'+v.et.replace(':','')+'00','SUMMARY:'+esc('Evakuering ('+e.dep+')'),'END:VEVENT')}
  o.push('END:VCALENDAR');return o.join('\r\n')}
-function ics(){dl('vagter.ics',icsText(),'text/calendar;charset=utf-8')}
+function ics(){dl(ONHOST?'vagter.ics':'vagter-kalender.txt',icsText(),'text/calendar;charset=utf-8')}
 const num=x=>x.toFixed(1).replace('.',',');
 const PF=e=>{const p=S.oks[e.ok]||S.oks.dk;return e.loc==='ls'&&p.id==='fo'?Object.assign({},p,{restHours:8,normWeeks:12}):p};
 function defEmp(s){if(s.emps.some(e=>e.id===s.cur))return;const t=dkey(new Date()),c=s.emps.find(e=>(!e.from||e.from<=t)&&(!e.to||e.to>=t));s.cur=(c||s.emps[s.emps.length-1]||{}).id||null}
@@ -609,17 +606,6 @@ const themeGet=()=>{try{return localStorage.getItem('vp_theme')==='dark'?'dark':
 function themeApply(t){document.documentElement.setAttribute('data-theme',t)}
 function themeNext(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('vp_theme',t)}catch(e){}themeApply(t);render()}
 themeApply(themeGet());
-
-const GATE={ok:false,msg:''};try{GATE.ok=sessionStorage.getItem('vp_gate')==='1'}catch(e){}
-function gateV(){return`<div id="auth" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:24px 14px"><div style="max-width:420px;margin:6vh auto 0"><h1 style="margin:0 0 4px;font-size:30px;letter-spacing:-.03em">Vagtplan</h1><p class="note" style="margin:0 0 16px">Dit eget overblik over vagter, løn og overenskomst. Log ind for at gemme dine data på tværs af enheder.</p>
- <form class="card" onsubmit="gateGo(event)"><div class="row" style="margin-bottom:12px"><button type="button" class="b p">Log ind</button><button type="button" class="b" onclick="gateOpen()">Opret konto</button><button type="button" class="b" onclick="gateOpen()">Glemt adgangskode</button></div>
- <label>E-mail<input type="email" name="u" autocomplete="username" style="width:100%"></label>
- <label style="margin-top:10px">Adgangskode<input type="password" name="p" autocomplete="current-password" style="width:100%"></label>
- <p style="margin:14px 0 0"><button class="b p" style="width:100%">Log ind</button></p></form>
- <p class="note" style="text-align:center">Prøveside: Login virker ikke endnu. Tryk på Log ind med hvad som helst, så kommer du ind i appen.</p></div></div>`}
-function gateOpen(){GATE.ok=true;try{sessionStorage.setItem('vp_gate','1')}catch(e){}render()}
-function gateGo(ev){ev.preventDefault();gateOpen()}
-function gateOut(){GATE.ok=false;try{sessionStorage.removeItem('vp_gate')}catch(e){}render()}
 const ser=()=>JSON.stringify(S,(k,v)=>k==='oks'?undefined:v);
 function mAgo(n){const d=new Date();d.setMonth(d.getMonth()-n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function evSE(v){return[Math.round(new Date(v.sd+'T00:00')/864e5)*1440+tm(v.st),Math.round(new Date(v.ed+'T00:00')/864e5)*1440+tm(v.et)]}
@@ -653,5 +639,136 @@ function evV(){const e=emp(),r=R();if(!r.evac)return`<h2>Evakuering</h2><div cla
  <button class="b p" onclick="evAdd()" style="margin-top:6px">Tilføj evakuering</button></div>
  <div class="card" style="overflow-x:auto"><h3>${MON[+S.ym.slice(5)-1]}</h3><table><tr><th>Tidsrum</th><th>Type</th><th class="n">Døgn</th><th>Beregning</th><th class="n">Beløb</th><th></th></tr>${L.map((v,i)=>`<tr><td>${v.sd} ${v.st} → ${v.ed===v.sd?'':v.ed+' '}${v.et}${v.note?`<br><span class="note">${v.note}</span>`:''}</td><td>${C[i].lbl}</td><td class="n">${C[i].days}</td><td>${C[i].det}${C[i].comp?'<br><span class="note">1 erstatningsfridag</span>':''}</td><td class="n">${kr(C[i].pay)}</td><td><button class="b d" onclick="evDel('${v.id}')">Slet</button></td></tr>`).join('')||'<tr><td colspan="6">Ingen evakueringer i denne måned.</td></tr>'}${L.length?`<tr><th colspan="4">I alt${cmp?' · '+cmp+' erstatningsfridag'+(cmp>1?'e':''):''}</th><th class="n">${kr(tot)}</th><th></th></tr>`:''}</table></div>`}
 const evOn=k=>S.emps.some(e=>(e.evacs||[]).some(v=>v.sd===k));
-S=load();render();initDb();
+const FBCFG={"apiKey":"AIzaSyA2SjjHOZqIqUdWWehd8bl4UtkFZrmAFA0","authDomain":"vagtplan-ac408.firebaseapp.com","projectId":"vagtplan-ac408","storageBucket":"vagtplan-ac408.firebasestorage.app","messagingSenderId":"767385990576","appId":"1:767385990576:web:be8895c861ca495c6f1275"};
+/* ===== Firebase-bagside (samme grænseflade som PHP-serveren) ===== */
+const FB=typeof FBCFG!=='undefined'?FBCFG:null;
+const FBS={get(){try{return JSON.parse(localStorage.getItem('vp_fb')||'null')}catch(e){return null}},set(v){try{v?localStorage.setItem('vp_fb',JSON.stringify(v)):localStorage.removeItem('vp_fb')}catch(e){}}};
+const FBIT=FB?'https://identitytoolkit.googleapis.com/v1/accounts:':'',FBFS=FB?`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents`:'';
+const FBERR={EMAIL_EXISTS:'Der findes allerede en konto med den e-mail.',INVALID_LOGIN_CREDENTIALS:'Forkert e-mail eller adgangskode.',INVALID_PASSWORD:'Forkert adgangskode.',EMAIL_NOT_FOUND:'Forkert e-mail eller adgangskode.',INVALID_EMAIL:'E-mailadressen er ikke gyldig.',MISSING_PASSWORD:'Skriv en adgangskode.',WEAK_PASSWORD:'Adgangskoden er for svag. Brug mindst 10 tegn.',TOO_MANY_ATTEMPTS_TRY_LATER:'For mange forsøg. Prøv igen om lidt.',USER_DISABLED:'Kontoen er spærret.',OPERATION_NOT_ALLOWED:'Login med e-mail er ikke slået til i Firebase.',CREDENTIAL_TOO_OLD_LOGIN_AGAIN:'Log ind igen og prøv igen.'};
+const fbMsg=j=>{const m=String(j&&j.error&&j.error.message||'').split(' ')[0];return FBERR[m]||'Noget gik galt ('+(m||'ukendt fejl')+').'};
+async function fbj(url,body,tok,method,loc){let r;try{r=await fetch(url,{method:method||(body?'POST':'GET'),headers:Object.assign({},body?{'Content-Type':'application/json'}:{},tok?{Authorization:'Bearer '+tok}:{},loc?{'X-Firebase-Locale':'da'}:{}),body:body?JSON.stringify(body):undefined})}catch(e){return{_status:0,error:{message:'NETWORK'}}}let j={};try{j=await r.json()}catch(e){}j._status=r.status;return j}
+function fbSave(j,email){const o={idToken:j.idToken||j.id_token,refreshToken:j.refreshToken||j.refresh_token,exp:Date.now()+(+(j.expiresIn||j.expires_in)||3600)*1000,uid:j.localId||j.user_id,email:email||j.email||(FBS.get()||{}).email};FBS.set(o);return o}
+async function fbTok(){let s=FBS.get();if(!s)return null;if(Date.now()>s.exp-60000){let r;try{r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(s.refreshToken)})}catch(e){return s.idToken}const j=await r.json().catch(()=>({}));if(!r.ok){FBS.set(null);return null}s=fbSave(j,s.email)}return s.idToken}
+async function fbSignIn(email,pw){return fbj(FBIT+'signInWithPassword?key='+FB.apiKey,{email,password:pw,returnSecureToken:true})}
+async function fbapi(a,b){b=b||{};const s=FBS.get();
+ if(a==='hit'||a==='cal_info'||a==='cal_off')return{ok:true,_status:200};
+ if(a==='cal_set')return{error:'Kalenderabonnement er ikke slået til endnu.',_status:501};
+ if(a==='me'){const t=await fbTok();const x=FBS.get();return{user:t&&x?{email:x.email}:null,open:true,_status:200}}
+ if(a==='logout'){FBS.set(null);return{ok:true,_status:200}}
+ if(a==='forgot'){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'PASSWORD_RESET',email:b.email},null,null,1);return{ok:true,_status:200}}
+ if(a==='login'){const j=await fbSignIn(b.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
+  const l=await fbj(FBIT+'lookup?key='+FB.apiKey,{idToken:j.idToken});if(!(l.users&&l.users[0]&&l.users[0].emailVerified)){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);return{error:'Din e-mail er ikke bekræftet endnu. Vi har sendt et nyt bekræftelseslink. Tjek også spam.',_status:403}}
+  fbSave(j,b.email);return{user:{email:b.email},_status:200}}
+ if(a==='register'){const code=String(b.code||'').trim();if(!code)return{error:'Skriv invitationskoden.',_status:400};
+  const j=await fbj(FBIT+'signUp?key='+FB.apiKey,{email:b.email,password:b.password,returnSecureToken:true});if(!j.idToken)return{error:fbMsg(j),_status:400};
+  const m=await fbj(FBFS+'/members/'+j.localId+'?currentDocument.exists=false',{fields:{code:{stringValue:code}}},j.idToken,'PATCH');
+  if(m._status!==200){await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});return{error:m._status===403?'Forkert invitationskode.':'Kontoen kunne ikke oprettes ('+m._status+').',_status:403}}
+  await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);
+  return{pending:true,msg:'Kontoen er oprettet. Vi har sendt et bekræftelseslink til din e-mail (tjek også spam). Klik på det, og log så ind her.',_status:200}}
+ if(!s)return{error:'Ikke logget ind.',_status:401};const t=await fbTok();if(!t)return{error:'Ikke logget ind.',_status:401};const u=FBS.get().uid,url=FBFS+'/states/'+u;
+ if(a==='state'){
+  if(!b.hasOwnProperty('s')){const j=await fbj(url,null,t);if(j._status===404)return{version:0,s:null,_status:200};if(j._status!==200)return{error:j._status===403?'Din e-mail er ikke bekræftet, eller kontoen mangler invitation.':'Kunne ikke hente data.',_status:j._status};return{s:j.fields&&j.fields.s&&j.fields.s.stringValue||null,version:j.updateTime,_status:200}}
+  const pre=b.version?'currentDocument.updateTime='+encodeURIComponent(b.version):'currentDocument.exists=false';
+  const j=await fbj(url+'?updateMask.fieldPaths=s&'+pre,{fields:{s:{stringValue:b.s}}},t,'PATCH');
+  if(j._status===200)return{version:j.updateTime,_status:200};
+  if(j._status===400||j._status===409||j._status===404){const g=await fbj(url,null,t);if(g._status===200)return{s:g.fields.s.stringValue,version:g.updateTime,_status:409}}
+  return{error:j._status===403?'Ingen adgang. Er din e-mail bekræftet?':'Kunne ikke gemme.',_status:j._status||500}}
+ if(a==='password'){const x=FBS.get(),j=await fbSignIn(x.email,b.current);if(!j.idToken)return{error:fbMsg(j),_status:401};
+  const n=await fbj(FBIT+'update?key='+FB.apiKey,{idToken:j.idToken,password:b.next,returnSecureToken:true});if(!n.idToken)return{error:fbMsg(n),_status:400};fbSave(n,x.email);return{ok:true,_status:200}}
+ if(a==='delete'){const x=FBS.get(),j=await fbSignIn(x.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
+  await fbj(url,null,j.idToken,'DELETE');await fbj(FBFS+'/members/'+u,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
+ return{error:'Ukendt handling.',_status:400}}
+
+/* ===== Konto og synkronisering (kun i den hostede version) ===== */
+let AUTH={user:null,guest:false,ver:0,mode:'login',msg:'',open:true,busy:false,dirty:false,api:false};
+async function api(a,body){if(FB)return fbapi(a,body);const r=await fetch('api/?a='+a,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-Requested-With':'vagtplan'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){j={error:'Serveren svarede ikke som forventet.'}}j._status=r.status;return j}
+function gset(v){try{v?localStorage.setItem('vp_guest','1'):localStorage.removeItem('vp_guest')}catch(e){}}
+function gget(){try{return localStorage.getItem('vp_guest')==='1'}catch(e){return false}}
+async function authInit(){const h=location.hash.match(/^#reset=([a-f0-9]{64})$/);
+ try{const j=await api('me');if(j._status!==200||j.error&&!('user' in j)){AUTH.api=false;render();return}AUTH.api=true;AUTH.nocal=!!FB;AUTH.open=j.open!==false;try{if(navigator.doNotTrack!=='1')api('hit',{p:'app',ref:document.referrer?new URL(document.referrer).hostname:''})}catch(e){}
+  if(h){AUTH.mode='reset';AUTH.token=h[1];AUTH.user=null;render();return}
+  if(j.user){AUTH.user=j.user;await pull();calInfo()}else if(!gget()){AUTH.mode='login'}else AUTH.guest=true}catch(e){AUTH.api=false}
+ render()}
+function adopt(sv){S=fix(JSON.parse(sv));try{localStorage.setItem('vagtplan3',ser())}catch(e){}}
+async function pull(){const j=await api('state');if(j._status!==200)return;AUTH.ver=j.version||0;
+ if(j.s){const hasLocal=S.emps.length>0&&ser()!==j.s;
+  if(hasLocal&&!confirm('Der ligger allerede data på din konto, og denne enhed har andre data.\n\nOK = brug kontoens data her.\nAnnullér = overskriv kontoen med data fra denne enhed.')){await push(true);return}
+  adopt(j.s)}else await push(true)}
+async function push(now){if(!AUTH.user)return;if(AUTH.busy){AUTH.dirty=true;return}AUTH.busy=true;AUTH.dirty=false;
+ try{const r=await api('state',{s:ser(),version:AUTH.ver});
+  if(r._status===409&&r.s){AUTH.ver=r.version;adopt(r.s);alert('Dine data blev ændret på en anden enhed og er nu opdateret her.');render()}
+  else if(r._status===401){AUTH.user=null;AUTH.msg='Du er logget ud. Log ind igen.';render()}
+  else if(r.version){AUTH.ver=r.version;if(AUTH.cal)calSync()}}catch(e){}
+ AUTH.busy=false;if(AUTH.dirty)push()}
+function authV(){const m=AUTH.mode,E=s=>esc(s||''),tab=(k,l)=>`<button type="button" class="b ${m===k?'p':''}" onclick="AUTH.mode='${k}';AUTH.msg='';render()">${l}</button>`;
+ return`<div id="auth" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:24px 14px"><div style="max-width:420px;margin:6vh auto 0"><h1 style="margin:0 0 4px;font-size:30px;letter-spacing:-.03em">${esc(APP)}</h1><p class="note" style="margin:0 0 16px">Dit eget overblik over vagter, løn og overenskomst. Log ind for at gemme dine data på tværs af enheder.</p>
+ <form class="card" onsubmit="authGo(event)">${m==='reset'?'<h3>Vælg en ny adgangskode</h3>':`<div class="row" style="margin-bottom:12px">${tab('login','Log ind')}${AUTH.open?tab('reg','Opret konto'):''}${tab('forgot','Glemt adgangskode')}</div>`}
+ ${m==='reg'&&FB?'<label style="margin-bottom:10px">Invitationskode<input name="code" autocomplete="off" required style="width:100%"></label>':''}${m!=='reset'?`<label>E-mail<input type="email" name="email" value="${E(AUTH.email)}" autocomplete="email" required style="width:100%"></label>`:''}
+ ${m!=='forgot'?`<label style="margin-top:10px">${m==='reset'?'Ny adgangskode':'Adgangskode'}<input type="password" name="password" autocomplete="${m==='login'?'current-password':'new-password'}" ${m==='login'?'':'minlength="10"'} required style="width:100%"></label>${m==='login'?'':'<p class="note">Mindst 10 tegn.</p>'}`:'<p class="note">Du får en e-mail med et link, hvis adressen findes.</p>'}
+ ${AUTH.msg?`<p style="color:${AUTH.ok?'var(--ok)':'var(--bad)'};margin:10px 0 0"><b>${E(AUTH.msg)}</b></p>`:''}
+ <p style="margin:14px 0 0"><button class="b p" style="width:100%">${m==='login'?'Log ind':m==='reg'?'Opret konto':m==='forgot'?'Send link':'Gem adgangskode'}</button></p></form>
+ <p style="text-align:center"><button class="b" onclick="AUTH.guest=true;gset(1);render()">Fortsæt uden konto</button></p><p class="note" style="text-align:center">Uden konto gemmes dine data kun i denne browser.</p></div></div>`}
+async function authGo(ev){ev.preventDefault();const f=new FormData(ev.target),m=AUTH.mode;AUTH.msg='';AUTH.ok=false;
+ const b={email:f.get('email'),password:f.get('password'),code:f.get('code')};let r;if(b.email)AUTH.email=b.email;
+ if(m==='reset'){r=await api('reset',{token:AUTH.token,password:b.password});if(r.ok){history.replaceState(null,'',location.pathname);AUTH.mode='login';AUTH.msg='Adgangskoden er ændret. Log ind med den nye.';AUTH.ok=true}else AUTH.msg=r.error||'Noget gik galt.'}
+ else if(m==='forgot'){r=await api('forgot',{email:b.email});AUTH.msg=r.ok?'Hvis adressen findes, har vi sendt et link.':r.error||'Noget gik galt.';AUTH.ok=!!r.ok}
+ else{r=await api(m==='reg'?'register':'login',b);if(r.pending){AUTH.mode='login';AUTH.msg=r.msg;AUTH.ok=true}else if(r.user){AUTH.user=r.user;gset(0);AUTH.guest=false;await pull();calInfo()}else AUTH.msg=r.error||'Noget gik galt.'}
+ render()}
+async function logout(){await api('logout',{});AUTH.user=null;AUTH.ver=0;AUTH.cal=null;try{localStorage.removeItem('vagtplan3')}catch(e){}S=fix({});AUTH.mode='login';AUTH.guest=false;gset(0);render()}
+function acctV(){if(!AUTH.user)return`<h2>Konto</h2><div class="card"><p>Du bruger ${esc(APP)} uden konto, så dine data ligger kun i denne browser.</p>${AUTH.api?'<button class="b p" onclick="AUTH.guest=false;gset(0);AUTH.mode=\'login\';render()">Log ind eller opret konto</button>':''}</div>`;
+ return`<h2>Konto</h2><div class="card"><p>Logget ind som <b>${esc(AUTH.user.email)}</b>. Dine data synkroniseres automatisk.</p><button class="b" onclick="logout()">Log ud</button></div>
+ <div class="card"><h3>Skift adgangskode</h3><form onsubmit="pwGo(event)" class="row"><label>Nuværende<input type="password" name="c" required autocomplete="current-password"></label><label>Ny (mindst 10 tegn)<input type="password" name="n" minlength="10" required autocomplete="new-password"></label><button class="b p" style="align-self:end">Skift</button></form></div>
+ <div class="card"><h3>Dine data</h3><p class="note">Du kan hente alle dine data som en fil, eller slette din konto og alle data permanent.</p><div class="row"><button class="b" onclick="dl('${APP.toLowerCase()}-data.json',ser(),'application/json')">Hent mine data (JSON)</button><form onsubmit="delGo(event)" class="row"><label>Adgangskode<input type="password" name="p" required autocomplete="current-password"></label><button class="b d" style="align-self:end">Slet konto og data</button></form></div></div>`}
+async function pwGo(ev){ev.preventDefault();const f=new FormData(ev.target),r=await api('password',{current:f.get('c'),next:f.get('n')});alert(r.ok?'Adgangskoden er skiftet.':(r.error||'Noget gik galt.'));if(r.ok)ev.target.reset()}
+async function delGo(ev){ev.preventDefault();if(!confirm('Slet din konto og alle dine data permanent? Det kan ikke fortrydes.'))return;const f=new FormData(ev.target),r=await api('delete',{password:f.get('p')});if(r.ok){AUTH.user=null;try{localStorage.removeItem('vagtplan3')}catch(e){}S=fix({});AUTH.mode='login';render()}else alert(r.error||'Noget gik galt.')}
+
+/* ===== Kalenderabonnement ===== */
+async function calInfo(){try{const j=await api('cal_info');AUTH.cal=j.token||null;if(AUTH.cal)calSync();render()}catch(e){}}
+async function calSync(){if(!AUTH.user||!AUTH.cal)return;try{await api('cal_set',{ics:icsText()})}catch(e){}}
+async function calOn(){const j=await api('cal_set',{ics:icsText(),enable:true});if(j.token){AUTH.cal=j.token;render()}else tell(j.error||'Abonnementet kunne ikke slås til.')}
+async function calNew(){ask('Lav en ny adresse? Den gamle holder op med at virke, og du skal tilføje den nye i din kalender.',async()=>{const j=await api('cal_set',{ics:icsText(),enable:true,reset:true});if(j.token){AUTH.cal=j.token;render()}})}
+async function calOff(){ask('Stop abonnementet? Din kalender får ikke længere nye vagter.',async()=>{await api('cal_off',{});AUTH.cal=null;render()})}
+function calUrl(){return new URL('api/?a=cal&t='+AUTH.cal+'&n=vagtplan.ics',location.href).href}
+async function calCopy(){try{await navigator.clipboard.writeText(calUrl());tell('Adressen er kopieret.')}catch(e){tell('Kunne ikke kopiere. Markér adressen og kopiér den selv.')}}
+function calCard(){
+ if(AUTH.api&&AUTH.nocal)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et kalenderabonnement, der opdaterer sig selv, er på vej. Indtil da kan du hente en kalenderfil herover og importere den.</p></div>`;
+ if(!AUTH.api)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et abonnement, der opdaterer sig selv, kræver en konto og den hostede version. I denne version kan du kun hente en kalenderfil.</p></div>`;
+ if(!AUTH.user)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Log ind for at få en kalender-adresse, der opdaterer sig selv, hver gang du ændrer din plan.</p></div>`;
+ if(!AUTH.cal)return`<div class="card"><h3>Kalenderabonnement</h3><p>Abonnér på dine vagter i Apple Kalender, Google Kalender eller Outlook. Så opdaterer kalenderen sig selv, og du skal ikke hente en ny fil.</p><button class="b p" onclick="calOn()">Slå abonnement til</button></div>`;
+ const u=calUrl(),w=u.replace(/^https?:/,'webcal:');
+ return`<div class="card"><h3>Kalenderabonnement</h3><p>Din kalender er koblet på. Hver gang du ændrer planen her, bliver abonnementet opdateret.</p>
+ <p style="margin:10px 0"><a class="b p" href="${esc(w)}" style="text-decoration:none;display:inline-block">Abonnér i Apple Kalender</a> <button class="b" onclick="calCopy()">Kopiér adresse</button></p>
+ <label>Adresse (til Google Kalender, Outlook m.fl.)<input readonly value="${esc(u)}" onclick="this.select()" style="width:100%"></label>
+ <p class="note">Google: Andre kalendere → Fra webadresse. Outlook: Tilføj kalender → Abonnér fra internettet. Kalenderen henter selv nye vagter. Hvor hurtigt det går, bestemmer kalenderprogrammet: Apple typisk inden for en time, Google kan tage op til et døgn.</p>
+ <p class="note"><b>Hold adressen for dig selv.</b> Alle, der har den, kan se dine vagter. Tror du, den er kommet ud, så lav en ny.</p>
+ <div class="row"><button class="b" onclick="calNew()">Lav ny adresse</button><button class="b d" onclick="calOff()">Stop abonnement</button></div></div>`}
+
+/* ===== Anciennitetsdato fra Autorisationsregisteret ===== */
+
+/* ===== Hjemmeskærm / webapp ===== */
+let INST_EVT=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();INST_EVT=e;try{render()}catch(x){}});
+addEventListener('appinstalled',()=>{INST_EVT=null;try{localStorage.setItem('vp_inst','1')}catch(e){}});
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+const isIOS=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isPhone=()=>isIOS()||/Android/i.test(navigator.userAgent);
+const instOff=()=>{try{return localStorage.getItem('vp_inst')==='1'}catch(e){return false}};
+function instBanner(){if(S.tab!=='work'||!isPhone()||isStandalone()||instOff())return'';
+ return`<div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="sp" style="min-width:200px"><b>Brug Vagtplan som app</b><div class="note">Læg den på din hjemmeskærm, så åbner den med ét tryk.</div></div><button class="b p" onclick="S.tab='inst';save();render()">Vis hvordan</button><button class="b" onclick="instHide()">Luk</button></div>`}
+function instHide(){try{localStorage.setItem('vp_inst','1')}catch(e){}render()}
+async function instGo(){if(!INST_EVT)return;INST_EVT.prompt();try{await INST_EVT.userChoice}catch(e){}INST_EVT=null;render()}
+function instV(){const ios=isIOS(),and=/Android/i.test(navigator.userAgent),st=isStandalone(),
+ box=(t,open,body)=>`<details class="card" ${open?'open':''}><summary><b>${t}</b></summary>${body}</details>`,
+ ol=a=>'<ol style="margin:10px 0 0;padding-left:20px;line-height:1.6">'+a.map(x=>'<li>'+x+'</li>').join('')+'</ol>';
+ return`<h2>Hurtig adgang på telefonen</h2><p class="note">Du kan lægge ${esc(APP)} på din hjemmeskærm. Så får du et ikon som en almindelig app, og siden åbner uden browserens adresselinje.${st?' Du bruger allerede siden som app.':''}</p>
+ ${INST_EVT?`<div class="card"><b>Din browser kan installere appen direkte.</b><p style="margin:8px 0 0"><button class="b p" onclick="instGo()">Installér ${esc(APP)}</button></p></div>`:''}
+ ${box('iPhone og iPad (Safari)',ios||!and,ol(['Åbn siden i <b>Safari</b>. Åbner du et link fra en anden app, så vælg at åbne det i Safari.','Tryk på <b>Del</b>-knappen (firkanten med en pil op). På iPhone står den nederst, på iPad øverst.','Rul ned i menuen og tryk på <b>Føj til hjemmeskærm</b>.','Tryk på <b>Tilføj</b>. Ikonet ligger nu på din hjemmeskærm.'])+'<p class="note">Bruger du Chrome på iPhone, finder du også Føj til hjemmeskærm under Del-knappen i nyere versioner af iOS.</p>')}
+ ${box('Android (Chrome)',and||!ios,ol(['Åbn siden i <b>Chrome</b>.','Tryk på menuen <b>⋮</b> (tre prikker) øverst til højre.','Tryk på <b>Installér app</b> eller <b>Føj til startskærm</b>.','Bekræft med <b>Installér</b> eller <b>Tilføj</b>. Ikonet ligger nu på din startskærm og i din appoversigt.'])+'<p class="note">Bruger du Samsung Internet: Tryk på menuen (tre streger), vælg <b>Tilføj side til</b> og derefter <b>Startskærm</b>.</p>')}
+ <div class="card"><h3>Gem dine data med en konto</h3><p class="note" style="margin:0">Log ind, så følger dine data med mellem browseren, appen på hjemmeskærmen og din computer. Uden konto ligger dine data kun i den ene browser. På iPhone er en app på hjemmeskærmen adskilt fra Safari, så data du har lagt ind i Safari, ses ikke i appen, før du logger ind.</p></div>
+ <div class="card"><h3>Kalenderfilen</h3><p class="note" style="margin:0">Under Opsætning, Kalenderfil kan du hente dine vagter, så de også står i telefonens kalender.</p></div>`}
+
+
+
+S=load();render();authInit();
 </script></body></html>
