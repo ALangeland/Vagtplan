@@ -202,10 +202,11 @@ function work(){const[y,mo]=S.ym.split('-').map(Number),dim=new Date(y,mo,0).get
   if(w===6||i===dim){const h=(wkH[Math.floor((d/864e5+3)/7)]||0)/60,ov=false;html+=`<div class="week ${ov?'over':''}"><span>Uge ${isoWeek(d)}</span><span>${h.toFixed(1).replace('.',',')} t${ov?' (over '+R().weekHours+')':''}</span></div>`}}
  return`<div class="row"><h2 class="sp">Kalender</h2><button class="b" onclick="mv(-1)">‹</button><input type="month" value="${S.ym}" onchange="S.ym=this.value;save();render()"><button class="b" onclick="mv(1)">›</button></div>
  <div class="wk2"><div style="min-width:0"><div class="onlyM">${empSel()}</div>${warnV()}<div class="card">${any?html:'<p>Opret en vagtform under <b>Vagtformer</b> først. Vagter fra vikarbureauer oprettes under deres egen ansættelse og vælges her på samme måde.</p>'}<p class="row"><b class="sp">Månedstimer (alle ansættelser)</b><b class="big">${fmt(mt)}</b></p></div></div><div class="side"><div class="onlyD">${empSel()}</div>${legV()}${explainV()}</div></div>`}
-const empPer=e=>e.kind==='vikar'&&!e.from?'Vikar':(e.from?e.from.slice(5,7)+'/'+e.from.slice(0,4):'?')+' – '+(e.to?e.to.slice(5,7)+'/'+e.to.slice(0,4):'nu');
+const MS=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'],mY=s=>s?MS[+s.slice(5,7)-1]+' '+s.slice(0,4):'';
+const empPer=e=>e.kind==='vikar'&&!e.from?'Vikar':(mY(e.from)||'?')+' – '+(e.to?mY(e.to):'nu');
 const empSort=a=>a.slice().sort((x,y)=>(y.from||'9999')<(x.from||'9999')?-1:(y.from||'9999')>(x.from||'9999')?1:0);
 const empNewest=()=>{const a=empSort(S.emps.filter(e=>e.kind!=='vikar'));return a[0]||null};
-const empLab=e=>(empNewest()&&empNewest().id===e.id&&S.emps.length>1?'★ ':'')+esc(e.dep)+(e.hos?' · '+esc(e.hos):'')+(e.kind==='vikar'?' (vikar)':'')+' · '+empPer(e);
+const empLab=e=>(empNewest()&&empNewest().id===e.id&&S.emps.length>1?'★ ':'')+empPer(e)+'  ·  '+esc(e.dep)+(e.kind==='vikar'?' (vikar)':'');
 const vis=()=>empSort(S.emps.filter(e=>!e.off||e.id===S.cur));
 function setActive(id,on){const e=S.emps.find(x=>x.id===id);if(!e)return;e.off=!on;if(!on&&S.cur===id){const n=S.emps.find(x=>!x.off&&x.id!==id);if(n)S.cur=n.id}save();render()}
 function empSel(){const e=emp();if(!e)return'';const dup=n=>S.emps.filter(x=>x.dep===n).length>1,lab=x=>empLab(x),per=e.kind==='vikar'&&!e.from?'Vikar':(dd(e.from)||'?')+' – '+(dd(e.to)||'?');
