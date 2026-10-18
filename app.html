@@ -542,9 +542,9 @@ function regV(){const y=S.ym.slice(0,4),Pm=MON.map((m,i)=>S.emps.map(e=>pay(y+'-
  return`<div class="row"><h2 class="sp">Samlet lønregnskab ${y}</h2><button class="b" onclick="mv(-12)">‹</button><button class="b" onclick="mv(12)">›</button></div><div class="card" style="overflow-x:auto"><h3>Løn før skat</h3><table><tr><th></th>${cols.map(j=>`<th class="n">${one?'Løn':nm(j)}</th>`).join('')}${one?'':'<th class="n">I alt</th>'}</tr>
  ${M.map((r,i)=>`<tr><td>${MON[i]}</td>${cols.map(j=>`<td class="n">${one?'<b>':''}${r[j]?kr(r[j]):'–'}${one?'</b>':''}</td>`).join('')}${one?'':`<td class="n"><b>${T(r)?kr(T(r)):'–'}</b></td>`}</tr>`).join('')}
  <tr><th>Hele året</th>${cols.map(j=>`<th class="n">${kr(T(M.map(r=>r[j])))}</th>`).join('')}${one?'':`<th class="n">${kr(T(M.map(T)))}</th>`}</tr></table></div>
- <div class="card" style="overflow-x:auto"><h3>Pensionsindbetalinger</h3><table><tr><th></th>${one?'':cols.map(j=>`<th class="n">${nm(j)}</th>`).join('')}<th class="n">Arbejdsgiver</th><th class="n">Egen andel</th><th class="n">I alt</th></tr>
- ${Pm.map((r,i)=>`<tr><td>${MON[i]}</td>${one?'':cols.map(j=>`<td class="n">${r[j].pen?kr(r[j].pen):'–'}</td>`).join('')}<td class="n">${te[i]?kr(te[i]):'–'}</td><td class="n">${to[i]?kr(to[i]):'–'}</td><td class="n"><b>${tp[i]?kr(tp[i]):'–'}</b></td></tr>`).join('')}
- <tr><th>Hele året</th>${one?'':cols.map(j=>`<th class="n">${kr(T(Pm.map(r=>r[j].pen)))}</th>`).join('')}<th class="n">${kr(T(te))}</th><th class="n">${kr(T(to))}</th><th class="n">${kr(T(tp))}</th></tr></table>
+ <div class="card" style="overflow-x:auto"><h3>Pensionsindbetalinger</h3><table><tr><th></th><th class="n">Arbejdsgiver</th><th class="n">Egen andel</th><th class="n">I alt</th></tr>
+ ${Pm.map((r,i)=>`<tr><td>${MON[i]}</td><td class="n">${te[i]?kr(te[i]):'–'}</td><td class="n">${to[i]?kr(to[i]):'–'}</td><td class="n"><b>${tp[i]?kr(tp[i]):'–'}</b></td></tr>`).join('')}
+ <tr><th>Hele året</th><th class="n">${kr(T(te))}</th><th class="n">${kr(T(to))}</th><th class="n">${kr(T(tp))}</th></tr></table>
  ${ok.map(k=>`<p class="note"><b>${S.oks[k].short}:</b> ${S.oks[k].pen.text}</p>`).join('')}</div><p class="note">Estimat før skat. Fast løn og pension tæller kun i månederne inden for ansættelsen.</p>`}
 const statTog=()=>`<div class="row" style="margin-bottom:12px"><button class="b ${S.statY?'':'p'}" onclick="S.statY=0;save();render()">Måned</button><button class="b ${S.statY?'p':''}" onclick="S.statY=1;save();render()">Hele året</button></div>`;
 function mvY(n){S.ym=(+S.ym.slice(0,4)+n)+S.ym.slice(4);save();render()}
