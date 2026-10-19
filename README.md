@@ -1,3 +1,3 @@
-# Vagtplan (testversion)
+# Vagtløn – testversion
 
-Statisk testversion til gennemsyn. Alle data gemmes lokalt i browseren.
+Statisk testudgave af appen (uden konti). Den rigtige udgave ligger på vagtloen.dk og hentes fra grenen `live`.

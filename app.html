@@ -1404,112 +1404,14 @@ function evV(){const e=emp(),r=R();if(!r.evac)return`<h2>Evakuering</h2><div cla
  <button class="b p" onclick="evAdd()" style="margin-top:6px">Tilføj evakuering</button></div>
  <div class="card" style="overflow-x:auto"><h3>${MON[+S.ym.slice(5)-1]}</h3><table><tr><th>Tidsrum</th><th>Type</th><th class="n">Døgn</th><th>Beregning</th><th class="n">Beløb</th><th></th></tr>${L.map((v,i)=>`<tr><td>${v.sd} ${v.st} → ${v.ed===v.sd?'':v.ed+' '}${v.et}${v.note?`<br><span class="note">${v.note}</span>`:''}</td><td>${C[i].lbl}</td><td class="n">${C[i].days}</td><td>${C[i].det}${C[i].comp?'<br><span class="note">1 erstatningsfridag</span>':''}</td><td class="n">${kr(C[i].pay)}</td><td><button class="b d" onclick="evDel('${v.id}')">Slet</button></td></tr>`).join('')||'<tr><td colspan="6">Ingen evakueringer i denne måned.</td></tr>'}${L.length?`<tr><th colspan="4">I alt${cmp?' · '+cmp+' erstatningsfridag'+(cmp>1?'e':''):''}</th><th class="n">${kr(tot)}</th><th></th></tr>`:''}</table></div>`}
 const evOn=k=>S.emps.some(e=>(e.evacs||[]).some(v=>v.sd===k));
-const FBCFG={"apiKey":"AIzaSyA2SjjHOZqIqUdWWehd8bl4UtkFZrmAFA0","authDomain":"vagtplan-ac408.firebaseapp.com","projectId":"vagtplan-ac408","storageBucket":"vagtplan-ac408.firebasestorage.app","messagingSenderId":"767385990576","appId":"1:767385990576:web:be8895c861ca495c6f1275"};
-/* ===== Firebase-bagside (samme grænseflade som PHP-serveren) ===== */
-const FB=typeof FBCFG!=='undefined'?FBCFG:null;
-const FBS={get(){try{return JSON.parse(localStorage.getItem('vp_fb')||'null')}catch(e){return null}},set(v){try{v?localStorage.setItem('vp_fb',JSON.stringify(v)):localStorage.removeItem('vp_fb')}catch(e){}}};
-const FBIT=FB?'https://identitytoolkit.googleapis.com/v1/accounts:':'',FBFS=FB?`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents`:'';
-const FBERR={EMAIL_EXISTS:'Der findes allerede en konto med den e-mail.',INVALID_LOGIN_CREDENTIALS:'Forkert e-mail eller adgangskode.',INVALID_PASSWORD:'Forkert adgangskode.',EMAIL_NOT_FOUND:'Forkert e-mail eller adgangskode.',INVALID_EMAIL:'E-mailadressen er ikke gyldig.',MISSING_PASSWORD:'Skriv en adgangskode.',WEAK_PASSWORD:'Adgangskoden er for svag. Brug mindst 10 tegn.',TOO_MANY_ATTEMPTS_TRY_LATER:'For mange forsøg. Prøv igen om lidt.',USER_DISABLED:'Kontoen er spærret.',OPERATION_NOT_ALLOWED:'Login med e-mail er ikke slået til i Firebase.',CREDENTIAL_TOO_OLD_LOGIN_AGAIN:'Log ind igen og prøv igen.'};
-const fbMsg=j=>{const m=String(j&&j.error&&j.error.message||'').split(' ')[0];return FBERR[m]||'Noget gik galt ('+(m||'ukendt fejl')+').'};
-async function fbj(url,body,tok,method,loc){let r;try{r=await fetch(url,{method:method||(body?'POST':'GET'),headers:Object.assign({},body?{'Content-Type':'application/json'}:{},tok?{Authorization:'Bearer '+tok}:{},loc?{'X-Firebase-Locale':'da'}:{}),body:body?JSON.stringify(body):undefined})}catch(e){return{_status:0,error:{message:'NETWORK'}}}let j={};try{j=await r.json()}catch(e){}j._status=r.status;return j}
-function fbSave(j,email){const o={idToken:j.idToken||j.id_token,refreshToken:j.refreshToken||j.refresh_token,exp:Date.now()+(+(j.expiresIn||j.expires_in)||3600)*1000,uid:j.localId||j.user_id,email:email||j.email||(FBS.get()||{}).email};FBS.set(o);return o}
-async function fbTok(){let s=FBS.get();if(!s)return null;if(Date.now()>s.exp-60000){let r;try{r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(s.refreshToken)})}catch(e){return s.idToken}const j=await r.json().catch(()=>({}));if(!r.ok){FBS.set(null);return null}s=fbSave(j,s.email)}return s.idToken}
-async function fbSignIn(email,pw){return fbj(FBIT+'signInWithPassword?key='+FB.apiKey,{email,password:pw,returnSecureToken:true})}
-
-/* Anonym brugsstatistik for indloggede (kun uid, dato, om appen er installeret). Respekterer Do Not Track. */
-async function fbTouch(force){if(!FB||navigator.doNotTrack==='1')return;const s=FBS.get();if(!s)return;
- try{const last=+localStorage.getItem('vp_touch')||0;if(!force&&Date.now()-last<30*60*1000)return;localStorage.setItem('vp_touch',String(Date.now()))}catch(e){}
- const t=await fbTok();if(!t)return;const day=new Date().toISOString().slice(0,10);let inst=false;try{inst=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}
- let dev='d',oks='',deps=[];try{deps=[...new Set((S.emps||[]).filter(e=>!e.demo&&e.dep).map(e=>((e.hos?e.hos+' · ':'')+e.dep+(e.shak?' ('+e.shak+')':'')).slice(0,90)+'|'+(e.ok||'dk')+'|'+(((e.periods||[]).slice().reverse().find(p=>p.lag)||{}).lag||'').slice(0,30)))].slice(0,10);dev=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?'m':'d';oks=[...new Set((S.emps||[]).filter(e=>!e.demo).map(e=>e.ok||'dk'))].sort().join(',').slice(0,30);const gp=String(S.grp||localStorage.getItem('vp_grp')||'').replace(/[^a-z]/g,'').slice(0,10);if(gp)oks+=(oks?',':'')+'g:'+gp}catch(e){}
- const P='projects/'+FB.projectId+'/databases/(default)/documents/',sv=x=>({stringValue:x}),doc=FBFS+'/users/'+s.uid;
- const j=await fbj(doc+'?currentDocument.exists=false',{fields:{c:sv(day),last:sv(day),inst:{booleanValue:inst},dev:sv(dev),oks:sv(oks),deps:{arrayValue:{values:deps.map(sv)}},days:{arrayValue:{values:[sv(day)]}},opens:{integerValue:'1'}}},t,'PATCH');
- const hit={update:{name:P+'hits/'+day,fields:{}},updateMask:{fieldPaths:[]},updateTransforms:[{fieldPath:'n',increment:{integerValue:'1'}}]};
- if(j._status===200){await fbj(FBFS+':commit',{writes:[hit]},t);return}
- await fbj(FBFS+':commit',{writes:[{update:{name:P+'users/'+s.uid,fields:{last:sv(day),inst:{booleanValue:inst},dev:sv(dev),oks:sv(oks),deps:{arrayValue:{values:deps.map(sv)}}}},updateMask:{fieldPaths:['last','inst','dev','oks','deps']},currentDocument:{exists:true},updateTransforms:[{fieldPath:'days',appendMissingElements:{values:[sv(day)]}},{fieldPath:'opens',increment:{integerValue:'1'}}]},hit]},t)}
-try{addEventListener('appinstalled',()=>{fbTouch(true)})}catch(e){}
-async function fbAdminProbe(){if(!FB)return;try{const t=await fbTok();if(!t)return;const j=await fbj(FBFS+':runQuery',{structuredQuery:{from:[{collectionId:'hits'}],limit:1}},t);if(Array.isArray(j)&&typeof AUTH!=='undefined'&&!AUTH.admin){AUTH.admin=true;render()}}catch(e){}}
-async function fbapi(a,b){b=b||{};const s=FBS.get();
- if(a==='hit'||a==='cal_info'||a==='cal_off')return{ok:true,_status:200};
- if(a==='cal_set')return{error:'Kalenderabonnement er ikke slået til endnu.',_status:501};
- if(a==='me'){const t=await fbTok();const x=FBS.get();if(t&&x){setTimeout(fbTouch,2500);setTimeout(fbAdminProbe,3500)}return{user:t&&x?{email:x.email}:null,open:true,_status:200}}
- if(a==='logout'){FBS.set(null);return{ok:true,_status:200}}
- if(a==='forgot'){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'PASSWORD_RESET',email:b.email},null,null,1);return{ok:true,_status:200}}
- if(a==='login'){const j=await fbSignIn(b.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
-  const l=await fbj(FBIT+'lookup?key='+FB.apiKey,{idToken:j.idToken});if(!(l.users&&l.users[0]&&l.users[0].emailVerified)){await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);return{error:'Din e-mail er ikke bekræftet endnu. Vi har sendt et nyt bekræftelseslink. Tjek også spam.',_status:403}}
-  fbSave(j,b.email);setTimeout(()=>fbTouch(true),2500);setTimeout(fbAdminProbe,3500);return{user:{email:b.email},_status:200}}
- if(a==='register'){
-  const j=await fbj(FBIT+'signUp?key='+FB.apiKey,{email:b.email,password:b.password,returnSecureToken:true});if(!j.idToken)return{error:fbMsg(j),_status:400};
-  await fbj(FBIT+'sendOobCode?key='+FB.apiKey,{requestType:'VERIFY_EMAIL',idToken:j.idToken},null,null,1);
-  return{pending:true,msg:'Kontoen er oprettet. Vi har sendt et bekræftelseslink til din e-mail (tjek også spam). Klik på det, og log så ind her.',_status:200}}
- if(!s)return{error:'Ikke logget ind.',_status:401};const t=await fbTok();if(!t)return{error:'Ikke logget ind.',_status:401};const u=FBS.get().uid,url=FBFS+'/states/'+u;
- if(a==='state'){
-  if(!b.hasOwnProperty('s')){const j=await fbj(url,null,t);if(j._status===404)return{version:0,s:null,_status:200};if(j._status!==200)return{error:j._status===403?'Din e-mail er ikke bekræftet, eller kontoen mangler invitation.':'Kunne ikke hente data.',_status:j._status};return{s:j.fields&&j.fields.s&&j.fields.s.stringValue||null,version:j.updateTime,_status:200}}
-  const pre=b.version?'currentDocument.updateTime='+encodeURIComponent(b.version):'currentDocument.exists=false';
-  const j=await fbj(url+'?updateMask.fieldPaths=s&'+pre,{fields:{s:{stringValue:b.s}}},t,'PATCH');
-  if(j._status===200)return{version:j.updateTime,_status:200};
-  if(j._status===400||j._status===409||j._status===404){const g=await fbj(url,null,t);if(g._status===200)return{s:g.fields.s.stringValue,version:g.updateTime,_status:409}}
-  return{error:j._status===403?'Ingen adgang. Er din e-mail bekræftet?':'Kunne ikke gemme.',_status:j._status||500}}
- if(a==='password'){const x=FBS.get(),j=await fbSignIn(x.email,b.current);if(!j.idToken)return{error:fbMsg(j),_status:401};
-  const n=await fbj(FBIT+'update?key='+FB.apiKey,{idToken:j.idToken,password:b.next,returnSecureToken:true});if(!n.idToken)return{error:fbMsg(n),_status:400};fbSave(n,x.email);return{ok:true,_status:200}}
- if(a==='delete'){const x=FBS.get(),j=await fbSignIn(x.email,b.password);if(!j.idToken)return{error:fbMsg(j),_status:401};
-  try{await fbtkPurge(j.idToken,x.uid)}catch(e){}await fbj(url,null,j.idToken,'DELETE');await fbj(FBFS+'/users/'+x.uid,null,j.idToken,'DELETE');await fbj(FBIT+'delete?key='+FB.apiKey,{idToken:j.idToken});FBS.set(null);return{ok:true,_status:200}}
-
- if(a==='np_list'){const q={structuredQuery:{from:[{collectionId:'normshare'}],where:{compositeFilter:{op:'AND',filters:[{fieldFilter:{field:{fieldPath:'dk'},op:'EQUAL',value:{stringValue:String(b.dk||'')}}},{fieldFilter:{field:{fieldPath:'lv'},op:'EQUAL',value:{stringValue:String(b.lv||'')}}}]}},limit:200}};
-  const j=await fbj(FBFS+':runQuery',q,t);if(!Array.isArray(j))return{error:j._status===403?'Din e-mail skal være bekræftet, og reglerne for deling skal være lagt ind i Firebase.':'Kunne ikke hente normperioder.',_status:j._status||500};
-  const num=v=>v&&(v.doubleValue!==undefined?+v.doubleValue:+v.integerValue),str=v=>v&&v.stringValue||'';
-  return{items:j.filter(x=>x.document).map(x=>{const f=x.document.fields;return{lag:str(f.lag),from:str(f.from),to:str(f.to),hrs:num(f.hrs)||0,vt:str(f.vt),n:((f.by&&f.by.arrayValue&&f.by.arrayValue.values)||[]).length}}),_status:200}}
- if(a==='np_put'){let n=0,err='';for(const it of b.items||[]){const id='n'+npHash([b.dk,b.lv,it.lag,it.from,it.to,it.hrs,it.vt].join('|')),doc=FBFS+'/normshare/'+id;
-   const body={fields:{dk:{stringValue:b.dk},lv:{stringValue:b.lv},lag:{stringValue:it.lag},from:{stringValue:it.from},to:{stringValue:it.to},hrs:{doubleValue:+it.hrs},vt:{stringValue:it.vt||''},by:{arrayValue:{values:[{stringValue:u}]}}}};
-   let j=await fbj(doc+'?currentDocument.exists=false',body,t,'PATCH');
-   if(j._status===200){n++;continue}
-   const c=await fbj(FBFS+':commit',{writes:[{transform:{document:'projects/'+FB.projectId+'/databases/(default)/documents/normshare/'+id,fieldTransforms:[{fieldPath:'by',appendMissingElements:{values:[{stringValue:u}]}}]}}]},t);
-   if(c._status===200||c._status===403){n++;continue}err='Kunne ikke dele ('+(c._status||j._status)+').'}
-  return err&&!n?{error:err,_status:500}:{ok:true,n,_status:200}}
- if(a==='sf_list'){const q={structuredQuery:{from:[{collectionId:'shiftshare'}],where:{fieldFilter:{field:{fieldPath:'dk'},op:'EQUAL',value:{stringValue:String(b.dk||'')}}},limit:200}};
-  const j=await fbj(FBFS+':runQuery',q,t);if(!Array.isArray(j))return{error:j._status===403?'Din e-mail skal være bekræftet, og reglerne for deling skal være lagt ind i Firebase.':'Kunne ikke hente vagtformer.',_status:j._status||500};
-  return{items:j.filter(x=>x.document).map(x=>{const f=x.document.fields;return{j:(f.j&&f.j.stringValue)||'',n:((f.by&&f.by.arrayValue&&f.by.arrayValue.values)||[]).length}}),_status:200}}
- if(a==='sf_put'){let n=0,err='';for(const js of b.items||[]){if(typeof js!=='string'||js.length>1500)continue;const id='s'+npHash(b.dk+'|'+js),doc=FBFS+'/shiftshare/'+id;
-   const body={fields:{dk:{stringValue:b.dk},j:{stringValue:js},by:{arrayValue:{values:[{stringValue:u}]}}}};
-   let j=await fbj(doc+'?currentDocument.exists=false',body,t,'PATCH');
-   if(j._status===200){n++;continue}
-   const c=await fbj(FBFS+':commit',{writes:[{transform:{document:'projects/'+FB.projectId+'/databases/(default)/documents/shiftshare/'+id,fieldTransforms:[{fieldPath:'by',appendMissingElements:{values:[{stringValue:u}]}}]}}]},t);
-   if(c._status===200||c._status===403){n++;continue}err='Kunne ikke dele ('+(c._status||j._status)+').'}
-  return err&&!n?{error:err,_status:500}:{ok:true,n,_status:200}}
- if(a.slice(0,3)==='tk_')return fbtk(a.slice(3),b,t,u);
- return{error:'Ukendt handling.',_status:400}}
-
-/* Henvendelser (tickets) i Firestore. Dokument: tickets/{id} med uid, k, m, st, c, u, ua, ctx, em og th (JSON-tekst med svar). */
-function fbtkDoc(x){const f=x.fields||{},g=k=>f[k]&&f[k].stringValue||'';let th=[];try{th=JSON.parse(g('th')||'[]')}catch(e){}if(!Array.isArray(th))th=[];return{id:x.name.split('/').pop(),k:g('k'),m:g('m'),st:g('st')||'ny',c:g('c'),u:g('u'),ua:g('ua'),ctx:g('ctx'),em:g('em'),th,own:g('uid')===((FBS.get()||{}).uid),_ut:x.updateTime}}
-async function fbtkPurge(tok,uid){const j=await fbj(FBFS+':runQuery',{structuredQuery:{from:[{collectionId:'tickets'}],where:{fieldFilter:{field:{fieldPath:'uid'},op:'EQUAL',value:{stringValue:uid}}},limit:200}},tok);if(!Array.isArray(j))return;for(const x of j)if(x.document)await fbj(FBFS+'/tickets/'+x.document.name.split('/').pop(),null,tok,'DELETE')}
-async function fbtk(a,b,t,uid){
- const T=FBFS+'/tickets',sv=x=>({stringValue:String(x)}),now=new Date().toISOString(),pre=j=>({error:j._status===403?'Ingen adgang. Reglerne for henvendelser skal være lagt ind i Firebase, og din e-mail skal være bekræftet.':'Noget gik galt ('+(j._status||'ingen forbindelse')+'). Prøv igen om lidt.',_status:j._status||500}),sid=x=>encodeURIComponent(String(x||'').replace(/[^A-Z0-9]/g,''));
- if(a==='new'){const id=tkId(),k=['fejl','forslag','spoerg','ok'].includes(b.k)?b.k:'fejl',m=String(b.m||'').trim().slice(0,3000);if(m.length<5)return{error:'Skriv et par ord om, hvad det handler om.',_status:400};
-  const em=b.em&&FBS.get().email===b.em?b.em:'';
-  const j=await fbj(T+'/'+id+'?currentDocument.exists=false',{fields:{uid:sv(uid),k:sv(k),m:sv(m),st:sv('ny'),c:sv(now),u:sv(now),ua:sv(''),ctx:sv(String(b.ctx||'').slice(0,2500)),em:sv(em),th:sv('[]')}},t,'PATCH');
-  return j._status===200?{id,_status:200}:pre(j)}
- if(a==='mine'){const j=await fbj(FBFS+':runQuery',{structuredQuery:{from:[{collectionId:'tickets'}],where:{fieldFilter:{field:{fieldPath:'uid'},op:'EQUAL',value:sv(uid)}},limit:100}},t);if(!Array.isArray(j))return pre(j);return{items:j.filter(x=>x.document).map(x=>{const o=fbtkDoc(x.document);o.ctx='';o.em='';delete o._ut;return o}),_status:200}}
- if(a==='admin'){const j=await fbj(FBFS+':runQuery',{structuredQuery:{from:[{collectionId:'tickets'}],orderBy:[{field:{fieldPath:'u'},direction:'DESCENDING'}],limit:300}},t);if(!Array.isArray(j))return pre(j);return{items:j.filter(x=>x.document).map(x=>{const o=fbtkDoc(x.document);delete o._ut;return o}),_status:200}}
- if(a==='del'||a==='adel'){const j=await fbj(T+'/'+sid(b.id),null,t,'DELETE');return j._status===200?{ok:true,_status:200}:pre(j)}
- if(a==='reply'||a==='areply'||a==='set'){const adm=a!=='reply';let last;
-  for(let n=0;n<3;n++){const g=await fbj(T+'/'+sid(b.id),null,t);if(g._status!==200)return g._status===404?{error:'Henvendelsen findes ikke.',_status:404}:pre(g);
-   const o=fbtkDoc(g),f={},mask=['u'];f.u=sv(now);
-   if(a==='set'){if(!['ny','igang','adr','loest'].includes(b.st))return{error:'Ukendt status.',_status:400};f.st=sv(b.st);f.ua=sv(now);mask.push('st','ua')}
-   else{const m=String(b.m||'').trim().slice(0,3000);if(!m)return{error:'Skriv en besked.',_status:400};if(o.th.length>=60)return{error:'Der er for mange beskeder i denne henvendelse. Opret en ny.',_status:400};
-    o.th.push({w:adm?'a':'u',t:now,m});f.th=sv(JSON.stringify(o.th));mask.push('th');
-    if(adm){f.ua=sv(now);mask.push('ua');f.st=sv(['ny','igang','adr','loest'].includes(b.st)?b.st:o.st);mask.push('st')}else{f.st=sv('ny');mask.push('st')}}
-   const j=await fbj(T+'/'+sid(b.id)+'?'+mask.map(x=>'updateMask.fieldPaths='+x).join('&')+'&currentDocument.updateTime='+encodeURIComponent(g.updateTime),{fields:f},t,'PATCH');last=j;
-   if(j._status===200)return{ok:true,_status:200};if(j._status!==400&&j._status!==409)break}
-  return pre(last||{_status:500})}
- return{error:'Ukendt handling.',_status:400}}
-
 /* ===== Konto og synkronisering (kun i den hostede version) ===== */
 let AUTH={user:null,guest:false,ver:0,mode:'login',msg:'',open:true,busy:false,dirty:false,api:false};
-async function api(a,body){if(FB)return fbapi(a,body);const r=await fetch('api/?a='+a,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-Requested-With':'vagtplan'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){j={error:'Serveren svarede ikke som forventet.'}}j._status=r.status;return j}
+async function api(a,body){const r=await fetch('api/?a='+a,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-Requested-With':'vagtplan'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){j={error:'Serveren svarede ikke som forventet.'}}j._status=r.status;return j}
 function gset(v){try{v?localStorage.setItem('vp_guest','1'):localStorage.removeItem('vp_guest')}catch(e){}}
 function gget(){try{return localStorage.getItem('vp_guest')==='1'}catch(e){return false}}
 async function authInit(){try{await authInit0()}finally{try{rundturBoot()}catch(e){}}}
 async function authInit0(){const h=location.hash.match(/^#reset=([a-f0-9]{64})$/);
- try{const j=await api('me');if(j._status!==200||j.error&&!('user' in j)){AUTH.api=false;render();return}AUTH.api=true;AUTH.nocal=!!FB;AUTH.open=j.open!==false;try{if(navigator.doNotTrack!=='1')api('hit',{p:'app',ref:document.referrer?new URL(document.referrer).hostname:''})}catch(e){}
+ try{const j=await api('me');if(j._status!==200||j.error&&!('user' in j)){AUTH.api=false;render();return}AUTH.api=true;AUTH.open=j.open!==false;try{if(navigator.doNotTrack!=='1')api('hit',{p:'app',ref:document.referrer?new URL(document.referrer).hostname:''})}catch(e){}
   if(h){AUTH.mode='reset';AUTH.token=h[1];AUTH.user=null;render();return}
   if(j.user){AUTH.user=j.user;await pull();calInfo()}else if(!gget()){AUTH.mode='login'}else AUTH.guest=true}catch(e){AUTH.api=false}
  render()}
@@ -1546,7 +1448,7 @@ async function authGo(ev){ev.preventDefault();const f=new FormData(ev.target),m=
  else{r=await api(m==='reg'?'register':'login',b);if(r.pending){AUTH.mode='login';AUTH.msg=r.msg;AUTH.ok=true}else if(r.user){AUTH.user=r.user;gset(0);AUTH.guest=false;await pull();calInfo()}else AUTH.msg=r.error||'Noget gik galt.'}
  render()}
 async function logout(){await api('logout',{});try{sessionStorage.removeItem('vp_ctx')}catch(e){}AUTH.user=null;AUTH.ver=0;AUTH.cal=null;try{localStorage.removeItem('vagtplan3')}catch(e){}S=fix({});AUTH.mode='login';AUTH.guest=false;gset(0);render()}
-function acctV(){if(AUTH.user&&typeof FB!=='undefined'&&FB&&!AUTH.probed){AUTH.probed=1;setTimeout(fbAdminProbe,200)}if(!AUTH.user)return`<h2>Konto</h2><div class="card"><p>Du bruger ${esc(APP)} uden konto, så dine data ligger kun i denne browser.</p>${AUTH.api?'<button class="b p" onclick="AUTH.guest=false;gset(0);AUTH.mode=\'login\';render()">Log ind eller opret konto</button>':''}</div>`;
+function acctV(){if(!AUTH.user)return`<h2>Konto</h2><div class="card"><p>Du bruger ${esc(APP)} uden konto, så dine data ligger kun i denne browser.</p>${AUTH.api?'<button class="b p" onclick="AUTH.guest=false;gset(0);AUTH.mode=\'login\';render()">Log ind eller opret konto</button>':''}</div>`;
  return`<h2>Konto</h2><div class="card"><p>Logget ind som <b>${esc(AUTH.user.email)}</b>. Dine data synkroniseres automatisk.</p><button class="b" onclick="logout()">Log ud</button></div>
 ${(AUTH.admin||(AUTH.user&&AUTH.user.admin))?`<div class="card" style="border:2px dashed #f09a2a;background:color-mix(in srgb,#f09a2a 10%,var(--card));position:relative"><div style="font-size:30px;position:absolute;right:14px;top:8px">🛠️</div><h3 style="margin:0 0 4px">Maskinrummet</h3><p class="note" style="margin:0 0 10px;max-width:80%">Kun for administratoren: tal på brugere, aktivitet, installationer og deling. Andre kommer ikke længere end til døren.</p><a href="admin.html" style="text-decoration:none;display:inline-block;background:var(--acc);color:#fff;font-weight:700;padding:8px 16px;border-radius:10px">Åbn admin-panelet</a> <button class="b" style="margin-left:6px" onclick="S.tab='mail';save();render()">Åbn postkassen</button></div>`:''}
  <div class="card"><h3>Skift adgangskode</h3><form onsubmit="pwGo(event)" class="row"><label>Nuværende<input type="password" name="c" required autocomplete="current-password"></label><label>Ny (mindst 10 tegn)<input type="password" name="n" minlength="10" required autocomplete="new-password"></label><button class="b p" style="align-self:end">Skift</button></form></div>
@@ -1563,7 +1465,6 @@ async function calOff(){ask('Stop abonnementet? Din kalender får ikke længere 
 function calUrl(){return new URL('api/?a=cal&t='+AUTH.cal+'&n=vagtlon.ics',location.href).href}
 async function calCopy(){try{await navigator.clipboard.writeText(calUrl());tell('Adressen er kopieret.')}catch(e){tell('Kunne ikke kopiere. Markér adressen og kopiér den selv.')}}
 function calCard(){
- if(AUTH.api&&AUTH.nocal)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et kalenderabonnement, der opdaterer sig selv, er på vej. Indtil da kan du hente en kalenderfil herover og importere den.</p></div>`;
  if(!AUTH.api)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Et abonnement, der opdaterer sig selv, kræver en konto og den hostede version. I denne version kan du kun hente en kalenderfil.</p></div>`;
  if(!AUTH.user)return`<div class="card"><h3>Kalenderabonnement</h3><p class="note">Log ind for at få en kalender-adresse, der opdaterer sig selv, hver gang du ændrer din plan.</p></div>`;
  if(!AUTH.cal)return`<div class="card"><h3>Kalenderabonnement</h3><p>Abonnér på dine vagter i Apple Kalender, Google Kalender eller Outlook. Så opdaterer kalenderen sig selv, og du skal ikke hente en ny fil.</p><button class="b p" onclick="calOn()">Slå abonnement til</button></div>`;
