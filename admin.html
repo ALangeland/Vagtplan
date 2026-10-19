@@ -14,8 +14,13 @@ table{width:100%;border-collapse:collapse}td,th{padding:6px 8px;border-bottom:1p
 input,button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 9px}button{cursor:pointer}button.d{color:var(--bad)}
 .note{color:var(--mut);font-size:13px}svg text{fill:var(--mut);font-size:10px}.bar{display:flex;align-items:center;gap:8px;margin:3px 0}.bar i{display:block;height:10px;border-radius:5px;background:var(--acc)}
 .msg{max-width:520px;margin:12vh auto;text-align:center}.msg a{color:var(--acc)}
+header{padding:8px 16px}header b{font-size:16px}header a{font-size:13px}
+main{padding:10px 12px 30px}h2{font-size:15px;margin:14px 0 6px}
+.k{gap:6px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}.k div,.c{padding:7px 10px;border-radius:8px}.k div small{font-size:11px}.k div b{font-size:18px}
+.g2{gap:8px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.bar{margin:1px 0}td,th{padding:3px 6px;font-size:13px}
+.ctxsw{display:flex;margin-left:auto;background:rgba(255,255,255,.12);border-radius:8px;padding:2px}.ctxsw a,.ctxsw span{margin:0!important;font-size:12px;padding:4px 10px;border-radius:6px;color:#fff;text-decoration:none}.ctxsw span{background:#fff;color:#14213d}
 </style></head><body>
-<header><b>Vagtløn admin</b><a href="app.html#postkasse">Postkasse</a><a href="app.html" style="margin-left:0">Til appen</a></header><main id="m"><p class="note">Henter ...</p></main>
+<header><b>Vagtløn</b><span class="ctxsw"><a href="app.html">Bruger</a><span>Admin</span></span><a href="app.html#postkasse" style="margin-left:14px">Postkasse</a><a href="app.html#okadm" style="margin-left:0">OK-overblik</a></header><main id="m"><p class="note">Henter ...</p></main>
 <script>
 const $=document.querySelector.bind(document),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]),nf=n=>Number(n||0).toLocaleString('da-DK');
 async function api(a,body){const r=await fetch('api/?a='+a,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-Requested-With':'vagtplan'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){}j._status=r.status;return j}
