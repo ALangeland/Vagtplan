@@ -925,7 +925,7 @@ function npSave(){const e=emp(),r=R(),g=k=>$('#'+k).value,from=g('npf'),to=g('np
  const o={from,to,weeks:Math.max(1,Math.round(wk)),hrs:hrs&&hrs!==r.weekHours?hrs:'',vt,tof,lag};
  const isNew=NPE.id==='new';if(isNew)e.periods.push(Object.assign({id:uid()},o));else{const p=e.periods.find(x=>x.id===NPE.id);if(p)Object.assign(p,o)}NPE=null;save();render();if(isNew&&typeof npOffer==='function')npOffer(o)}
 function delPeriod(id){const e=emp();NPE=null;e.periods=e.periods.filter(x=>x.id!==id);save();render()}
-const PRE=[['Forvagt kirurgi/medicin',10.5],['Forvagt psykiatri',3],['Mellemvagt kirurgi',7],['Mellemvagt medicin',7.5],['Bagvagt speciallæge: anæstesiologi',7],['Bagvagt: gynækologi og obstetrik',5],['Bagvagt: kirurgi',4],['Bagvagt: ortopædkirurgi',3.5],['Bagvagt: intern medicin',5],['Bagvagt: psykiatri',1.5],['Bagvagt: pædiatri',5],['Bagvagt: radiologi',2],['Bagvagt: ØNH',2]];
+const PRE=[['Forvagt kirurgi/medicin',10.5],['Forvagt psykiatri',3],['Mellemvagt kirurgi',7],['Mellemvagt medicin',7],['Bagvagt speciallæge: anæstesiologi',7],['Bagvagt: gynækologi og obstetrik',5],['Bagvagt: kirurgi',4],['Bagvagt: ortopædkirurgi',3.5],['Bagvagt: intern medicin',5],['Bagvagt: psykiatri',1.5],['Bagvagt: pædiatri',5],['Bagvagt: radiologi',2],['Bagvagt: ØNH',2]];
 function pctBand(r,d,h,w,H,cont){const u=r.ulPct,md=pad(d.getMonth()+1)+'-'+pad(d.getDate());
  if(u.amb){if(H||w===6)return[0,0,u.weKr,0];if(w===5)return[0,0,h>=8?u.weKr:u.eveKr,0];if(w===0){if(h<4)return[0,0,u.weKr,0];if(h<6)return[0,0,cont?u.weKr:u.eveKr,0];return[0,0,h>=17?u.eveKr:0,0]}return[0,0,(h>=17||h<6)?u.eveKr:0,0]}
  if(u.add){let pc=0,sp=false;for(const x of u.sp||[])if(x[0]===md&&h>=x[1]&&h<x[2]){pc=x[3];sp=true}
