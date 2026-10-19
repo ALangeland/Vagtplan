@@ -37,14 +37,14 @@ async function main(){const m=$('#m'),s=sess();
  if(!s){m.innerHTML='<div class="c"><p><b>Du er ikke logget ind.</b></p><p class="note">Log ind i appen med din admin-konto, og åbn så denne side igen.</p><p><a href="app.html">Åbn appen</a></p></div>';return}
  $('#who').textContent=s.email||'';let t;try{t=await tok();if(!t)throw 0}catch(e){m.innerHTML='<div class="c"><p class="err">Sessionen er udløbet. Log ind i appen igen.</p></div>';return}
  try{
-  const [U,H,SS,NS,nInst,nCal]=await Promise.all([rows('users',t),rows('hits',t,{orderBy:[{field:{fieldPath:'__name__'},direction:'DESCENDING'}],limit:30}),rows('shiftshare',t),rows('normshare',t),cnt('users',t,eq('inst',{booleanValue:true})),cnt('users',t,eq('cal',{booleanValue:true}))]);
+  const W=async(n,c)=>{try{return await c()}catch(e){e.where=n;throw e}};const [U,H,SS,NS]=await Promise.all([W('users',()=>rows('users',t)),W('hits',()=>rows('hits',t,{limit:400})),W('shiftshare',()=>rows('shiftshare',t)),W('normshare',()=>rows('normshare',t))]);
   const today=dAgo(0),d7=dAgo(6),d30=dAgo(29),days30=[...Array(30)].map((_,i)=>dAgo(29-i));
   const use=U.map(u=>({c:S(u.f,'c'),last:S(u.f,'last'),days:A(u.f,'days'),opens:N(u.f,'opens'),inst:B(u.f,'inst'),dev:S(u.f,'dev'),oks:S(u.f,'oks')}));
   const act=(a)=>use.filter(u=>u.days.some(d=>d>=a)).length,dau=use.filter(u=>u.days.includes(today)).length,wau=act(d7),mau=act(d30);
   const ret=use.filter(u=>u.c<=dAgo(7)),retN=ret.filter(u=>u.days.some(d=>d>=d7)).length;
   const series=days30.map(d=>use.filter(u=>u.days.includes(d)).length),signup=days30.map(d=>use.filter(u=>u.c===d).length);
   const hitMap=Object.fromEntries(H.map(h=>[h.id,N(h.f,'n')])),opens30=days30.map(d=>hitMap[d]||0),opens7=days30.slice(-7).reduce((a,d)=>a+(hitMap[d]||0),0);
-  const mob=use.filter(u=>u.dev==='m').length,oks={};use.forEach(u=>u.oks.split(',').filter(Boolean).forEach(k=>oks[k]=(oks[k]||0)+1));
+  const nInst=use.filter(u=>u.inst).length,nCal=U.filter(u=>B(u.f,'cal')).length,mob=use.filter(u=>u.dev==='m').length,oks={};use.forEach(u=>u.oks.split(',').filter(Boolean).forEach(k=>oks[k]=(oks[k]||0)+1));
   const by=a=>a.reduce((x,d)=>x+(A(d.f,'by').length||0),0),dep={};
   SS.concat(NS).forEach(d=>{const k=S(d.f,'dk');dep[k]=dep[k]||{sf:0,np:0};});SS.forEach(d=>dep[S(d.f,'dk')].sf++);NS.forEach(d=>dep[S(d.f,'dk')].np++);
   const lag={};NS.forEach(d=>{const k=S(d.f,'lag')||'(uden vagtlag)';lag[k]=(lag[k]||0)+1});
@@ -57,6 +57,6 @@ async function main(){const m=$('#m'),s=sess();
   <div class="c"><b>Overenskomster i brug</b><table>${Object.entries(oks).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(OKN[k]||k)}</td><td class="n">${v} brugere</td></tr>`).join('')||'<tr><td class="note">Ingen endnu.</td></tr>'}</table></div></div>
   <div class="c" style="margin-top:12px"><b>Afdelinger</b><table><tr><th>Afdeling (SHAK eller navn)</th><th class="n">Vagtformer</th><th class="n">Normperioder</th></tr>${Object.entries(dep).sort((a,b)=>b[1].sf+b[1].np-a[1].sf-a[1].np).slice(0,30).map(([k,v])=>`<tr><td>${esc(k.replace(/^(shak|navn):/,''))}</td><td class="n">${v.sf}</td><td class="n">${v.np}</td></tr>`).join('')||'<tr><td class="note" colspan="3">Ingen endnu.</td></tr>'}</table></div>
   <p class="note" style="margin-top:20px">Tallene bygger på brugere, der er logget ind med bekræftet e-mail. Besøg uden konto og besøgende med Do Not Track tælles ikke. Der gemmes kun et tilfældigt bruger-id, datoer, om appen er installeret, om det er mobil, og hvilke overenskomster der er i brug, aldrig e-mail, vagter eller løn. Datoer er i UTC.</p>`;
- }catch(e){m.innerHTML=`<div class="c"><p class="err">${e&&e.status===403?'Ingen adgang for '+esc(s.email||'denne bruger')+'. Tjek at reglerne i Firebase er udgivet med den nyeste fil, og at denne e-mail (med små bogstaver) står i isAdmin-reglen.':'Kunne ikke hente tallene ('+esc((e&&e.status)||'fejl')+').'}</p></div>`;console.error(e)}}
+ }catch(e){m.innerHTML=`<div class="c"><p class="err">${e&&e.status===403?'Ingen adgang for '+esc(s.email||'denne bruger')+'. Tjek at reglerne i Firebase er udgivet med den nyeste fil, og at denne e-mail (med små bogstaver) står i isAdmin-reglen.':'Kunne ikke hente tallene ('+esc((e&&e.status)||'fejl')+(e&&e.where?', '+esc(e.where):'')+(e&&e.j&&e.j.error&&e.j.error.message?': '+esc(e.j.error.message):'')+').'}</p></div>`;console.error(e)}}
 main();
 </script></body></html>
