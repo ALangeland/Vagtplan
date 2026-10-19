@@ -92,7 +92,7 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
 <nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:0 auto;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
 const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='103';
+const REV='104';
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
 const COLORS=['#8b95a5','#4a78e8','#22b5a8','#2fb36d','#e8bf1a','#f09a2a','#e5605a','#9b5de5'],COLORS_OLD=['#8b95a5','#5b6678','#14213d','#e5605a','#c8352f','#f08a8a','#f09a2a','#f5b971','#e8bf1a','#a8c92f','#2fb36d','#1f8a5b','#22b5a8','#3a9bd0','#4a78e8','#6a5acd','#9b5de5','#d96fb5'];
@@ -185,8 +185,10 @@ function normWins(E,r){const adk=(k,n)=>{const q=new Date(k+'T00:00');return dke
  return W}
 function check(){const A0=entries().filter(e=>e.work).concat(evs()).filter(e=>empAct(e.emp)).sort((a,b)=>a.st-b.st),E=A0.filter(e=>e.emp===S.cur&&!e.ev),A=[],r=R();for(const x of A0){const l=A[A.length-1];if(l&&l.emp===x.emp&&(l.ev||x.ev)&&x.st<l.en)l.en=Math.max(l.en,x.en);else A.push({...x})}
  const f=e=>e.k+(e.ev?' (evakuering)':''),hs=h=>h.toFixed(1).replace('.',',');
- const rest=[],red=[],lim=r.restMin||r.restHours;for(let i=1;i<A.length;i++){const g=(A[i].st-A[i-1].en)/60;if(g<lim)rest.push(`${f(A[i-1])} → ${f(A[i])}: kun ${hs(g)} t hvile`);else if(g<r.restHours)red.push(A[i])}
- if(r.compRest)for(let i=0;i<A.length-1;i++){const x=A[i];if(x.emp!==S.cur||x.ev||!x.s||!x.s.oncall||x.en-x.st<1440)continue;const lim=(Math.floor((x.en-1)/1440)+1)*1440;if(A[i+1].st<lim)rest.push(`${f(x)}: døgnvagt, men du har tjeneste igen før dagen efter er slut. Du skal have kompenserende hvile dagen efter en døgnvagt`)}
+ const rest=[],red=[],lim=r.restMin||r.restHours,ci=new Set();
+ if(r.compRest)for(let i=0;i<A.length-1;i++){const x=A[i];if(x.emp!==S.cur||x.ev||!x.s||!x.s.oncall||x.en-x.st<1440)continue;const lm=(Math.floor((x.en-1)/1440)+1)*1440;if(A[i+1].st<lm)ci.add(i)}
+ for(let i=1;i<A.length;i++){const g=(A[i].st-A[i-1].en)/60;if(g<lim){if(!ci.has(i-1))rest.push(g<0?`${f(A[i-1])} → ${f(A[i])}: næste tjeneste starter ${hs(-g)} t, før den forrige er slut. Ingen hvile`:`${f(A[i-1])} → ${f(A[i])}: kun ${hs(g)} t hvile`)}else if(g<r.restHours)red.push(A[i])}
+ if(r.compRest)for(let i=0;i<A.length-1;i++){const x=A[i];if(x.emp!==S.cur||x.ev||!x.s||!x.s.oncall||x.en-x.st<1440)continue;const lim=(Math.floor((x.en-1)/1440)+1)*1440;if(A[i+1].st<lim)rest.push(`${f(x)}: døgnvagt, men du har tjeneste igen før dagen efter er slut (${f(A[i+1])}). Du skal have kompenserende hvile dagen efter en døgnvagt`)}
  if(r.restMin){const wk={};red.forEach(x=>{const w=Math.floor((x.day+3)/7);(wk[w]=wk[w]||[]).push(x)});for(const w in wk)if(wk[w].length>r.restRedMax)rest.push(`${f(wk[w][0])}: hvilen er nedsat ${wk[w].length} gange i samme uge (max ${r.restRedMax})`);for(let i=1;i<red.length;i++)if(red[i].day-red[i-1].day===1)rest.push(`${f(red[i-1])} og ${f(red[i])}: nedsat hvile to dage i træk`)}
  const fr=[];if(A.length){let last=A[0].st;for(let i=0;i<A.length;i++){if(i&&(A[i].st-A[i-1].en)/60>=r.freeH)last=A[i].st;if(A[i].en-last>r.freeDays*1440){fr.push(`${f(A[i])}: mere end ${r.freeDays} døgn siden sidste fridøgn (${r.freeH} timers hvile)`);last=A[i].en}}}
  const lt=E.filter(late),hy=[];
