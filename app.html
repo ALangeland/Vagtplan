@@ -115,12 +115,11 @@ button.p{background:linear-gradient(135deg,var(--btn),var(--btn2));border-color:
 
 .pb{background:transparent;border:0;color:#fff;opacity:.85;cursor:pointer;padding:0 8px;margin:auto 0 auto auto;display:flex;align-items:center}.pb:hover{opacity:1}nav button.pb+button.tg{margin-left:4px}.gi{vertical-align:-2px;margin-right:2px}
 @media(max-width:700px){nav button.pb{margin:6px 0 0 auto;padding:0 8px}nav button.pb+button.tg{margin-left:4px}}
-[data-pal=poke] nav{border-bottom:3px solid #ffcb05}[data-pal=poke] .card h3{color:color-mix(in srgb,#d62f0a 80%,var(--ink))}[data-pal=poke] .mbt i{background:linear-gradient(#e3350d,#ffcb05)}
 </style></head><body>
 <nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:-34px auto 0;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
 const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='110';
+const REV='111';
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
 const COLORS=['#8b95a5','#4a78e8','#22b5a8','#2fb36d','#e8bf1a','#f09a2a','#e5605a','#9b5de5'],COLORS_OLD=['#8b95a5','#5b6678','#14213d','#e5605a','#c8352f','#f08a8a','#f09a2a','#f5b971','#e8bf1a','#a8c92f','#2fb36d','#1f8a5b','#22b5a8','#3a9bd0','#4a78e8','#6a5acd','#9b5de5','#d96fb5'];
@@ -773,7 +772,6 @@ const GRP=[['laege','Læge'],['sygepl','Sygeplejerske'],['sosu','SOSU'],['sosa',
 const PAL={hav:{n:'Hav',l:['#0b6e8a','#2a5fc4','#14213d','#173a5e','#0b6e8a','#2a5fc4'],d:['#4fb4d0','#7c8cf5','#0d1626','#14304f','#1c86a5','#4f63d9']},
  skov:{n:'Skov',l:['#1f8a5b','#3b9f3b','#12301f','#1b4a33','#1f8a5b','#3b9f3b'],d:['#4cc38a','#9bd35a','#0c1f15','#16402d','#1e8f5f','#4b9a26']},
  sol:{n:'Solnedgang',l:['#d9582b','#c2306d','#3a1d2b','#5a2a3c','#d9582b','#c2306d'],d:['#ff8a5c','#f06292','#2a1420','#4a2236','#d0521f','#b52a63']},
- poke:{n:'Rød, gul og blå',adm:1,l:['#d62f0a','#e0a800','#b3260a','#e3350d','#d62f0a','#3b4cca'],d:['#ff6a45','#ffd23f','#2a0a05','#5a1a0e','#d62f0a','#3b4cca']},
  lav:{n:'Lavendel',l:['#6a4fd0','#b04fb8','#231a45','#3a2a6e','#6a4fd0','#b04fb8'],d:['#a99bff','#e08ae6','#17112e','#2f2260','#6a4fd0','#a03fa8']}};
 const palOk=p=>{if(!PAL[p])return false;if(!PAL[p].adm)return true;try{return ADMOK()&&(typeof AUTH==='undefined'||!!AUTH.admin)}catch(e){return false}};
 const palGet=()=>{try{const p=localStorage.getItem('vp_pal');return palOk(p)?p:'hav'}catch(e){return'hav'}};
