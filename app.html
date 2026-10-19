@@ -133,7 +133,7 @@ label.chk{display:flex;flex-direction:row!important;gap:9px;align-items:flex-sta
 <nav id="nav"></nav><main id="m"></main><footer style="max-width:980px;margin:-34px auto 0;padding:0 14px 30px;font-size:12px;color:var(--mut)">Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</footer>
 <script>
 const APP='Vagtplan';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='125';
+const REV='126';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
