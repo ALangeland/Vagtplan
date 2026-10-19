@@ -2,31 +2,30 @@
 <html lang="da"><head><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Admin – Vagtplan</title>
 <style>
-:root{--bg:#0b0820;--card:rgba(255,255,255,.06);--ink:#f4f1ff;--mut:#b8b0dd;--line:rgba(255,255,255,.12);--acc:#22d3ee;--bad:#ff6b8a;--ok:#34d399;color-scheme:dark}
+:root{--bg:#0f1219;--card:#171b26;--ink:#eef1f7;--mut:#9aa4b8;--line:#262c3b;--acc:#38bdf8;--bad:#ff6b8a;--ok:#34d399;color-scheme:dark}
 *{box-sizing:border-box}html{background:var(--bg)}
-body{margin:0;color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;background:radial-gradient(900px 500px at 8% -5%,rgba(124,58,237,.45),transparent 60%),radial-gradient(800px 480px at 98% 4%,rgba(34,211,238,.28),transparent 60%),radial-gradient(900px 600px at 50% 110%,rgba(244,63,94,.22),transparent 60%),var(--bg);background-attachment:fixed}
-header{padding:16px 20px;display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--line);backdrop-filter:blur(8px);position:sticky;top:0;z-index:2;background:rgba(11,8,32,.7)}
-header b{font-size:20px;letter-spacing:-.02em;background:linear-gradient(90deg,#22d3ee,#a78bfa,#fb7185,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent}
-header a{margin-left:auto;font-size:14px;color:#0b0820;background:linear-gradient(90deg,#22d3ee,#a78bfa);padding:6px 14px;border-radius:99px;font-weight:700;text-decoration:none}
+body{margin:0;color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;background:var(--bg)}
+header{padding:14px 20px;display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2;background:var(--bg)}
+header b{font-size:18px;letter-spacing:-.01em}
+header a{margin-left:auto;font-size:14px;color:var(--ink);border:1px solid var(--line);padding:6px 14px;border-radius:8px;text-decoration:none}header a:hover{border-color:var(--acc)}
 main{max-width:1120px;margin:0 auto;padding:22px 14px 60px}
-h2{font-size:13px;margin:34px 0 12px;text-transform:uppercase;letter-spacing:.14em;color:var(--mut);display:flex;align-items:center;gap:10px}h2:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
-.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
-.k div{position:relative;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--h) 26%,transparent),rgba(255,255,255,.04) 70%);border:1px solid color-mix(in srgb,var(--h) 55%,transparent);border-radius:16px;padding:14px 16px 13px;box-shadow:0 8px 28px -12px var(--h)}
-.k div:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--h)}
-.k em{position:absolute;right:12px;top:10px;font-style:normal;font-size:24px;opacity:.9}
-.k b{display:block;font-size:34px;letter-spacing:-.03em;line-height:1.1;font-weight:800;background:linear-gradient(180deg,#fff,color-mix(in srgb,var(--h) 55%,#fff));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:12.5px;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.12em;color:var(--mut);font-weight:700}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px}
+.k div{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--h);border-radius:10px;padding:13px 15px 12px}
+.k em{display:none}
+.k b{display:block;font-size:30px;letter-spacing:-.02em;line-height:1.15;font-weight:700;color:var(--ink)}
 .k span{font-size:13px;color:var(--ink);font-weight:600}.k i{display:block;font-style:normal;font-size:12px;color:var(--mut);margin-top:2px}
-.c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;backdrop-filter:blur(6px)}
+.c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .c>b{font-size:14px}
-.g2{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
-.bars{display:flex;align-items:flex-end;gap:3px;height:130px;margin-top:12px}.bars div{flex:1;border-radius:4px 4px 0 0;min-height:2px;background:linear-gradient(180deg,var(--b1),var(--b2));position:relative;box-shadow:0 0 12px -2px var(--b1)}.bars div:hover{filter:brightness(1.3)}
+.g2{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:12px}.bars div{flex:1;border-radius:3px 3px 0 0;min-height:2px;background:var(--b1);position:relative}.bars div:hover{filter:brightness(1.25)}
 .ax{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:5px}
 table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--mut);font-weight:600;font-size:12.5px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
-td.n{font-weight:700;color:#fbbf24}
+td.n{font-weight:700}
 .note{font-size:13px;color:var(--mut)}.err{color:var(--bad);font-weight:700}
-a{color:#67e8f9}
+a{color:#7dd3fc}
 </style></head><body>
-<header><span style="font-size:22px">🕵️</span><b>Maskinrummet</b><span class="note" style="color:#aab6c8" id="who"></span><a href="app.html">Til appen</a></header>
+<header><b>Admin</b><span class="note" style="color:#aab6c8" id="who"></span><a href="app.html">Til appen</a></header>
 <main id="m"><p class="note">Henter ...</p></main>
 <script>
 const FB={"apiKey":"AIzaSyA2SjjHOZqIqUdWWehd8bl4UtkFZrmAFA0","authDomain":"vagtplan-ac408.firebaseapp.com","projectId":"vagtplan-ac408","storageBucket":"vagtplan-ac408.firebasestorage.app","messagingSenderId":"767385990576","appId":"1:767385990576:web:be8895c861ca495c6f1275"};
@@ -40,8 +39,8 @@ const cnt=async(col,t,where)=>{const j=await post(FBFS+':runAggregationQuery',{s
 const S=(f,k)=>f[k]&&f[k].stringValue||'',N=(f,k)=>+(f[k]&&(f[k].integerValue||f[k].doubleValue)||0),B=(f,k)=>!!(f[k]&&f[k].booleanValue),A=(f,k)=>((f[k]&&f[k].arrayValue&&f[k].arrayValue.values)||[]).map(x=>x.stringValue||x.integerValue);
 const eq=(k,v)=>({fieldFilter:{field:{fieldPath:k},op:'EQUAL',value:v}});
 const dAgo=n=>{const d=new Date();d.setUTCDate(d.getUTCDate()-n);return d.toISOString().slice(0,10)};
-const HU=['#22d3ee','#a78bfa','#fb7185','#fbbf24','#34d399','#f472b6','#60a5fa','#fb923c'];let kc=0;const kpi=(l,v,s,ic)=>{const h=HU[kc++%HU.length];return`<div style="--h:${h}"><em>${ic||''}</em><b>${v}</b><span>${l}</span>${s?`<i>${s}</i>`:''}</div>`},pc=(a,b)=>b?Math.round(a/b*100)+' %':'–';
-const BC=[['#22d3ee','#7c3aed'],['#fbbf24','#f43f5e'],['#34d399','#06b6d4'],['#f472b6','#8b5cf6']];let bc=0;const bars=(vals,labels,unit)=>{const [b1,b2]=BC[bc++%BC.length];return`<div class="bars" style="--b1:${b1};--b2:${b2}">${vals.map((v,i)=>`<div title="${esc(labels[i])}: ${v} ${unit}" style="height:${Math.max(1,v/Math.max(1,...vals)*100)}%"></div>`).join('')}</div><div class="ax"><span>${esc(labels[0])}</span><span>${esc(labels[labels.length-1])}</span></div>`};
+const HU=['#38bdf8','#a78bfa','#fb7185','#fbbf24','#34d399','#f472b6'];let kc=0;const kpi=(l,v,s,ic)=>{const h=HU[kc++%HU.length];return`<div style="--h:${h}"><em>${ic||''}</em><b>${v}</b><span>${l}</span>${s?`<i>${s}</i>`:''}</div>`},pc=(a,b)=>b?Math.round(a/b*100)+' %':'–';
+const BC=[['#38bdf8'],['#fbbf24'],['#34d399'],['#f472b6']];let bc=0;const bars=(vals,labels,unit)=>{const [b1,b2]=BC[bc++%BC.length];return`<div class="bars" style="--b1:${b1};--b2:${b2}">${vals.map((v,i)=>`<div title="${esc(labels[i])}: ${v} ${unit}" style="height:${Math.max(1,v/Math.max(1,...vals)*100)}%"></div>`).join('')}</div><div class="ax"><span>${esc(labels[0])}</span><span>${esc(labels[labels.length-1])}</span></div>`};
 const OKN={dk:'Danmark',gl:'Grønland',fo:'Færøerne',stud:'Studentervikar',own:'Egen aftale'};
 async function main(){const m=$('#m'),s=sess();
  if(!s){m.innerHTML='<div class="c"><p><b>Du er ikke logget ind.</b></p><p class="note">Log ind i appen med din admin-konto, og åbn så denne side igen.</p><p><a href="app.html">Åbn appen</a></p></div>';return}
@@ -49,7 +48,7 @@ async function main(){const m=$('#m'),s=sess();
  try{
   const W=async(n,c)=>{try{return await c()}catch(e){e.where=n;throw e}};const [U,H,SS,NS]=await Promise.all([W('users',()=>rows('users',t)),W('hits',()=>rows('hits',t,{limit:400})),W('shiftshare',()=>rows('shiftshare',t)),W('normshare',()=>rows('normshare',t))]);
   const today=dAgo(0),d7=dAgo(6),d30=dAgo(29),days30=[...Array(30)].map((_,i)=>dAgo(29-i));
-  const use=U.map(u=>({c:S(u.f,'c'),last:S(u.f,'last'),days:A(u.f,'days'),opens:N(u.f,'opens'),inst:B(u.f,'inst'),dev:S(u.f,'dev'),oks:S(u.f,'oks')}));
+  const use=U.map(u=>({c:S(u.f,'c'),last:S(u.f,'last'),days:A(u.f,'days'),opens:N(u.f,'opens'),inst:B(u.f,'inst'),dev:S(u.f,'dev'),oks:S(u.f,'oks'),deps:A(u.f,'deps')}));
   const act=(a)=>use.filter(u=>u.days.some(d=>d>=a)).length,dau=use.filter(u=>u.days.includes(today)).length,wau=act(d7),mau=act(d30);
   const ret=use.filter(u=>u.c<=dAgo(7)),retN=ret.filter(u=>u.days.some(d=>d>=d7)).length;
   const series=days30.map(d=>use.filter(u=>u.days.includes(d)).length),signup=days30.map(d=>use.filter(u=>u.c===d).length);
@@ -58,15 +57,16 @@ async function main(){const m=$('#m'),s=sess();
   const by=a=>a.reduce((x,d)=>x+(A(d.f,'by').length||0),0),dep={};
   SS.concat(NS).forEach(d=>{const k=S(d.f,'dk');dep[k]=dep[k]||{sf:0,np:0};});SS.forEach(d=>dep[S(d.f,'dk')].sf++);NS.forEach(d=>dep[S(d.f,'dk')].np++);
   const lag={};NS.forEach(d=>{const k=S(d.f,'lag')||'(uden vagtlag)';lag[k]=(lag[k]||0)+1});
-  const lastAct=use.map(u=>u.last).sort().pop()||'–';
+  const ud={};use.forEach(u=>u.deps.forEach(d=>ud[d]=(ud[d]||0)+1));const lastAct=use.map(u=>u.last).sort().pop()||'–';
   m.innerHTML=`<h2 style="margin-top:0">Brugere</h2><div class="k">${kpi('Brugere i alt',U.length,'har åbnet appen logget ind','👥')}${kpi('Aktive i dag',dau,'','⚡')}${kpi('Aktive 7 dage',wau,pc(wau,U.length)+' af alle','📈')}${kpi('Aktive 30 dage',mau,pc(mau,U.length)+' af alle','🗓️')}${kpi('Vender tilbage',pc(retN,ret.length),'oprettet for over 7 dage siden og aktiv i uge','🔁')}${kpi('Åbninger i alt',use.reduce((a,u)=>a+u.opens,0),opens7+' de seneste 7 dage','🚀')}</div>
   <h2>Installation og kalender</h2><div class="k">${kpi('Installeret som webapp',nInst,pc(nInst,U.length)+' af brugerne','📲')}${kpi('Kalenderabonnement aktive',nCal,nCal?'':'ikke slået til endnu','📅')}${kpi('Bruger mobil',mob,pc(mob,U.length),'📱')}${kpi('Senest set',lastAct,'','👀')}</div>
   <div class="g2"><div class="c"><b>Aktive brugere pr. dag (30 dage)</b>${bars(series,days30,'brugere')}</div><div class="c"><b>Åbninger pr. dag (30 dage)</b>${bars(opens30,days30,'åbninger')}</div><div class="c"><b>Nye brugere pr. dag (30 dage)</b>${bars(signup,days30,'nye')}</div></div>
+  <div class="c" style="margin-top:12px"><b>Afdelinger brugerne er oprettet fra</b><table><tr><th>Afdeling</th><th>Overenskomst</th><th>Vagtlag</th><th class="n">Brugere</th></tr>${Object.entries(ud).sort((a,b)=>b[1]-a[1]).slice(0,60).map(([k,v])=>{const [d,o,l]=k.split('|');return`<tr><td>${esc(d)}</td><td>${esc(OKN[o]||o||'')}</td><td>${esc((l||'').replace('slag','')||'–')}</td><td class="n">${v}</td></tr>`}).join('')||'<tr><td class="note" colspan="4">Ingen endnu. Tallene kommer, når brugere har åbnet appen efter opdateringen.</td></tr>'}</table></div>
   <h2>Deling</h2><div class="k">${kpi('Delte vagtformer',SS.length,by(SS)+(by(SS)===1?' deling':' delinger')+' i alt','🎨')}${kpi('Delte normperioder',NS.length,by(NS)+(by(NS)===1?' deling':' delinger')+' i alt','🧭')}${kpi('Afdelinger med deling',Object.keys(dep).length,'','🏥')}</div>
   <div class="g2"><div class="c"><b>Normperioder pr. vagtlag</b><table>${Object.entries(lag).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v}</td></tr>`).join('')||'<tr><td class="note">Ingen endnu.</td></tr>'}</table></div>
   <div class="c"><b>Overenskomster i brug</b><table>${Object.entries(oks).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(OKN[k]||k)}</td><td class="n">${v} brugere</td></tr>`).join('')||'<tr><td class="note">Ingen endnu.</td></tr>'}</table></div></div>
-  <div class="c" style="margin-top:12px"><b>Afdelinger</b><table><tr><th>Afdeling (SHAK eller navn)</th><th class="n">Vagtformer</th><th class="n">Normperioder</th></tr>${Object.entries(dep).sort((a,b)=>b[1].sf+b[1].np-a[1].sf-a[1].np).slice(0,30).map(([k,v])=>`<tr><td>${esc(k.replace(/^(shak|navn):/,''))}</td><td class="n">${v.sf}</td><td class="n">${v.np}</td></tr>`).join('')||'<tr><td class="note" colspan="3">Ingen endnu.</td></tr>'}</table></div>
-  <p class="note" style="margin-top:20px">Tallene bygger på brugere, der er logget ind med bekræftet e-mail. Besøg uden konto og besøgende med Do Not Track tælles ikke. Der gemmes kun et tilfældigt bruger-id, datoer, om appen er installeret, om det er mobil, og hvilke overenskomster der er i brug, aldrig e-mail, vagter eller løn. Datoer er i UTC.</p>`;
+  <div class="c" style="margin-top:12px"><b>Afdelinger med deling</b><table><tr><th>Afdeling (SHAK eller navn)</th><th class="n">Vagtformer</th><th class="n">Normperioder</th></tr>${Object.entries(dep).sort((a,b)=>b[1].sf+b[1].np-a[1].sf-a[1].np).slice(0,30).map(([k,v])=>`<tr><td>${esc(k.replace(/^(shak|navn):/,''))}</td><td class="n">${v.sf}</td><td class="n">${v.np}</td></tr>`).join('')||'<tr><td class="note" colspan="3">Ingen endnu.</td></tr>'}</table></div>
+  <p class="note" style="margin-top:20px">Tallene bygger på brugere, der er logget ind med bekræftet e-mail. Besøg uden konto og besøgende med Do Not Track tælles ikke. Der gemmes kun et tilfældigt bruger-id, datoer, om appen er installeret, om det er mobil, hvilke overenskomster der er i brug og navnet på afdelingen, aldrig e-mail, vagter eller løn. Datoer er i UTC.</p>`;
  }catch(e){m.innerHTML=`<div class="c"><p class="err">${e&&e.status===403?'Ingen adgang for '+esc(s.email||'denne bruger')+'. Tjek at reglerne i Firebase er udgivet med den nyeste fil, og at denne e-mail (med små bogstaver) står i isAdmin-reglen.':'Kunne ikke hente tallene ('+esc((e&&e.status)||'fejl')+(e&&e.where?', '+esc(e.where):'')+(e&&e.j&&e.j.error&&e.j.error.message?': '+esc(e.j.error.message):'')+').'}</p></div>`;console.error(e)}}
 main();
 </script></body></html>
