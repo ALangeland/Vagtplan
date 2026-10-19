@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="da"><head><script>try{var t=localStorage.getItem("vp_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vagtplan – vagter, løn og overenskomsttjek for yngre læger</title>
-<meta name="description" content="Planlæg dine vagter, få grundløn og tillæg regnet ud efter overenskomsten, og se om din vagtplan overholder reglerne. Til yngre læger i Danmark, Grønland og Færøerne.">
+<title>Vagtplan – vagter, løn og overenskomsttjek til sundhedsfaglige</title>
+<meta name="description" content="Læg dine vagter ind, og få løn, tillæg og pension regnet ud efter din overenskomst. Se om planen overholder hviletid og normer, og tjek din lønseddel. Til læger, sygeplejersker, SOSU, portører, socialpædagoger og flere i Danmark, Grønland og på Færøerne.">
 <meta name="theme-color" content="#14213d"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="manifest" href="manifest.webmanifest">
-<meta property="og:title" content="Vagtplan – vagter, løn og overenskomsttjek"><meta property="og:description" content="Dit eget overblik over vagter, løn og overenskomst."><meta property="og:image" content="img/kalender.png">
+<meta property="og:title" content="Vagtplan – vagter, løn og overenskomsttjek"><meta property="og:description" content="Din vagtplan, din løn og din overenskomst på ét sted."><meta property="og:image" content="img/kalender.png">
 <style>
-:root{--bg:#f4f6f8;--card:#fff;--ink:#14213d;--mut:#5b6678;--line:#dde2ea;--acc:#0b6e8a;--hi:#5fd0ef;--on:#fff}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--on:#0b1220;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--on:#0b1220;color-scheme:dark}
+:root{--bg:#f4f6f8;--card:#fff;--ink:#14213d;--mut:#5b6678;--line:#dde2ea;--acc:#0b6e8a;--hi:#5fd0ef;--on:#fff;--ok:#0a7a45;--wn:#8a5a00}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--on:#0b1220;--ok:#4cc38a;--wn:#e0b24a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--on:#0b1220;--ok:#4cc38a;--wn:#e0b24a;color-scheme:dark}
 .tg{position:relative;width:48px;height:26px;border-radius:13px;border:0;padding:0;cursor:pointer;background:#cfd6e0;flex:none;transition:background .2s}
 .tg .tgk{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d98a00' stroke-width='2.4' stroke-linecap='round'><circle cx='12' cy='12' r='4.2' fill='%23ffc233'/><path d='M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6'/></svg>") center/14px no-repeat;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .2s}
 .tg[aria-checked=true]{background:#4a78e8}.tg[aria-checked=true] .tgk{transform:translateX(22px);background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20 14.6A8.4 8.4 0 0 1 9.4 4 8.6 8.6 0 1 0 20 14.6z' fill='%23516078'/></svg>")}
@@ -32,65 +32,111 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mut);fon
 @media(max-width:820px){.hero,.split{grid-template-columns:1fr}header nav a.h{display:none}}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:6px}.steps .n{width:30px;height:30px;font-size:15px;margin-bottom:6px}.steps h3{margin:0 0 4px;font-size:18px}.steps p{margin:0;color:var(--mut);font-size:15.5px;line-height:1.5}@media(max-width:820px){.steps{grid-template-columns:1fr;gap:14px}}
 section{padding:34px 0}
-.st{margin:6px 0 0;padding-left:20px;color:var(--mut);font-size:15.5px;line-height:1.6}.st b{color:var(--ink)}</style></head><body>
-<div class="w"><header><b><svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="104" fill="#14213d"/><circle cx="256" cy="256" r="170" fill="none" stroke="#fff" stroke-width="30"/><path d="M96 276h82l48-112 80 208 48-96h62" fill="none" stroke="#5fd0ef" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>Vagtplan</b><nav><a class="h" href="#overblik">Overblik</a><a class="h" href="#funktioner">Funktioner</a><a class="h" href="#sadan">Sådan virker det</a><a class="h" href="#ok">Overenskomster</a><a class="h" href="#telefon">Telefon</a><a class="h" href="#faq">Spørgsmål</a><button class="tg" id="th" type="button" role="switch" aria-label="Mørk tilstand"><span class="tgk"></span></button><a class="btn" style="padding:8px 16px" href="app.html">Åbn appen</a></nav></header>
-<div class="hero"><div><h1>Dit komplette ansættelsesoverblik.</h1><p class="lead">Alle dine ansættelser samlet på ét sted, fra den første vikarvagt til din nuværende stilling. Se vagter, løn, feriedage og afspadsering pr. ansættelse, læg vikarvagter ind ved siden af din faste stilling, og få tjekket planen mod overenskomsten. Til yngre læger i Danmark, Grønland og Færøerne og til studerende, der arbejder som lægevikar.</p><div class="cta"><a class="btn" href="app.html">Kom i gang</a><a class="btn o" href="#funktioner">Se hvad den kan</a></div><p class="sub" style="margin:14px 0 0;font-size:14px">Du kan prøve den uden at oprette en konto.</p></div><img class="shot" src="img/kalender.png" alt="Kalender med vagtformer og månedstimer" width="1200" height="780"></div></div>
+.st{margin:6px 0 0;padding-left:20px;color:var(--mut);font-size:15.5px;line-height:1.6}.st b{color:var(--ink)}
+.btn{color:var(--on)}.btn.o{color:var(--acc)}
+.chips{margin:4px 0 0}.chip{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:5px 14px;margin:4px 6px 4px 0;font-size:15px;font-weight:600}
+.bd{display:inline-block;border-radius:20px;padding:2px 10px;font-size:13px;font-weight:700;border:1px solid;white-space:nowrap}.bd.ok{color:var(--ok);border-color:var(--ok)}.bd.g{color:var(--wn);border-color:var(--wn)}.bd.o{color:var(--mut);border-color:var(--line)}
+.tbl{width:100%;border-collapse:collapse;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}.tbl th,.tbl td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.tbl tr:last-child td{border-bottom:0}.tbl th{font-size:12.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;background:var(--bg)}.tbl td small{display:block;color:var(--mut);font-size:13.5px;margin-top:2px}
+.leg{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 16px;color:var(--mut);font-size:14.5px}.leg span{display:flex;gap:8px;align-items:baseline}
+.pill{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}.pill .c b{display:block;font-size:19px;margin-bottom:6px;letter-spacing:-.01em}
+.say{font-size:21px;line-height:1.5;max-width:760px;margin:0 0 12px}.say em{font-style:normal;color:var(--acc);font-weight:700}
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.gal figure{margin:0}.gal figcaption{color:var(--mut);font-size:14.5px;margin-top:8px}
+.ph{width:100%;max-width:300px;border:1px solid var(--line);border-radius:26px;box-shadow:0 18px 50px rgba(20,33,61,.18);display:block;margin:0 auto}
+.ok li{margin:4px 0}
+@media(max-width:820px){.gal{grid-template-columns:1fr}}
+@media(max-width:720px){.tbl thead{display:none}.tbl,.tbl tbody{display:block;border:0;background:transparent}.tbl tr{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px}.tbl td{display:block;border:0;padding:3px 0}.tbl td[data-l]::before{content:attr(data-l) ': ';color:var(--mut);font-size:13px}.tbl tr:last-child td{border-bottom:0}}
+</style></head><body>
 
-<section id="overblik"><div class="w"><h2>Alle dine ansættelser på én gang</h2><p class="sub">Skift mellem ansættelser, uden at noget går tabt. Den seneste står øverst, og perioden vises overalt, hvor du vælger.</p>
-<div class="g">
-<div class="c"><h3>Komplet ansættelsesoverblik</h3><p>Hver ansættelse har sin egen overenskomst, stilling, anciennitet, vagtformer, plan og lønsedler. Du kan se tilbage på tidligere ansættelser og have flere i gang samtidigt.</p></div>
-<div class="c"><h3>Feriedage og afspadsering</h3><p>Skriv din feriesaldo, så regner appen optjening og planlagt ferie ud og viser, hvor mange dage du har tilbage. Afspadsering af overarbejde vises med frist, før det udbetales.</p></div>
-<div class="c"><h3>Vikarvagter ved siden af en fast stilling</h3><p>Læg vikarvagter ind som egen ansættelse med egen timeløn. Så ser du de samlede timer, hvile og fridøgn på tværs af begge jobs.</p></div>
-<div class="c"><h3>Rettigheder og påmindelser</h3><p>Næste løntrin, frister for afspadsering, løn under sygdom og barsel samt en huskeliste til årsopgørelsen og fradrag.</p></div>
-<div class="c"><h3>Tjek din lønseddel</h3><p>Skriv beløbene linje for linje, se præcis hvor lønsedlen afviger, og få et udkast til en mail til lønkontoret.</p></div>
-<div class="c"><h3>Kalenderabonnement</h3><p>Din plan følger med i Apple Kalender, Google Kalender og Outlook, og opdateres, når du ændrer den (med konto).</p></div></div></div></section>
+<div class="w"><header><b><svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="104" fill="#14213d"/><circle cx="256" cy="256" r="170" fill="none" stroke="#fff" stroke-width="30"/><path d="M96 276h82l48-112 80 208 48-96h62" fill="none" stroke="#5fd0ef" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>Vagtplan</b><nav><a class="h" href="#ok">Overenskomster</a><a class="h" href="#eksempler">Eksempler</a><a class="h" href="#funktioner">Funktioner</a><a class="h" href="#faq">Spørgsmål</a><button class="tg" id="th" type="button" role="switch" aria-label="Mørk tilstand"><span class="tgk"></span></button><a class="btn" style="padding:8px 16px" href="app.html">Åbn appen</a></nav></header>
+<div class="hero"><div><h1>Din vagtplan. Din løn. Din overenskomst.</h1><p class="lead">Vagtplan gør vagtplanen til et regnestykke, du kan stole på. Læg dine vagter ind, og se hvad du får udbetalt, om planen overholder reglerne, og hvad du har ret til. Til læger, sygeplejersker, SOSU, portører, socialpædagoger og de øvrige faggrupper i sundhedsvæsenet i Danmark, Grønland og på Færøerne.</p><div class="cta"><a class="btn" href="app.html">Kom i gang</a><a class="btn o" href="#eksempler">Se et eksempel</a></div><p class="sub" style="margin:14px 0 0;font-size:14px">Du kan prøve den uden at oprette en konto.</p></div><img class="shot" src="img/kalender.png" alt="Kalender med dag-, aften- og nattevagter, vagtformer og timer pr. uge" width="1200" height="780"></div></div>
 
-<section id="funktioner"><div class="w"><h2>Det du ellers selv skal regne ud</h2><p class="sub">Alt ud fra de overenskomster, der gælder for dig. Reglerne ligger i appen, så du ikke selv skal vælge timelønsdivisor, ugenorm eller hviletid.</p>
+<section id="faggrupper" style="padding-top:10px"><div class="w"><h2>Til dig, uanset faggruppe</h2><p class="sub">Vælg din faggruppe første gang, så viser appen de overenskomster og stillinger, der passer til dig.</p>
+<div class="chips"><span class="chip">Læger</span><span class="chip">Sygeplejersker</span><span class="chip">SOSU-hjælpere</span><span class="chip">SOSU-assistenter</span><span class="chip">Portører</span><span class="chip">Socialpædagoger</span><span class="chip">Jordemødre</span><span class="chip">Bioanalytikere</span><span class="chip">Fysioterapeuter</span><span class="chip">Ergoterapeuter</span><span class="chip">Radiografer</span><span class="chip">Lægesekretærer</span><span class="chip">Og alle med en egen aftale</span></div></div></section>
+
+<section id="hvorfor"><div class="w"><h2>Vagtplanen siger, hvornår du skal arbejde. Ikke hvad det er værd.</h2>
+<p class="say">De fleste af os finder først ud af, at en aftenvagt, en nat eller en weekend ikke blev betalt rigtigt, når lønsedlen kommer. Eller aldrig. Overenskomsten fylder mange sider, og satserne ligger spredt i flere aftaler. <em>Vagtplan samler det for dig</em>, så du kan se det, før lønsedlen kommer, og tale med et tal i hånden.</p>
+<div class="pill">
+<div class="c"><b>Hvad får jeg udbetalt?</b><p>Grundløn efter stilling og anciennitet, aften-, nat-, weekend- og helligdagstillæg, vagttillæg, overarbejde og pension. Regnet time for time ud fra de vagter, du selv har lagt ind.</p></div>
+<div class="c"><b>Overholder planen reglerne?</b><p>Hviletid, fridøgn, vagthyppighed, weekender og normperioder. Du får en advarsel, så snart en vagt bryder en regel, og kan acceptere bruddet, hvis du selv har sagt ja.</p></div>
+<div class="c"><b>Stemmer lønsedlen?</b><p>Skriv beløbene fra lønsedlen ind linje for linje. Så ser du præcis, hvilken linje der afviger, og hvad du kan spørge din arbejdsgiver om.</p></div>
+<div class="c"><b>Hvad har jeg ret til?</b><p>Løn under sygdom, barns sygedage, barsel og fridage med henvisning til paragrafferne, så du ved, hvad du skal pege på.</p></div>
+</div></div></section>
+
+<section id="eksempler"><div class="w"><h2>Se, hvordan det ser ud for din faggruppe</h2>
+<div class="split" style="align-items:start"><div><p class="sub" style="max-width:none">Der er en eksempel-vagtplan til hver faggruppe, med typiske vagtformer for netop dit arbejde: dag, aften, nat, weekend og lange vagter. Du ser en hel måned med løn og ulempetillæg, og et bevidst regelbrud, så du kan se, hvordan overenskomsttjekket advarer.</p><ol class="st"><li>Åbn appen, og vælg <b>Se appen med eksempler (uden konto)</b>.</li><li>Vælg din faggruppe.</li><li>Kig rundt i Kalender, Løn, Overenskomsttjek og Rettigheder.</li><li>Fjern eksemplet igen med ét tryk, når du vil lægge dine egne vagter ind.</li></ol><p style="margin:18px 0 0"><a class="btn" href="app.html">Prøv med et eksempel</a></p></div>
+<img class="ph" src="img/mobil.png" alt="Eksempel på kalender i telefonen, med aftenvagt og dagvagter" width="430" height="860" loading="lazy"></div>
+<div class="gal"><figure><img class="shot" src="img/loen.png" alt="Løn for måneden: grundløn, ulempetillæg og pension" width="1000" height="427" loading="lazy"><figcaption>Løn for måneden, med ulempetillæg og pension regnet ud fra dine vagter.</figcaption></figure>
+<figure><img class="shot" src="img/tjek.png" alt="Overenskomsttjek med to konflikter om hviletid" width="1000" height="525" loading="lazy"><figcaption>Overenskomsttjek: appen peger på de to vagter, hvor hvilen er for kort.</figcaption></figure></div></div></section>
+
+<section id="ok"><div class="w"><h2>Overenskomster, der er med</h2><p class="sub">Reglerne følger din ansættelse, og du kan have flere ansættelser med hver sin overenskomst. Fx en fast stilling og vikarvagter ved siden af.</p>
+<div class="leg"><span><i class="bd ok">Afstemt</i> brugt og tjekket mod en rigtig lønseddel</span><span><i class="bd g">Grundmodel</i> bygget på overenskomsten, men endnu ikke afstemt</span><span><i class="bd o">Dine egne tal</i> du skriver løn og satser ind selv</span></div>
+<table class="tbl"><thead><tr><th>Faggruppe og overenskomst</th><th>Område</th><th>Status</th><th>Regner appen</th></tr></thead><tbody>
+<tr><td data-l="Overenskomst"><b>Yngre læger</b><small>Yngre Læger og Danske Regioner</small></td><td data-l="Område">Danmark</td><td data-l="Status"><i class="bd ok">Afstemt</i></td><td data-l="Regner appen">Grundløn og kvalifikationstillæg pr. stilling og trin, funktionstillæg, ulempetillæg, vagthonorar, effektiv tjeneste under vagt, pålagte og overtagne vagter, overarbejde, normperioder, hvile og fridøgn, pension og vikartimeløn.</td></tr>
+<tr><td data-l="Overenskomst"><b>Læger</b><small>Naalakkersuisut, 2024</small></td><td data-l="Område">Grønland</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Grundløn og tillæg, ulempetillæg, vagt, evakuering, overarbejde og pension.</td></tr>
+<tr><td data-l="Overenskomst"><b>Yngre læger</b><small>Fíggjarmálaráðið</small></td><td data-l="Område">Færøerne</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Grundløn og tillæg, holddriftstillæg, vagt, evakuering, overarbejde og pension.</td></tr>
+<tr><td data-l="Overenskomst"><b>Sygeplejersker og øvrige i Sundhedskartellet</b><small>Danske Regioner. Bioanalytikere, fysio- og ergoterapeuter og jordemødre bruger de samme regler og skriver selv månedslønnen ind.</small></td><td data-l="Område">Danmark</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Løn efter stilling og anciennitet, aften-, nat- og weekendtillæg i procent, vagttillæg, overarbejde, hvile, pension og rettigheder med paragraffer.</td></tr>
+<tr><td data-l="Overenskomst"><b>SOSU-hjælpere, SOSU-assistenter og sundhedsmedhjælpere</b><small>FOA og Danske Regioner</small></td><td data-l="Område">Danmark</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Løntrin og kvalifikationsløn pr. område, aften-, nat- og weekendtillæg i procent, vagttillæg, overarbejde, hvile, pension og rettigheder.</td></tr>
+<tr><td data-l="Overenskomst"><b>Sygehusportører</b><small>FOA og Danske Regioner, OK 32.16.1</small></td><td data-l="Område">Danmark</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Garantiløn efter 3 og 10 år, aspirantperiode, aften-, nat- og weekendtillæg, vagttillæg, overarbejde, hvile, pension og rettigheder.</td></tr>
+<tr><td data-l="Overenskomst"><b>Socialpædagoger</b><small>Socialpædagogerne og Danske Regioner, OK F32.38.1</small></td><td data-l="Område">Danmark</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Månedsløn efter anciennitet, aften-, nat- og lørdagstillæg i kroner, søn- og helligdagstillæg i procent, vagttillæg, tillæg for lukkede afdelinger, overarbejde, hvile og pension.</td></tr>
+<tr><td data-l="Overenskomst"><b>Sygeplejersker og øvrige sundhedsfaglige</b><small>Naalakkersuisut, PK og PPK, bygget på resultatpapiret af 4. august 2025</small></td><td data-l="Område">Grønland</td><td data-l="Status"><i class="bd g">Grundmodel</i></td><td data-l="Regner appen">Lønskala trin 1 til 28, rekrutterings- og fastholdelsestillæg, årsbonus, aften- og nattillæg i procent, weekend- og helligdagstillæg i kroner, pension og rettigheder.</td></tr>
+<tr><td data-l="Overenskomst"><b>Studenterjob og vikar</b><small>Lægevikar, ventilatør, sygeplejevikar og andet</small></td><td data-l="Område">Alle</td><td data-l="Status"><i class="bd o">Dine egne tal</i></td><td data-l="Regner appen">Kalender, timer, hvile og forventet løn ud fra din timeløn.</td></tr>
+<tr><td data-l="Overenskomst"><b>Egen aftale</b><small>Fx lægesekretærer og andre uden en indbygget overenskomst</small></td><td data-l="Område">Alle</td><td data-l="Status"><i class="bd o">Dine egne tal</i></td><td data-l="Regner appen">Timer, hvile, fridøgn og normperioder regnes af appen. Løn og tillæg skriver du selv ind.</td></tr>
+</tbody></table>
+<p class="sub" style="margin-top:16px"><b>På vej:</b> kommunale overenskomster for SOSU og socialpædagoger, egne lønforløb for bioanalytikere, fysio- og ergoterapeuter, jordemødre og radiografer, lægesekretærer og Færøerne for de øvrige faggrupper. Grundmodellerne mangler endnu rådighedsvagt, delt og omlagt tjeneste og lokalaftaler. Beregningerne er vejledende, så tjek altid mod din gældende aftale og din lønseddel.</p></div></section>
+
+<section id="tillid"><div class="w"><h2>Sådan bliver den rigtig for netop din overenskomst</h2><p class="sub">Ingen kan tjekke alle overenskomster alene. Derfor er det bygget, så du kan se, hvad der er med, og hjælpe med at rette det til.</p>
+<div class="g" style="grid-template-columns:repeat(auto-fit,minmax(215px,1fr))">
+<div class="c"><h3>Du kan se, hvad der er med</h3><p>Hver overenskomst har et statuskort under Hjælp i appen: hvad der regnes, hvad der mangler, og om den er afstemt eller en grundmodel.</p></div>
+<div class="c"><h3>Tjek din overenskomst</h3><p>Gå satserne igennem punkt for punkt, og svar Stemmer eller Stemmer ikke. Dit svar går direkte til udvikleren.</p></div>
+<div class="c"><h3>Lønseddel som facit</h3><p>Afviger en linje i lønseddeltjekket, kan du sende afvigelsen med ét tryk. Stemmer alt, kan du melde det, så grundmodellen kan blive afstemt.</p></div>
+<div class="c"><h3>Du får svar</h3><p>Fejl, forslag og spørgsmål lander i en postkasse med status: Ny, Under udarbejdelse, Adresseret eller Løst. Du følger dem i appen.</p></div>
+</div>
+<p class="sub" style="margin:18px 0 0">Vagtplan er bygget af en yngre læge, der selv skulle have vagter og løn til at gå op. Lægernes overenskomst er brugt og afstemt i praksis. De øvrige er grundmodeller, indtil nogen i faggruppen har bekræftet dem mod en lønseddel.</p></div></section>
+
+<section id="funktioner"><div class="w"><h2>Det du ellers selv skal regne ud</h2><p class="sub">Vagter, løn, hviletid og normperioder, regnet ud fra din overenskomst.</p>
 <div class="g">
-<div class="c"><h3>Kalender med vagtformer</h3><p>Lav dine egne vagtformer med farver og tider, også forskellige tider pr. ugedag. Sæt dem på dagene, og se timerne tælle op.</p></div>
-<div class="c"><h3>Automatisk grundløn</h3><p>Vælg din stilling og din anciennitet, så finder appen løntrin og tillæg. Forklaringerne er på almindeligt dansk.</p></div>
-<div class="c"><h3>Overenskomsttjek</h3><p>Hviletid, fridøgn, vagthyppighed, weekender og tjenestens længde. En rød advarsel kommer, så snart en vagt bryder en regel, og du kan acceptere bruddet.</p></div>
-<div class="c"><h3>Normperioder og overarbejde</h3><p>Normen regnes som et gennemsnit over hele normperioden, ikke pr. uge, så du kan se, hvornår overarbejde udløses.</p></div>
-<div class="c"><h3>Tillæg og vagter</h3><p>Ulempetillæg, rådighedsvagt, lille og stort tillæg for pålagte og overtagne vagter, samt evakuering for Grønland og Færøerne.</p></div>
-<div class="c"><h3>Pension og regnskab</h3><p>Se pensionsindbetalingen for hver ansættelse og et samlet årsregnskab, også med vikararbejde ved siden af.</p></div>
+<div class="c"><h3>Kalender med vagtformer</h3><p>Lav dine egne vagtformer med farver og tider, også forskellige tider pr. ugedag og vagter over midnat. Sæt dem på dagene, og se timerne tælle op.</p></div>
+<div class="c"><h3>Løn og tillæg time for time</h3><p>Vælg stilling og anciennitet, så finder appen løntrin og tillæg. Aften, nat, weekend og helligdage regnes ud fra de timer, du faktisk arbejder.</p></div>
+<div class="c"><h3>Overenskomsttjek</h3><p>Hviletid, fridøgn, vagthyppighed, weekender og tjenestens længde. En rød advarsel kommer, så snart en vagt bryder en regel.</p></div>
+<div class="c"><h3>Normperioder og overarbejde</h3><p>Normen regnes som et gennemsnit over hele normperioden, ikke pr. uge. Du får en påmindelse i kalenderen, når en periode er ved at slutte.</p></div>
+<div class="c"><h3>Pension, regnskab og udbetaling</h3><p>Se pensionen for hver ansættelse, et samlet årsregnskab, et udbetalingskort med hvad der kommer ind hvornår, og et Excel-regnskab pr. ansættelse.</p></div>
 <div class="c"><h3>Afstem din lønseddel</h3><p>Skriv beløbene fra lønsedlen ind, og se hvor de afviger fra beregningen.</p></div>
-<div class="c"><h3>Importér med din AI</h3><p>Kopiér en færdig besked til ChatGPT eller Claude sammen med din vagtplan, og indlæs svaret. Så slipper du for at taste vagterne ind.</p></div>
-<div class="c"><h3>Til din kalender</h3><p>Hent dine vagter som en kalenderfil til Apple Kalender eller Google Kalender.</p></div></div></div></section>
-
-<section id="vikar"><div class="w"><h2>Også når du arbejder ved siden af studiet</h2><p class="sub">Er du studerende og tager vagter som lægevikar, ventilatør eller sygeplejevikar, kan du bruge siden til at holde styr på tid og penge.</p>
-<div class="grid">
- <div class="c"><h3>Timer</h3><p>Se dine timer for dagen, ugen og måneden på tværs af alle dine jobs, så du ved, hvor meget plads der er til studiet.</p></div>
- <div class="c"><h3>Timeløn og forventet løn</h3><p>Skriv din timeløn ind pr. job, så ser du, hvad måneden giver før skat. Flere vikarbureauer og afdelinger kan ligge ved siden af hinanden.</p></div>
- <div class="c"><h3>Hvile og fridøgn</h3><p>Siden tjekker, om du får mindst 11 timers hvile mellem vagter og et fridøgn hver uge, også når vagterne ligger på tværs af flere jobs.</p></div>
+<div class="c"><h3>Rettigheder med paragraffer</h3><p>Sygdom, barns sygedage, barsel og fridage forklaret på almindeligt dansk med henvisning til overenskomsten.</p></div>
+<div class="c"><h3>Flere ansættelser</h3><p>Fast stilling, vikarvagter og tidligere ansættelser samlet. Hvile og fridøgn tjekkes på tværs af alle dine jobs.</p></div>
+<div class="c"><h3>Din kalender, dine påmindelser</h3><p>Hent en kalenderfil, eller abonnér, så dine vagter dukker op i Apple Kalender og Google Kalender.</p></div>
+<div class="c"><h3>Hjælp og postkasse</h3><p>Meld en fejl, et forslag eller et spørgsmål direkte fra appen, og følg svaret og status.</p></div>
+<div class="c"><h3>Dit udseende</h3><p>Lys og mørk tilstand og ni farvetemaer med navne som Kaffe nr. 4, Rødvin på en tirsdag og Pink Friday.</p></div>
+<div class="c"><h3>Som app på telefonen</h3><p>Læg siden på hjemmeskærmen, så åbner den som en almindelig app. Der er ingen app-butik.</p></div>
 </div></div></section>
 
 <section id="telefon"><div class="w"><h2>Brug den som app på telefonen</h2><p class="sub">Du behøver ikke hente noget i en app-butik. Læg siden på din hjemmeskærm, så åbner den med ét tryk og ser ud som en almindelig app. Den virker på både iPhone og Android.</p>
-<div class="grid">
+<div class="g">
  <div class="c"><h3>iPhone og iPad</h3><ol class="st"><li>Åbn siden i <b>Safari</b>.</li><li>Tryk på <b>Del</b>-knappen (firkanten med en pil op).</li><li>Vælg <b>Føj til hjemmeskærm</b>.</li><li>Tryk på <b>Tilføj</b>.</li></ol></div>
  <div class="c"><h3>Android</h3><ol class="st"><li>Åbn siden i <b>Chrome</b>.</li><li>Tryk på menuen <b>⋮</b> øverst til højre.</li><li>Vælg <b>Installér app</b> eller <b>Føj til startskærm</b>.</li><li>Bekræft med <b>Installér</b>.</li></ol></div>
  <div class="c"><h3>Husk en konto</h3><p>Log ind, så følger dine data med mellem browseren, appen på hjemmeskærmen og din computer. På iPhone er appen på hjemmeskærmen adskilt fra Safari.</p></div>
 </div></div></section>
 
 <section id="sadan"><div class="w"><h2>Sådan kommer du i gang</h2>
-<div class="steps"><div><span class="n">1</span><h3>Opret din ansættelse</h3><p>Vælg overenskomst, stilling og periode. Grundlønnen findes automatisk.</p></div>
+<div class="steps"><div><span class="n">1</span><h3>Vælg din faggruppe</h3><p>Og opret din ansættelse med overenskomst, stilling og periode. Grundlønnen findes automatisk.</p></div>
 <div><span class="n">2</span><h3>Lav dine vagtformer</h3><p>Skriv navnet, så foreslår appen en forkortelse og en farve.</p></div>
 <div><span class="n">3</span><h3>Sæt vagterne i kalenderen</h3><p>Se timer, løn og regelbrud med det samme.</p></div></div></div></section>
 
-<section id="ok"><div class="w"><h2>Overenskomster</h2><p class="sub">Reglerne følger din ansættelse. Du kan have flere ansættelser med hver deres overenskomst.</p>
-<span class="tag">Danmark: Yngre Læger, Danske Regioner</span><span class="tag">Grønland: Læger, Naalakkersuisut</span><span class="tag">Færøerne: Yngre Læger</span><span class="tag">Studenterjob og vikar: timeløn</span><span class="tag">Egen aftale eller vikarbureau</span>
-<p class="sub" style="margin-top:16px">Satserne er hentet fra overenskomsterne, men beregningerne er vejledende. Tjek altid mod din gældende aftale og din lønseddel. Lokalaftaler indgår ikke.</p></div></section>
-
 <section id="faq"><div class="w"><h2>Spørgsmål</h2><br>
 <details><summary>Er det her officielt fra min fagforening eller min arbejdsgiver?</summary><p>Nej. Appen er uafhængig og er ikke lavet af en fagforening, en region eller en arbejdsgiver.</p></details>
-<details><summary>Kan jeg stole på tallene?</summary><p>Satserne kommer fra overenskomsterne, men det er et hjælpeværktøj. Sammenlign med din lønseddel, og kontrollér altid mod din gældende aftale. Der er indbygget en afstemning, så du kan se afvigelser.</p></details>
-<details><summary>Hvad hvis min overenskomst ikke er med?</summary><p>Vælg "Egen aftale", og indtast din løn og dine satser selv. Appen kan stadig regne timer, normperioder og regelbrud.</p></details>
+<details><summary>Kan jeg stole på tallene?</summary><p>Satserne kommer fra overenskomsterne, men det er et hjælpeværktøj. Overenskomsten for yngre læger er afstemt mod rigtige lønsedler. De øvrige er grundmodeller, som er markeret i oversigten og i appen. Sammenlign med din lønseddel, og kontrollér altid mod din gældende aftale. Der er indbygget en afstemning, så du kan se afvigelser.</p></details>
+<details><summary>Hvordan ved jeg, at min overenskomst er regnet rigtigt?</summary><p>Under Hjælp i appen kan du se et statuskort for din overenskomst med det, der er med, og det, der mangler. Skriv beløbene fra din lønseddel ind, og se, om de stemmer. Afviger noget, kan du sende det til udvikleren med ét tryk, så bliver det rettet for alle i din faggruppe.</p></details>
+<details><summary>Min faggruppe eller overenskomst mangler. Hvad gør jeg?</summary><p>Vælg "Egen aftale", og indtast din løn og dine satser selv. Appen kan stadig regne timer, normperioder og regelbrud. Skriv til os med knappen Hjælp i appen, så sætter vi din overenskomst på listen.</p></details>
+<details><summary>Kan jeg bruge den, hvis jeg er ansat i en kommune?</summary><p>De kommunale overenskomster er ikke bygget ind endnu. Vælg "Egen aftale" og skriv din løn og dine satser ind, så regner appen stadig timer, hvile og normperioder.</p></details>
 <details><summary>Kan jeg bruge den som studerende vikar eller ventilatør?</summary><p>Ja. Vælg "Studenterjob og vikar" som aftale, vælg om du er lægevikar, ventilatør eller sygeplejevikar, og indtast din timeløn. Så får du kalender, timer, forventet løn og hviletidstjek.</p></details>
-<details><summary>Kan jeg få mine vagter ind i min kalender?</summary><p>Ja. Du kan hente en kalenderfil og åbne den i Apple Kalender eller importere den i Google Kalender.</p></details><details><summary>Kan jeg samle alle mine tidligere ansættelser?</summary><p>Ja. Opret hver ansættelse med sin periode, og læg vagterne ind. Du kan også flette en importfil med ansættelser, vagtformer og vagter ind, uden at det overskriver det, du allerede har.</p></details>
+<details><summary>Kan jeg få mine vagter ind i min kalender?</summary><p>Ja. Du kan hente en kalenderfil og åbne den i Apple Kalender eller importere den i Google Kalender, eller abonnere, så ændringer følger med.</p></details>
+<details><summary>Kan jeg samle alle mine tidligere ansættelser?</summary><p>Ja. Opret hver ansættelse med sin periode, og læg vagterne ind. Du kan også flette en importfil med ansættelser, vagtformer og vagter ind, uden at det overskriver det, du allerede har.</p></details>
 <details><summary>Hvordan passer vikarvagter sammen med min faste ansættelse?</summary><p>Opret vikararbejdet som en ansættelse for sig, og læg vagterne i den samme kalender. Hviletid og fridøgn tjekkes på tværs af alle dine jobs.</p></details>
+<details><summary>Hvad gør jeg, hvis jeg finder en fejl?</summary><p>Log ind i appen og tryk på knappen Hjælp nederst til højre. Skriv, hvad der skete. Du behøver ikke skrive en overskrift. Du får svar og kan følge status (Ny, Under udarbejdelse, Adresseret eller Løst) under Opsætning, Hjælp og kontakt.</p></details>
 <details><summary>Hvor gemmes mine data?</summary><p>Uden konto kun i din browser. Med konto gemmes de krypteret under transport på serveren, så de følger dig mellem enheder. Læs mere i <a href="privatliv.html">persondatapolitikken</a>.</p></details>
 </div></section>
 
-<section><div class="w" style="text-align:center"><h2>Klar til at få overblik?</h2><p class="sub" style="margin:0 auto 20px">Opret en konto på under et minut, eller prøv uden.</p><a class="btn" href="app.html">Åbn Vagtplan</a></div></section>
+<section><div class="w" style="text-align:center"><h2>Klar til at få overblik?</h2><p class="sub" style="margin:0 auto 20px">Opret en konto på under et minut, eller prøv med et eksempel uden konto.</p><a class="btn" href="app.html">Åbn Vagtplan</a></div></section>
+
 <footer><div class="w"><a href="privatliv.html">Persondatapolitik</a> · Vagtplan er et uafhængigt hjælpeværktøj. Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten, din lønseddel eller rådgivning fra din fagforening. · <a href="app.html">Åbn appen</a></div></footer>
 
 <script>(function(){var T=['light','dark'],L={light:'☾ Mørk',dark:'☀ Lys'},b=document.getElementById('th');function g(){try{var t=localStorage.getItem('vp_theme');return t==='dark'?'dark':'light'}catch(e){return'light'}}function a(t){var r=document.documentElement;r.setAttribute('data-theme',t);b.setAttribute('aria-checked',t==='dark')}a(g());b.onclick=function(){var t=T[(T.indexOf(g())+1)%2];try{localStorage.setItem('vp_theme',t)}catch(e){}a(t)}})()</script></body></html>
