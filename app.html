@@ -1450,9 +1450,10 @@ async function push(now){if(!AUTH.user)return;if(AUTH.busy){AUTH.dirty=true;retu
   else if(r.version){AUTH.ver=r.version;if(AUTH.cal)calSync()}}catch(e){}
  AUTH.busy=false;if(AUTH.dirty)push()}
 function isAdm(){return !!(AUTH.admin||(AUTH.user&&AUTH.user.admin))}
-function ctxSeen(){try{return sessionStorage.getItem('vp_ctx')==='1'}catch(e){return true}}
+function ctxSeen(){return true}
 function ctxPick(w){try{sessionStorage.setItem('vp_ctx','1')}catch(e){}if(w==='admin'){location.href='admin.html';return}AUTH.ctxDone=1;render()}
-function ctxV(){if(!AUTH.user||!isAdm()||AUTH.ctxDone||ctxSeen()||(typeof TOUR!=='undefined'&&TOUR))return'';
+function ctxV(){return'';}
+function ctxV_old(){if(!AUTH.user||!isAdm()||AUTH.ctxDone||ctxSeen()||(typeof TOUR!=='undefined'&&TOUR))return'';
  const card=(k,t,d)=>`<button type="button" class="card" onclick="ctxPick('${k}')" style="display:block;width:100%;text-align:left;cursor:pointer;margin:0 0 12px"><h3 style="margin:0 0 4px">${t}</h3><span class="note">${d}</span></button>`;
  return`<div id="ctx" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:24px 14px"><div style="max-width:460px;margin:10vh auto 0"><h1 style="margin:0 0 4px;font-size:30px;letter-spacing:-.03em">${esc(APP)}</h1><p class="note" style="margin:0 0 16px">Logget ind som ${esc(AUTH.user.email)}. Hvor vil du hen?</p>${card('app','Min vagtplan','Dine vagter, din løn og dit overenskomsttjek.')}${card('admin','Administration','Statistik, brugere og postkasse. Du ser kun tal, aldrig indholdet af brugernes data.')}<p class="note">Du kan altid skifte via Admin-knappen i menuen.</p></div></div>`}
 function authV(){const m=AUTH.mode,E=s=>esc(s||''),tab=(k,l)=>`<button type="button" class="b ${m===k?'p':''}" onclick="AUTH.mode='${k}';AUTH.msg='';render()">${l}</button>`;
