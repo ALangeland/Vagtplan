@@ -422,16 +422,16 @@ function avOn(){if(typeof AUTH==='undefined')return true;try{return sessionStora
 function discl(){const h=typeof AUTH!=='undefined'&&AUTH.api;return`<div class="card note" style="margin-top:14px;font-size:12.5px;line-height:1.5">${h?'Uden konto gemmes dine data kun i din browser. Med konto gemmes de på serveren, så du kan bruge dem på flere enheder. ':'Dine data gemmes kun i denne browser og sendes ikke til nogen server. '}Beregninger og regeltjek er vejledende og erstatter ikke overenskomsten eller din lønseddel. Kontrollér altid mod din gældende aftale.</div>`}
 //RM-START
 const RM={dk:{
- navn:'Danmark – Yngre Læger',intro:'Kvalifikationstillæg, beregning og advarsler i appen læser herfra, så et tillæg ikke kan dukke op for en stilling, der pr. definition ikke kan have det.',flow:[{l:'Speciallægeuddannelse',ids:['kbu','intro','hu1','hu2','sp']},{l:'Uden uddannelsesforløb',ids:['kbu','ikke1','ikke2']}],kvalTxt:'Der ydes højst ét af de tre ad gangen (OK § 8 stk. 2), og ingen af dem ydes til speciallæger. Det trin, der gælder, er det højeste, du opfylder. KBU kan hverken have tilladelsen til selvstændigt virke, et gennemført første år eller speciallægeanerkendelse, så hele rækken er lukket for KBU.',
+ navn:'Danmark – Yngre Læger',intro:'Kvalifikationstillæg, beregning og advarsler i appen læser herfra, så et tillæg ikke kan dukke op for en stilling, der pr. definition ikke kan have det.',kvalTxt:'Der ydes højst ét af de tre ad gangen (OK § 8 stk. 2), og ingen af dem ydes til speciallæger. Det trin, der gælder, er det højeste, du opfylder. KBU kan hverken have tilladelsen til selvstændigt virke, et gennemført første år eller speciallægeanerkendelse, så hele rækken er lukket for KBU.',
  kilde:'Overenskomst for yngre læger, OK24 (33.06.1). Paragrafnumrene er læst i OK24-teksten og er ikke krydstjekket mod den nuværende udgave.',
  pos:[
-  {id:'kbu',l:'KBU',sub:'Klinisk basisuddannelse, ca. 1 år',trin:'Læge (trin 1)',next:['intro','ikke1'],hj:'OK § 4 stk. 1 a'},
-  {id:'intro',l:'Introduktion',sub:'Første speciallægestilling, typisk 1 år',trin:'Læge (trin 1)',next:['hu1'],hj:'OK § 4 stk. 1 b'},
-  {id:'hu1',l:'Hoveduddannelse, første 2½ år',sub:'3 år i almen medicin',trin:'Læge (trin 1)',next:['hu2'],hj:'OK § 4 stk. 1 c'},
-  {id:'hu2',l:'Hoveduddannelse, derefter',sub:'1. reservelæge',trin:'Læge (trin 2)',next:['sp'],hj:'OK § 4 stk. 1 c'},
-  {id:'ikke1',l:'Uklassificeret',sub:'Reservelæge uden forløb, 1 år, højst 3 år i alt',trin:'Læge (trin 1)',next:['ikke2'],hj:'OK § 4 stk. 2'},
-  {id:'ikke2',l:'Uklassificeret, fast',sub:'1. reservelæge, 5 år',trin:'Læge (trin 2)',next:[],hj:'OK § 4 stk. 2'},
-  {id:'sp',l:'Speciallæge',sub:'Fast stilling som speciallæge',trin:'Speciallæge',next:[],hj:'OK § 4 stk. 3 a'}],
+  {id:'kbu',l:'KBU',sub:'Klinisk basisuddannelse, ca. 1 år',trin:'Læge (trin 1)',hj:'OK § 4 stk. 1 a'},
+  {id:'intro',l:'Introduktion',sub:'Første speciallægestilling, typisk 1 år',trin:'Læge (trin 1)',hj:'OK § 4 stk. 1 b'},
+  {id:'hu1',l:'Hoveduddannelse, første 2½ år',sub:'3 år i almen medicin',trin:'Læge (trin 1)',hj:'OK § 4 stk. 1 c'},
+  {id:'hu2',l:'Hoveduddannelse, derefter',sub:'1. reservelæge',trin:'Læge (trin 2)',hj:'OK § 4 stk. 1 c'},
+  {id:'ikke1',l:'Uklassificeret',sub:'Reservelæge uden forløb, 1 år, højst 3 år i alt',trin:'Læge (trin 1)',hj:'OK § 4 stk. 2'},
+  {id:'ikke2',l:'Uklassificeret, fast',sub:'1. reservelæge, 5 år',trin:'Læge (trin 2)',hj:'OK § 4 stk. 2'},
+  {id:'sp',l:'Speciallæge',sub:'Fast stilling som speciallæge',trin:'Speciallæge',hj:'OK § 4 stk. 3 a'}],
  tl:[
   {id:'q1',ver:'fag',gr:'kval',l:'Tilladelse til selvstændigt virke',amt:'48.952 kr./år',
    req:[{k:'pos',not:['kbu','sp'],t:'Ikke i KBU og ikke som speciallæge'},{k:'flag',f:'tilladelse',t:'Har Sundhedsstyrelsens tilladelse til selvstændigt virke (eller 2 års anciennitet)'}],
@@ -464,20 +464,61 @@ const RM={dk:{
 const RMV={ok:['Overenskomsttekst læst','Paragraffen er læst direkte i overenskomstteksten'],fag:['Delvist faglig følge','Paragraffen er læst, men en udelukkelse eller betingelse er en faglig følge og står ikke ordret i teksten'],app:['Fra appens data','Beløb og vilkår er fra appens eget datagrundlag (kilder gennemgået tidligere), ikke læst igen ved bygningen af modellen'],lok:['Lokal aftale','Lokalt eller regionalt tillæg fra offentlig kilde, ikke fra den centrale overenskomst'],ingen:['Ikke læst','Ingen kilde læst endnu']};
 const RMT={kval:'Kvalifikationstillæg (højst ét ad gangen)',rek:'Rekruttering og fastholdelse',funk:'Funktionstillæg',uddan:'Uddannelse og vejledning',saer:'Særlige stillinger og aftalte tillæg',region:'Regionale og lokale tillæg',varsel:'Varsel og tilkald',vagt:'Vagt og effektiv tjeneste',ot:'Overarbejde',ulempe:'Ulempe og holddrift',rejse:'Rejser og patienttransport',anc:'Anciennitet og løn',ledelse:'Ledelse'};
 const rmP=(t,o)=>Object.assign({k:'pos',t},o),rmF=(f,t,o)=>Object.assign({k:'flag',f,t},o);
-function rmEval(tl,ctx){const rows=tl.req.map(c=>{let r='pass';if(c.k==='pos'){if(c.not&&c.not.includes(ctx.pos))r='fail';if(c.in&&!c.in.includes(ctx.pos))r='fail'}else if(c.k==='region'){if(c.in&&!c.in.includes(ctx.region))r='fail'}else if(c.k==='train'){if(!((ctx.trainM||0)>=c.min))r='unknown'}else if(c.k==='flag'){const v=!!(ctx.flags&&ctx.flags[c.f]);if(c.not){if(v)r='fail'}else if(!v)r='unknown'}return{t:c.t,r}});const st=rows.some(x=>x.r==='fail')?'no':rows.every(x=>x.r==='pass')?'yes':'maybe';let why='';if(st==='no'&&tl.why&&tl.why[ctx.pos])why=tl.why[ctx.pos];return{st,rows,why}}
+// ---- Regelmodel v2: kerne ----
+// Reguleringsfaktorer (2018-niveau = 1). Eneste sted i modellen med faktorer; testen kræver, at profilernes fac-tabeller stemmer med denne.
+const RMREG=[['2018-03',1],['2025-11',1.16993],['2026-04',1.198008],['2026-10',1.20463]];
+function rmFac(ym,mk){let f=1;for(const x of ((RM[mk]||{}).regTab||RMREG))if(ym>=x[0])f=x[1];return f}
+function rmAttrs(mk,pos){const m=RM[mk];const p=m&&m.pos.find(x=>x.id===pos);return p&&p.attrs?p.attrs:null}
+// Ét krav mod en situation: pass, fail eller unknown
+function rmCond(c,ctx,mk){let r='pass';
+ if(c.k==='pos'){if(c.not&&c.not.includes(ctx.pos))r='fail';if(c.in&&!c.in.includes(ctx.pos))r='fail'}
+ else if(c.k==='attr'){const pa=ctx.attrs||rmAttrs(mk,ctx.pos);if(!pa)r='unknown';else{const v=pa[c.a],hit=Array.isArray(c.is)?c.is.includes(v):v===c.is;if(c.not?hit:!hit)r='fail'}}
+ else if(c.k==='anc'){if(ctx.ancM==null||ctx.ancM==='')r='unknown';else{const a=+ctx.ancM;if((c.min!=null&&a<c.min)||(c.max!=null&&a>=c.max))r='fail'}}
+ else if(c.k==='region'){if(c.in&&!c.in.includes(ctx.region))r='fail'}
+ else if(c.k==='train'){if(!((ctx.trainM||0)>=c.min))r='unknown'}
+ else if(c.k==='flag'){const v=!!(ctx.flags&&ctx.flags[c.f]);if(c.not){if(v)r='fail'}else if(!v)r='unknown'}
+ return r}
+function rmEval(tl,ctx){const rows=tl.req.map(c=>({t:c.t,r:rmCond(c,ctx,tl.mk)}));const st=rows.some(x=>x.r==='fail')?'no':rows.every(x=>x.r==='pass')?'yes':'maybe';let why='';if(st==='no'&&tl.why&&tl.why[ctx.pos])why=tl.why[ctx.pos];return{st,rows,why}}
+// Stillingen udelukker tillægget uanset øvrige oplysninger (kun krav til stilling og egenskaber)
+function rmHardNo(tl,posId){return tl.req.some(c=>(c.k==='pos'||c.k==='attr')&&rmCond(c,{pos:posId},tl.mk)==='fail')}
+// Beløb: v er en liste af {from,amt,niv,unit,when?,pub?}; niv '2018' omregnes med reguleringsfaktor; pub er et offentliggjort beløb på et givent niveau-tidspunkt
+function rmAmt(t,ym,attrs){if(!t.v)return null;let hit=null;for(const x of t.v){if(ym<x.from)continue;if(x.when&&attrs&&Object.keys(x.when).some(k=>attrs[k]!==x.when[k]))continue;if(x.when&&!attrs)continue;hit=x}
+ if(!hit)return null;let amt=hit.amt;const f=rmFac(ym,t.mk);if(hit.niv==='2018'){amt=hit.pub&&hit.pub.ym===ym?hit.pub.amt:Math.round(hit.amt*f*100)/100}
+ return{amt,raw:hit.amt,niv:hit.niv,unit:hit.unit||'år',from:hit.from,pct:hit.unit==='pct'}}
+const RMU={'år':'kr. om året','time':'kr. pr. time','md':'kr. om måneden','gang':'kr. pr. gang','pct':'%','vagt':'kr. pr. vagt'};
+function rmNum(n){return n.toLocaleString('da-DK',{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2})}
+function rmAmtTxt(t,ym){const a=rmAmt(t,ym);if(!a)return t.v?'Ikke i kraft endnu (fra '+rmYm(t.v[0].from)+')':(t.amt||'');const u=RMU[a.unit]||a.unit;let s=rmNum(a.amt)+' '+u;if(a.niv==='2018'&&a.unit!=='pct')s+=' ('+rmNum(a.raw)+' kr., 2018-niveau, fra '+rmYm(a.from)+')';return s+(t.vn?'. '+t.vn:'')}
+function rmYm(ym){const M=['jan.','feb.','mar.','apr.','maj','jun.','jul.','aug.','sep.','okt.','nov.','dec.'];return ym.length>=7?M[+ym.slice(5,7)-1]+' '+ym.slice(0,4):ym}
+// Kommende ændringer efter ym: datoerede beløb og faste meddelelser
+function rmUpcoming(m,ym){const o=[];m.tl.forEach(t=>(t.v||[]).forEach(x=>{if(x.from>ym)o.push({from:x.from,l:t.l,txt:rmNum(x.amt)+' '+(RMU[x.unit||'år']||'')+(x.niv==='2018'?' (2018-niveau)':''),hj:t.hj})}));(m.kommende||[]).forEach(x=>{if(x.from>ym)o.push(x)});return o.sort((a,b)=>a.from<b.from?-1:1)}
+// Lønopbygning: trin + områdetillæg + de tillæg, der indgår i lønnen (bind.kind='tab')
+function rmPay(m,posId,o){const p=m.pos.find(x=>x.id===posId);if(!p||!p.lon||!m.lon)return null;const ym=o.ym,f=rmFac(ym,m.mk),ancM=o.ancM,parts=[];let tr=null;for(const x of p.lon)if(ancM>=x[0])tr=x[1];
+ const tb=m.lon.trin[tr];parts.push({l:'Løntrin '+tr,amt:tb*f,raw:tb});
+ if(m.lon.omr&&m.lon.omr[tr]){const om=m.lon.omr[tr][(+o.area||1)-1];parts.push({l:'Områdetillæg '+(o.area||1),amt:om*f,raw:om,omr:true})}
+ const ctx={pos:posId,ancM};m.tl.forEach(t=>{if(!t.bind||t.bind.kind!=='tab')return;if(rmEval(t,ctx).st!=='yes')return;const a=rmAmt(t,ym,p.attrs);if(a)parts.push({l:t.l,amt:a.amt,raw:a.raw,id:t.id})});
+ return{sum:parts.reduce((s,x)=>s+x.amt,0),parts,trin:tr}}
 function rmQualOk(ok,pos,k){const m=RM[ok];if(!m||!m.pos.some(p=>p.id===pos))return true;const t=m.tl.find(x=>x.id===k);if(!t)return true;return rmEval(t,{pos,region:'',flags:{}}).st!=='no'}
 function rmTop(m,ctx){const g=m.tl.filter(x=>x.gr==='kval'&&rmEval(x,ctx).st==='yes');return g.length?g[g.length-1]:null}
 function rmFlags(m){const o={};m.tl.forEach(t=>t.req.forEach(c=>{if(c.k==='flag'&&!c.not&&!o[c.f])o[c.f]=c.t}));return Object.entries(o)}
 function rmRegions(m){const o=new Set();m.tl.forEach(t=>t.req.forEach(c=>{if(c.k==='region')(c.in||[]).forEach(x=>o.add(x))}));return[...o]}
-const RMS={ok:'dk',pos:'',m:0,f:{},region:''};
-function rmSet(k,v){if(k==='ok'){RMS.ok=v;RMS.pos='';RMS.f={};RMS.m=0;RMS.region=''}else if(k==='pos'||k==='m'||k==='region')RMS[k]=v;else RMS.f[k]=v;render()}
+const RMS={ok:'dk',pos:'',m:0,f:{},region:'',ym:new Date().toISOString().slice(0,7),anc:'',area:1};
+function rmSet(k,v){if(k==='ok'){RMS.ok=v;RMS.pos='';RMS.f={};RMS.m=0;RMS.region='';RMS.anc=''}else if(k==='pos'||k==='m'||k==='region'||k==='ym'||k==='anc'||k==='area')RMS[k]=v;else RMS.f[k]=v;render()}
 function rmChip(t,c){return`<span class="rmc ${c||''}">${esc(t)}</span>`}
 function rmDot(s){s=String(s==null?'':s).trim();return s&&!/[.!?]$/.test(s)?s+'.':s}
 function rmBox(p){return`<div class="rmb${p.app===false?' rmna':''}"><b>${esc(p.l)}</b><span>${esc(rmDot(p.sub))}</span><em>${esc(p.trin||'')}</em>${p.hj?rmChip(p.hj,'g'):''}${p.app===false?rmChip('Ikke i appen','b'):''}</div>`}
 function rmVeje(m){let v=(m.veje||[]).map(x=>({l:x.l,note:x.note,steps:x.steps}));const used=new Set();v.forEach(x=>x.steps.forEach(st=>st.forEach(i=>used.add(i))));const rest=m.pos.filter(p=>!used.has(p.id)).map(p=>p.id);if(!v.length)v=[{l:'Stillinger',steps:[rest]}];else if(rest.length)v.push({l:'Øvrige',steps:[rest]});return v}
+
+// Visning af modellens integritet, kommende ændringer og lønopbygning
+function rmInteg(k){const v=rmValidate(),mine=v.errors.filter(x=>x.startsWith(k+'.')||x.startsWith(k+':')),wn=v.warnings.filter(x=>x.startsWith(k+'.')||x.startsWith(k+':')),st=v.stats[k];
+ const chips=(mine.length?rmChip(mine.length+' fejl i modellen','b'):rmChip('Modellen består alle kontroller','ok'))+(st?rmChip('Bundet til appen: '+st.bundet+' af '+st.ialt+' poster'+(st.strict?' (streng)':''),st.bundet===st.ialt?'ok':'w'):'');
+ const det=(mine.length?`<details class="rmdet" open><summary>Fejl (${mine.length})</summary>${mine.map(x=>`<p class="rmn">${esc(x)}</p>`).join('')}</details>`:'')+(wn.length?`<details class="rmdet"><summary>Påmindelser (${wn.length})</summary>${wn.map(x=>`<p class="rmn">${esc(x)}</p>`).join('')}</details>`:'');
+ return{chips,det}}
+function rmUpH(m,ym){const u=rmUpcoming(m,ym);return u.length?`<div class="card"><h3>Kommende ændringer efter ${esc(rmYm(ym))}</h3>${u.map(x=>`<div style="margin:8px 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px"><b>${esc(rmYm(x.from))}: ${esc(x.l)}</b><br>${esc(rmDot(x.txt))} ${x.hj?rmChip(x.hj,'g'):''}</div>`).join('')}</div>`:''}
+function rmPayH(m,ctx){const p=m.pos.find(x=>x.id===ctx.pos);if(!m.lon||!p||!p.lon||ctx.ancM==null||ctx.ancM==='')return'';const r=rmPay(m,ctx.pos,{ancM:+ctx.ancM,area:RMS.area,ym:RMS.ym});if(!r)return'';const kr=n=>n.toLocaleString('da-DK',{minimumFractionDigits:2,maximumFractionDigits:2});
+ return`<div style="margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px"><b>Lønopbygning pr. ${esc(rmYm(RMS.ym))}, område ${RMS.area}, ${+ctx.ancM} måneders anciennitet</b><table class="rmtab"><tbody>${r.parts.map(x=>`<tr><th style="text-align:left">${esc(x.l)}</th><td style="text-align:right">${kr(x.amt)} kr.</td></tr>`).join('')}<tr><th style="text-align:left">I alt om året</th><td style="text-align:right"><b>${kr(r.sum)} kr.</b></td></tr><tr><th style="text-align:left">Om måneden</th><td style="text-align:right">${kr(r.sum/12)} kr.</td></tr></tbody></table><p class="note" style="margin:6px 0 0">Beregnet af modellen ud fra løntrin, områdetillæg og tillæg. Appens egne lønsatser kontrolleres mod denne opstilling (afvigelse højst ca. 40 kr. om året, fordi områdetillægget reguleres for sig).</p></div>`}
 function rmV(){if(!RM[RMS.ok])RMS.ok='dk';const m=RM[RMS.ok],P=id=>m.pos.find(x=>x.id===id);if(!P(RMS.pos))RMS.pos=m.pos[0].id;
- const sel=`<div class="row"><label>Overenskomst<select onchange="rmSet('ok',this.value)">${Object.keys(RM).map(k=>`<option value="${k}" ${RMS.ok===k?'selected':''}>${esc(RM[k].navn)}</option>`).join('')}</select></label></div>`,
- hardNo=(t,p)=>t.req.some(c=>c.k==='pos'&&((c.not&&c.not.includes(p.id))||(c.in&&!c.in.includes(p.id)))),
+ const sel=`<div class="row"><label>Overenskomst<select onchange="rmSet('ok',this.value)">${Object.keys(RM).map(k=>`<option value="${k}" ${RMS.ok===k?'selected':''}>${esc(RM[k].navn)}</option>`).join('')}</select></label><label>Vis pr.<input type="month" value="${RMS.ym}" onchange="rmSet('ym',this.value)"></label></div>`,
+ hardNo=(t,p)=>rmHardNo(t,p.id),
  byG=L=>Object.keys(RMT).filter(g=>L.some(r=>r.t.gr===g)).map(g=>[g,L.filter(r=>r.t.gr===g)]),
  vejH=x=>{const ps=[...new Set(x.steps.flat())].map(P),rows=m.tl.map(t=>({t,no:ps.map(p=>hardNo(t,p))})),
   none=rows.filter(r=>r.no.every(Boolean)),all=rows.filter(r=>!r.no.some(Boolean)),dif=rows.filter(r=>r.no.some(Boolean)&&!r.no.every(Boolean)),
@@ -489,23 +530,23 @@ function rmV(){if(!RM[RMS.ok])RMS.ok='dk';const m=RM[RMS.ok],P=id=>m.pos.find(x=
  veje=rmVeje(m),
  nm=id=>{const x=m.tl.find(t=>t.id===id);return x?x.l:id},
  grs=Object.keys(RMT).filter(g=>m.tl.some(t=>t.gr===g)),
- gr=grs.map(g=>{const L=m.tl.filter(t=>t.gr===g);return`<h4 class="rmh">${RMT[g]}</h4><div class="rmg">${L.map(t=>{const v=RMV[t.ver]||RMV.ingen,sup=(t.sup||[]).map(nm),ex=(t.ex||[]).map(nm),no=m.pos.filter(p=>hardNo(t,p)).map(p=>p.l);return`<div class="rmk"><div class="rmkh"><b>${esc(t.l)}</b><span>${esc(t.amt||'')}</span></div><ul>${t.req.map(c=>`<li>${c.not?'Ikke: ':''}${esc(c.t)}</li>`).join('')}</ul>${sup.length?`<p class="rmn"><b>Afløser:</b> ${esc(sup.join(', '))}</p>`:''}${ex.length?`<p class="rmn"><b>Kan ikke kombineres med:</b> ${esc(ex.join(', '))}</p>`:''}${no.length&&no.length<m.pos.length?`<p class="rmn"><b>Udelukkes for:</b> ${esc(no.join(', '))}</p>`:''}${t.pg===false?'<p class="rmn">Giver ikke pension.</p>':t.pg===true?'<p class="rmn">Pensionsgivende.</p>':''}<div class="rmf">${t.hj?rmChip(t.hj,'g'):''}${rmChip(v[0],t.ver==='ok'?'ok':t.ver==='fag'||t.ver==='lok'?'w':'b')}${rmChip(t.st==='i appen'?'Bruges i appen':'Ikke i beregningen',t.st==='i appen'?'ok':'b')}</div>${t.kontrol?`<p class="rmn rmk2">Skal kontrolleres: ${esc(rmDot(t.kontrol))}</p>`:''}</div>`}).join('')}</div>`}).join(''),
- ctx={pos:RMS.pos,region:RMS.region,trainM:+RMS.m||0,flags:RMS.f},
+ gr=grs.map(g=>{const L=m.tl.filter(t=>t.gr===g);return`<h4 class="rmh">${RMT[g]}</h4><div class="rmg">${L.map(t=>{const v=RMV[t.ver]||RMV.ingen,sup=(t.sup||[]).map(nm),ex=(t.ex||[]).map(nm),no=m.pos.filter(p=>hardNo(t,p)).map(p=>p.l);return`<div class="rmk"><div class="rmkh"><b>${esc(t.l)}</b><span>${esc(rmAmtTxt(t,RMS.ym))}</span></div><ul>${t.req.map(c=>`<li>${c.not?'Ikke: ':''}${esc(c.t)}</li>`).join('')}</ul>${sup.length?`<p class="rmn"><b>Afløser:</b> ${esc(sup.join(', '))}</p>`:''}${ex.length?`<p class="rmn"><b>Kan ikke kombineres med:</b> ${esc(ex.join(', '))}</p>`:''}${no.length&&no.length<m.pos.length?`<p class="rmn"><b>Udelukkes for:</b> ${esc(no.join(', '))}</p>`:''}${t.pg===false?'<p class="rmn">Giver ikke pension.</p>':t.pg===true?'<p class="rmn">Pensionsgivende.</p>':''}<div class="rmf">${t.hj?rmChip(t.hj,'g'):''}${rmChip(v[0],t.ver==='ok'?'ok':t.ver==='fag'||t.ver==='lok'?'w':'b')}${rmChip(t.st==='i appen'?'Bruges i appen':'Ikke i beregningen',t.st==='i appen'?'ok':'b')}</div>${t.kontrol?`<p class="rmn rmk2">Skal kontrolleres: ${esc(rmDot(t.kontrol))}</p>`:''}</div>`}).join('')}</div>`}).join(''),
+ ctx={pos:RMS.pos,region:RMS.region,trainM:+RMS.m||0,flags:RMS.f,ancM:RMS.anc===''?undefined:+RMS.anc},hasAnc=m.tl.some(t=>t.req.some(c=>c.k==='anc')),ig=rmInteg(RMS.ok),
  sim=m.tl.map(t=>({t,e:rmEval(t,ctx)})),top=rmTop(m,ctx),regs=rmRegions(m),hasTr=m.tl.some(t=>t.req.some(c=>c.k==='train')),
  ck=([k,l])=>`<label class="rmck"><input type="checkbox" ${RMS.f[k]?'checked':''} onchange="rmSet('${k}',this.checked)"> ${esc(l)}</label>`,
  hasK=m.tl.some(t=>t.gr==='kval'&&(t.sup||[]).length),hasQ=m.tl.some(t=>t.gr==='kval'),
  stat={ok:0,fag:0,app:0,lok:0,ingen:0};m.tl.forEach(t=>stat[t.ver||'ingen']++);
- return`<h2>Regelmodel</h2>${sel}<div class="card"><h3 style="margin-top:0">${esc(m.navn)}</h3><p class="note" style="margin:0">${esc(rmDot(m.kilde))} ${esc(rmDot(m.intro))}</p><div class="rmf" style="margin-top:10px">${Object.entries(RMV).map(([k,v])=>stat[k]?rmChip(v[0]+': '+stat[k],k==='ok'?'ok':k==='ingen'?'b':'w'):'').join('')}${rmChip(m.tl.length+' regler, '+m.pos.length+' stillinger','g')}</div>${m.kontrol?`<p class="note rmk2" style="margin:10px 0 0">${esc(rmDot(m.kontrol))}</p>`:''}</div>
-<div class="card"><h3>1. Uddannelsesveje og stillinger</h3><p class="note">Hver vej er sin egen uddannelse eller faggruppe under samme overenskomst. En pil betyder, at man typisk kommer videre til næste stilling, ikke at det er et krav. Stillinger under hinanden er alternativer, ikke et forløb. Under hver vej ses, hvilke tillæg stillingerne kan og ikke kan få.</p>${veje.map(vejH).join('')}</div>
-${hasK?`<div class="card"><h3>2. Kvalifikationstillæg: en trinrække</h3><div class="rmrow">${m.tl.filter(t=>t.gr==='kval').map((t,i)=>`${i?'<span class="rma" title="Afløser det forrige">⇒</span>':''}<div class="rmb"><b>${esc(t.l)}</b><span>${esc(t.amt||'')}</span>${rmChip(t.hj,'g')}</div>`).join('')}</div><p class="note" style="margin-top:10px">${esc(rmDot(m.kvalTxt||'Det trin, der gælder, er det højeste, du opfylder'))}</p></div>`:''}
+ return`<h2>Regelmodel</h2>${sel}<div class="card"><h3 style="margin-top:0">${esc(m.navn)}</h3><p class="note" style="margin:0">${esc(rmDot(m.kilde))} ${esc(rmDot(m.intro))}</p><div class="rmf" style="margin-top:10px">${Object.entries(RMV).map(([k,v])=>stat[k]?rmChip(v[0]+': '+stat[k],k==='ok'?'ok':k==='ingen'?'b':'w'):'').join('')}${rmChip(m.tl.length+' regler, '+m.pos.length+' stillinger','g')}${ig.chips}</div>${ig.det}${m.kontrol?`<p class="note rmk2" style="margin:10px 0 0">${esc(rmDot(m.kontrol))}</p>`:''}</div>
+${rmUpH(m,RMS.ym)}<div class="card"><h3>1. Uddannelsesveje og stillinger</h3><p class="note">Hver vej er sin egen uddannelse eller faggruppe under samme overenskomst. En pil betyder, at man typisk kommer videre til næste stilling, ikke at det er et krav. Stillinger under hinanden er alternativer, ikke et forløb. Under hver vej ses, hvilke tillæg stillingerne kan og ikke kan få.</p>${veje.map(vejH).join('')}</div>
+${hasK?`<div class="card"><h3>2. Kvalifikationstillæg: en trinrække</h3><div class="rmrow">${m.tl.filter(t=>t.gr==='kval').map((t,i)=>`${i?'<span class="rma" title="Afløser det forrige">⇒</span>':''}<div class="rmb"><b>${esc(t.l)}</b><span>${esc(rmAmtTxt(t,RMS.ym))}</span>${rmChip(t.hj,'g')}</div>`).join('')}</div><p class="note" style="margin-top:10px">${esc(rmDot(m.kvalTxt||'Det trin, der gælder, er det højeste, du opfylder'))}</p></div>`:''}
 <div class="card"><h3>${hasK?3:2}. Reglerne enkeltvis</h3>${gr}</div>
-<div class="card"><h3>${hasK?4:3}. Prøv modellen</h3><p class="note">Vælg en situation og se, hvad modellen siger. Det er samme regler, appen bruger, hvor modellen er koblet på.</p><div class="row"><label>Stilling<select onchange="rmSet('pos',this.value)">${m.pos.map(p=>`<option value="${p.id}" ${RMS.pos===p.id?'selected':''}>${esc(p.l)}</option>`).join('')}</select></label>${hasTr?`<label>Måneder i uddannelsesstillinger<input type="number" min="0" max="120" value="${+RMS.m||0}" onchange="rmSet('m',this.value)" style="width:90px"></label>`:''}${regs.length?`<label>Region<select onchange="rmSet('region',this.value)"><option value="">Vælg</option>${regs.map(r=>`<option ${RMS.region===r?'selected':''}>${esc(r)}</option>`).join('')}</select></label>`:''}</div><div class="rmfl">${rmFlags(m).map(ck).join('')}</div><div class="rmsim">${sim.map(({t,e})=>`<div class="rms ${e.st}"><b>${esc(t.l)}</b><span class="rmst">${e.st==='yes'?'Gælder':e.st==='no'?'Gælder ikke':'Mangler oplysninger'}</span>${e.st==='no'?`<p class="rmn">${esc(rmDot(e.why||e.rows.filter(x=>x.r==='fail').map(x=>'Kræver: '+x.t).join('. ')))}</p>`:e.st==='maybe'?`<p class="rmn">Mangler: ${esc(rmDot(e.rows.filter(x=>x.r!=='pass').map(x=>x.t).join('. ')))}</p>`:''}</div>`).join('')}</div>${hasQ?`<p class="note" style="margin-top:10px"><b>Gældende kvalifikationstillæg:</b> ${top?esc(top.l)+' ('+esc(top.amt)+')':'ingen ud fra de oplysninger, du har sat'}</p>`:''}</div>`}
+<div class="card"><h3>${hasK?4:3}. Prøv modellen</h3><p class="note">Vælg en situation og se, hvad modellen siger. Det er samme regler, appen bruger, hvor modellen er koblet på.</p><div class="row"><label>Stilling<select onchange="rmSet('pos',this.value)">${m.pos.map(p=>`<option value="${p.id}" ${RMS.pos===p.id?'selected':''}>${esc(p.l)}</option>`).join('')}</select></label>${hasAnc?`<label>Anciennitet (måneder)<input type="number" min="0" max="480" value="${RMS.anc}" placeholder="ukendt" onchange="rmSet('anc',this.value)" style="width:110px"></label>`:''}${m.lon?`<label>Område<select onchange="rmSet('area',this.value)">${[1,2,3,4].map(a=>`<option ${+RMS.area===a?'selected':''}>${a}</option>`).join('')}</select></label>`:''}${hasTr?`<label>Måneder i uddannelsesstillinger<input type="number" min="0" max="120" value="${+RMS.m||0}" onchange="rmSet('m',this.value)" style="width:90px"></label>`:''}${regs.length?`<label>Region<select onchange="rmSet('region',this.value)"><option value="">Vælg</option>${regs.map(r=>`<option ${RMS.region===r?'selected':''}>${esc(r)}</option>`).join('')}</select></label>`:''}</div><div class="rmfl">${rmFlags(m).map(ck).join('')}</div><div class="rmsim">${sim.map(({t,e})=>`<div class="rms ${e.st}"><b>${esc(t.l)}</b><span class="rmst">${e.st==='yes'?'Gælder':e.st==='no'?'Gælder ikke':'Mangler oplysninger'}</span>${e.st==='no'?`<p class="rmn">${esc(rmDot(e.why||e.rows.filter(x=>x.r==='fail').map(x=>'Kræver: '+x.t).join('. ')))}</p>`:e.st==='maybe'?`<p class="rmn">Mangler: ${esc(rmDot(e.rows.filter(x=>x.r!=='pass').map(x=>x.t).join('. ')))}</p>`:''}</div>`).join('')}</div>${rmPayH(m,ctx)}${hasQ?`<p class="note" style="margin-top:10px"><b>Gældende kvalifikationstillæg:</b> ${top?esc(top.l)+' ('+esc(rmAmtTxt(top,RMS.ym))+')':'ingen ud fra de oplysninger, du har sat'}</p>`:''}</div>`}
 //RM-GL-FO
 Object.assign(RM,{
 gl:{navn:'Grønland – Læger',kilde:'Overenskomst mellem Naalakkersuisut og Foreningen af Speciallæger og Yngre Læger, 23. januar 2024 (Afsnit F, Læger), læst i sin helhed. Løn pr. 1. april 2026.',
  intro:'Pension: arbejdsgiver 10 % og egen andel 5 % af grundløn og rekrutterings- og fastholdelsestillæg, 20 % fra 45 år med mindst 3 års ansættelse (§ 81). Alle tillæg er ureguleret og ikke pensionsgivende, medmindre andet står her.',
  kontrol:'Appen har ingen stilling for cheflæge og ingen af stillingerne uden for sundhedsvæsenet. Reglerne for dem står her, men kan ikke vælges i appen endnu.',
- flow:[{l:'Uddannelse og vej til speciallæge',ids:['gres','ghu','ghu2','gafd']},{l:'Speciallæger og ledelse',ids:['gafd','gover','gled','chef']},{l:'Uden for sundhedsvæsenet (§ 7–14)',ids:['ext']}],
+ 
  pos:[
   {id:'gres',s:'Reservelæge',l:'Reservelæge / assisterende regionslæge',sub:'Højst 4 år i alt: 2 år og derefter 1 år ad gangen (ikke i hoveduddannelse)',trin:'Grundløn efter anciennitet',hj:'OK § 18'},
   {id:'ghu',s:'Hoveduddannelse',l:'Hoveduddannelse',sub:'Samme grundløn alle år',trin:'Grundløn',hj:'OK § 20 stk. 1'},
@@ -557,7 +598,7 @@ gl:{navn:'Grønland – Læger',kilde:'Overenskomst mellem Naalakkersuisut og Fo
 fo:{navn:'Færøerne – Yngre Læger',kilde:'Overenskomst mellem Foreningen af Yngre Læger/Hjálparlæknafelag Føroya og Fíggjarmálaráðið, 2017, læst i sin helhed. Beløb er fra appens løntabel pr. 1. oktober 2024. Overenskomsten udløb 30. september 2025.',
  intro:'Pension: 17,75 % af grundlønnen til udgangen af måneden, hvor man fylder 67 (§ 8). Feriegodtgørelse 12 % (§ 25).',
  kontrol:'Appen har kun én lønstilling for yngre læger (løntrin 3–14), så den kan ikke skelne mellem klassificeret og ikke-klassificeret stilling, 1. reservelæge eller amanuensis. Skal modellen styre tillæggene, skal ansættelsesopsætningen spørge om stillingstype.',
- flow:[{l:'Speciallægeuddannelse (klassificeret)',ids:['kres','k1res']},{l:'Ikke-klassificeret',ids:['ires','i1res','kass']},{l:'Almen medicin og faste stillinger',ids:['prak','aman','afd']}],
+ 
  pos:[
   {id:'kres',s:'Reservelæge (klass.)',l:'Reservelæge i klassificeret stilling',sub:'Introduktion, supplerende og undervisningsstilling. I hoveduddannelse de første 2½ år',trin:'Løntrin 3–14, 1 år pr. trin',hj:'OK § 4 stk. 1 a–b'},
   {id:'k1res',s:'1. reservelæge (klass.)',l:'1. reservelæge i klassificeret stilling',sub:'Hoveduddannelse efter de første 2½ år. Kan forlænges op til 6 måneder',trin:'Løntrin 3–14',hj:'OK § 4 stk. 1 c og § 6 stk. 2.2'},
@@ -1069,6 +1110,184 @@ V('spv',[{l:'Sygeplejevikar',steps:[['spv','spvs']]},{l:'Ventilatør',steps:[['v
 V('lvik',[{l:'Lægevikar',steps:[['lv']]}]);
 })();
 //RM-VEJE-END
+// ---------- Sundhedskartellet: migreret til regelmodel v2 (egenskaber, anciennitet, datoerede beløb, bindinger) ----------
+(function(){
+const m=RM.sk,T=id=>{const t=m.tl.find(x=>x.id===id);if(!t)throw new Error('rm_m_06: mangler sk.'+id);return t},A=(a,is,t,o)=>Object.assign({k:'attr',a,is,t},o||{}),C=(min,max,t)=>({k:'anc',min,max,t});
+// Egenskaber pr. stilling. grp: faggruppe. soc: ansat på socialområdet. spec: specialuddannet. omr: får områdetillæg.
+const AT={sy:['spl',0,0,1],spc:['spl',0,1,1],spcsoc:['spl',1,1,1],soc:['spl',1,0,1],rad:['rad',0,0,1],bio:['bio',0,0,1],biospc:['bio',0,1,1],kand:['kand',0,0,0],led:['led',0,0,0],man:['andre',0,0,0]};
+const LON={sy:[[0,4],[96,6]],spc:[[0,5],[96,7]],spcsoc:[[0,5],[96,7]],soc:[[0,4],[96,6]],rad:[[0,4],[96,6]],bio:[[0,4],[96,6]],biospc:[[0,5],[96,7]]};
+m.pos.forEach(p=>{const a=AT[p.id];if(!a)throw new Error('rm_m_06: ingen egenskaber for '+p.id);p.attrs={grp:a[0],soc:!!a[1],spec:!!a[2],omr:!!a[3]};if(LON[p.id])p.lon=LON[p.id]});
+// Lønskala (OK24 § 5 stk. 1 og 2, 31.3.2018-niveau)
+m.lon={trin:{1:260553,2:265876,3:275941,4:283955,5:297676,6:330676,7:343806,8:356343},omr:{4:[4331,7328,11658,14656],5:[3785,6405,10190,12809],6:[2867,4852,7721,9706],7:[2415,4088,6504,8177]}};
+// Krav på stilling -> egenskaber. Nøglen er den tidligere stillingsliste.
+const SPL=A('grp','spl','Sygeplejerske');
+const CV={'sy,spc,spcsoc,soc':()=>[SPL],
+ 'sy,soc':t=>[SPL,A('spec',false,t)],'sy,spc':t=>[SPL,A('soc',false,t)],'spcsoc,soc':t=>[SPL,A('soc',true,t)],'spc,spcsoc':t=>[SPL,A('spec',true,t)],
+ 'rad':t=>[A('grp','rad',t)],'bio,biospc':t=>[A('grp','bio',t)],'kand':t=>[A('grp','kand',t)],'man':t=>[A('grp','andre',t)]};
+m.tl.forEach(t=>{const out=[];t.req.forEach(c=>{
+ if(c.k==='pos'&&c.in){const f=CV[[...c.in].sort((a,b)=>['sy','spc','spcsoc','soc'].indexOf(a)-['sy','spc','spcsoc','soc'].indexOf(b)).join(',')]||CV[c.in.join(',')];if(!f)throw new Error('rm_m_06: ukendt stillingsliste '+c.in+' i '+t.id);out.push(...f(c.t))}
+ else if(c.k==='pos'&&c.not){if(c.not.join(',')!=='kand,led,man')throw new Error('rm_m_06: ukendt not-liste i '+t.id);out.push(A('omr',true,c.t))}
+ else if(c.k==='flag'&&c.f==='a4')out.push(c.not?C(null,48,c.t):C(48,null,c.t));
+ else if(c.k==='flag'&&c.f==='a8')out.push(c.not?C(null,96,c.t):C(96,null,c.t));
+ else if(c.k==='flag'&&c.f==='a10')out.push(C(120,null,c.t));
+ else out.push(c)});t.req=out});
+// Beløb (modellen er kilden; appens profil henter dem via rmApply)
+const V=(id,v,o)=>{const t=T(id);t.v=v;t.amt='';Object.assign(t,o||{})},y=(from,amt,o)=>Object.assign({from,amt,niv:'2018'},o||{});
+V('vt',[y('2026-01',11167,{pub:{ym:'2026-10',amt:13452.12}})],{bind:{kind:'extra',k:'vt'},pg:true});
+V('ak',[y('2018-03',8280,{pub:{ym:'2026-10',amt:9974.4}})],{bind:{kind:'extra',k:'ak'},pg:true,kontrol:T('ak').kontrol+' Startdato for beløbet er ikke afklaret. Modellen bruger beløbet for alle måneder, som appen gør. Det offentliggjorte beløb er 9.974,40 kr. (831,20 kr. om måneden), 6 øre over 8.280 × 1,20463.'});
+V('ek',[y('2025-04',11300)],{bind:{kind:'extra',k:'ek'},pg:true});
+V('as',[y('2025-04',12000)],{bind:{kind:'extra',k:'as'},pg:true});
+V('bk',[y('2018-03',8516)],{bind:{kind:'extra',k:'bk'},pg:true,kontrol:T('bk').kontrol+' Startdato for beløbet er ikke afklaret. Modellen bruger beløbet for alle måneder, som appen gør.'});
+const tab={bind:{kind:'tab'}};
+V('sa1',[y('2025-04',6000)],tab);V('sa2',[y('2018-03',2188)],tab);V('sa3',[y('2025-01',18297),y('2026-01',21101)],tab);V('sa4',[y('2025-04',9000)],tab);
+V('sa5',[y('2025-04',24615)],tab);V('sa6',[y('2025-04',31298)],tab);V('ra1',[y('2025-04',8188)],tab);V('ra2',[y('2018-03',3000)],tab);V('ra3',[y('2025-04',26360)],tab);
+V('bi1',[y('2025-04',12838)],tab);V('bi2',[y('2025-04',25370,{when:{spec:false}}),y('2025-04',28403,{when:{spec:true}})],tab);
+})();
+// Bindinger for de øvrige modeller (genereret fra modellens egne beløbstekster og kontrolleret mod appen; ikke-strenge modeller)
+(function(){const T=(k,id)=>{const t=RM[k].tl.find(x=>x.id===id);if(!t)throw new Error('rm_m_07: mangler '+k+'.'+id);return t},y=(from,amt,o)=>Object.assign({from,amt,niv:'2018'},o||{});
+const VT=y('2026-01',11167,{pub:{ym:'2026-10',amt:13452.12}});
+const B=(k,id,kind,v)=>{const t=T(k,id);t.v=[v];t.bind={kind,k:id};t.amt=''};
+B('dk','bup','extra',{from:'2018-03',amt:10782,niv:'nu',unit:'år'});
+B('dk','q1','qual',{from:'2018-03',amt:48952,niv:'nu',unit:'år'});
+B('dk','q2','qual',{from:'2018-03',amt:73267,niv:'nu',unit:'år'});
+B('dk','q3','qual',{from:'2018-03',amt:91945,niv:'nu',unit:'år'});
+B('fo','h1','extra',{from:'2018-03',amt:8265.78,niv:'nu',unit:'md'});
+B('fo','am','extra',{from:'2018-03',amt:1444.62,niv:'nu',unit:'md'});
+B('fo','phd','extra',{from:'2018-03',amt:2200,niv:'nu',unit:'md'});
+B('fo','uk','extra',{from:'2018-03',amt:2000,niv:'nu',unit:'md'});
+B('fo','ub','extra',{from:'2018-03',amt:1000,niv:'nu',unit:'md'});
+B('fo','b','qual',{from:'2018-03',amt:4232.69,niv:'nu',unit:'md'});
+B('fo','c','qual',{from:'2018-03',amt:6349.01,niv:'nu',unit:'md'});
+B('fo','e','qual',{from:'2018-03',amt:7759.93,niv:'nu',unit:'md'});
+B('gl','l1','extra',{from:'2018-03',amt:15000,niv:'nu',unit:'md'});
+B('gl','l2','extra',{from:'2018-03',amt:19000,niv:'nu',unit:'md'});
+B('gl','n1','extra',{from:'2018-03',amt:3000,niv:'nu',unit:'md'});
+B('gl','n2','extra',{from:'2018-03',amt:7000,niv:'nu',unit:'md'});
+B('gl','r1','extra',{from:'2018-03',amt:4000,niv:'nu',unit:'md'});
+B('gl','r2','extra',{from:'2018-03',amt:8000,niv:'nu',unit:'md'});
+B('gl','s1','extra',{from:'2018-03',amt:8000,niv:'nu',unit:'md'});
+B('gl','s2','extra',{from:'2018-03',amt:12000,niv:'nu',unit:'md'});
+B('gl','q1','extra',{from:'2018-03',amt:1600,niv:'nu',unit:'md'});
+B('gl','q2','extra',{from:'2018-03',amt:1600,niv:'nu',unit:'md'});
+B('gl','dpu','extra',{from:'2018-03',amt:3200,niv:'nu',unit:'md'});
+B('gl','tut','extra',{from:'2018-03',amt:800,niv:'nu',unit:'md'});
+B('gl','tut2','extra',{from:'2018-03',amt:800,niv:'nu',unit:'md'});
+B('gl','uan','extra',{from:'2018-03',amt:1600,niv:'nu',unit:'md'});
+B('gl','u27','extra',{from:'2018-03',amt:5000,niv:'nu',unit:'md'});
+B('gl','fun','extra',{from:'2018-03',amt:8000,niv:'nu',unit:'md'});
+B('gl','nov','extra',{from:'2018-03',amt:12000,niv:'nu',unit:'md'});
+B('efj','vt','extra',VT);
+B('efj','bup','extra',y('2018-03',9000));
+B('sosu','vt','extra',VT);
+B('sosu','ans','extra',y('2018-03',11290));
+B('sosu','lsa','extra',y('2018-03',7393));
+B('sosu','ret','extra',y('2018-03',12903));
+B('sosu','med','extra',y('2018-03',2847));
+B('por','vt','extra',VT);
+B('hk','vt','extra',VT);
+B('hk','ul4','extra',y('2018-03',12097));
+B('hk','ul10','extra',y('2018-03',19086));
+B('glpk','e5','extra',{from:'2018-03',amt:2000,niv:'nu',unit:'md'});
+B('glpk','e7','extra',{from:'2018-03',amt:2500,niv:'nu',unit:'md'});
+B('glpk','e9','extra',{from:'2018-03',amt:3000,niv:'nu',unit:'md'});
+B('glpk','es','extra',{from:'2018-03',amt:2500,niv:'nu',unit:'md'});
+B('glpk','ea','extra',{from:'2018-03',amt:4000,niv:'nu',unit:'md'});
+B('glpk','el','extra',{from:'2018-03',amt:7000,niv:'nu',unit:'md'});
+B('glpk','eo','extra',{from:'2018-03',amt:750,niv:'nu',unit:'md'});
+B('glpk','ep','extra',{from:'2018-03',amt:2000,niv:'nu',unit:'md'});
+B('glpk','ek','extra',{from:'2018-03',amt:3000,niv:'nu',unit:'md'});
+B('glpk','eq','extra',{from:'2018-03',amt:6800,niv:'nu',unit:'md'});
+B('glpk','ej','extra',{from:'2018-03',amt:3500,niv:'nu',unit:'md'});
+B('glpk','ed','extra',{from:'2018-03',amt:5000,niv:'nu',unit:'md'});
+B('glpk','sf','extra',{from:'2018-03',amt:3600,niv:'nu',unit:'md'});
+B('glpk','sl','extra',{from:'2018-03',amt:4500,niv:'nu',unit:'md'});
+B('glpk','sa','extra',{from:'2018-03',amt:1500,niv:'nu',unit:'md'});
+B('glpk','s1','extra',{from:'2018-03',amt:2500,niv:'nu',unit:'md'});
+B('glpk','s2','extra',{from:'2018-03',amt:1500,niv:'nu',unit:'md'});
+B('glpk','s3','extra',{from:'2018-03',amt:600,niv:'nu',unit:'md'});
+B('spv','fa','extra',{from:'2018-03',amt:7.53,niv:'nu',unit:'time'});
+B('spv','fb','extra',{from:'2018-03',amt:16.43,niv:'nu',unit:'time'});
+B('spv','fc','extra',{from:'2018-03',amt:8.93,niv:'nu',unit:'time'});
+B('gl','rot','extra',{from:'2018-03',amt:6500,niv:'nu',unit:'md'});
+B('sped','vt','extra',{from:'2026-04',amt:7631,niv:'nu'});T('sped','vt').vn='Appen bruger 6.370 kr. (2018-niveau) × 1,198008. Regulering pr. 1.10.2026 er ikke afklaret';
+B('sped','ls','extra',{from:'2026-04',amt:14010,niv:'nu'});T('sped','ls').vn='11.694 kr. (2018-niveau) × 1,198008. Regulering pr. 1.10.2026 er ikke afklaret';
+B('sped','lsh','extra',{from:'2026-04',amt:6602,niv:'nu'});T('sped','lsh').vn='5.511 kr. (2018-niveau) × 1,198008. Regulering pr. 1.10.2026 er ikke afklaret';
+B('amb','or','extra',y('2018-03',30432,{pub:{ym:'2026-10',amt:36659}}));
+})();
+// ---------- Regelmodel v2: kobling, anvendelse og validering (skal ligge sidst) ----------
+(function(){
+// Hver regel kender sin model (bruges til opslag af stillingens egenskaber)
+for(const k of Object.keys(RM))RM[k].tl.forEach(t=>{t.mk=k});
+// Strenge modeller: hver profilpost skal være bundet, og alle regler skal opfylde skemaet uden undtagelser
+RM.sk.strict=true;
+for(const k of Object.keys(RM))RM[k].mk=k;
+RM.dk.kommende=[{from:'2027-04',l:'OK26 for Yngre Læger (forudsætter samlet forlig med Akademikerne)',txt:'Ulempetillæggene stiger til 90,46 og 125,45 kr. (2018-niveau), hverdagstillægget starter kl. 18 i stedet for kl. 20, speciallæger flyttes til en ny overenskomst, og anciennitet tælles fra bestået eksamen. Ikke lagt ind i beregningerne endnu',hj:'OK26-protokol RLTN/YL, 1.3.2026'}];
+RM.glpk.regTab=[['2024-04',1],['2028-04',1.01]];
+})();
+// Beløb, der er bundet til appens profiler, hentes fra modellen (modellen er kilden)
+function rmYr(a){return a.unit==='md'?Math.round(a.amt*12*100)/100:a.amt}
+function rmApply(){const out=[];for(const k of Object.keys(RM)){const m=RM[k],P=typeof PROFILES!=='undefined'?PROFILES[k]:null;if(!P||!P.fac)continue;const ym=P.fac[P.fac.length-1][0];
+ for(const t of m.tl){const b=t.bind;if(!b||!t.v)continue;const list=b.kind==='extra'?P.extras:b.kind==='qual'?P.quals:null;if(!list)continue;const x=list.find(y=>y.k===b.k);if(!x)continue;const a=rmAmt(t,ym);if(!a)continue;
+  if(a.unit==='time'){if(x.hr!==a.amt){out.push([k,t.id,x.hr,a.amt]);x.hr=a.amt}}else if(x.a!==rmYr(a)){out.push([k,t.id,x.a,rmYr(a)]);x.a=rmYr(a)}}}
+ return out}
+const RM_TL_KEYS=['id','ver','gr','l','amt','pg','req','why','sup','ex','hj','st','kontrol','v','vn','bind','mk'],RM_POS_KEYS=['id','s','l','sub','trin','hj','app','attrs','lon'],RM_M_KEYS=['regTab','navn','kilde','intro','kontrol','veje','kvalTxt','pos','tl','kommende','lon','strict','mk'],
+ RM_REQ={pos:['k','t','in','not'],attr:['k','t','a','is','not'],anc:['k','t','min','max'],flag:['k','t','f','not'],region:['k','t','in'],train:['k','t','min']},
+ RM_ISO=/^\d{4}-(0[1-9]|1[0-2])$/;
+// Streng validering. Returnerer {errors, warnings, stats}. Kaldes af testen og af adminvisningen.
+function rmValidate(RMx,PRx,REGx){RMx=RMx||RM;PRx=PRx||(typeof PROFILES!=='undefined'?PROFILES:{});const err=[],warn=[],st={};
+ const E=(m,s)=>err.push(m+': '+s),W=(m,s)=>warn.push(m+': '+s);
+ for(const k of Object.keys(RMx)){const m=RMx[k],strict=!!m.strict,ids=new Set(),pids=new Set(),pr=PRx[k];
+  Object.keys(m).forEach(x=>{if(!RM_M_KEYS.includes(x))E(k,'ukendt modelfelt '+x)});
+  ['navn','kilde'].forEach(x=>{if(!m[x])E(k,'mangler '+x)});
+  if(!Array.isArray(m.pos)||!m.pos.length)E(k,'ingen stillinger');if(!Array.isArray(m.tl))E(k,'ingen regler');
+  (m.pos||[]).forEach(p=>{Object.keys(p).forEach(x=>{if(!RM_POS_KEYS.includes(x))E(k+'.'+p.id,'ukendt stillingsfelt '+x)});if(!p.id||!p.l)E(k,'stilling uden id eller navn');if(pids.has(p.id))E(k,'dubleret stilling '+p.id);pids.add(p.id)});
+  const attrNames=new Set();(m.pos||[]).forEach(p=>Object.keys(p.attrs||{}).forEach(a=>attrNames.add(a)));
+  (m.tl||[]).forEach(t=>{const w=k+'.'+t.id;Object.keys(t).forEach(x=>{if(!RM_TL_KEYS.includes(x))E(w,'ukendt regelfelt '+x)});
+   if(!t.id)E(k,'regel uden id');if(ids.has(t.id))E(k,'dubleret regel '+t.id);ids.add(t.id);
+   if(!RMV[t.ver])E(w,'ukendt kildestatus '+t.ver);if(!RMT[t.gr])E(w,'ukendt gruppe '+t.gr);if(!t.l)E(w,'mangler navn');
+   if(['ok','fag','lok'].includes(t.ver)&&!t.hj)E(w,'mangler hjemmel');
+   if(!Array.isArray(t.req))E(w,'req er ikke en liste');
+   (t.req||[]).forEach((c,i)=>{const keys=RM_REQ[c.k];if(!keys){E(w,'krav '+i+' har ukendt art '+c.k);return}Object.keys(c).forEach(x=>{if(!keys.includes(x))E(w,'krav '+i+' ('+c.k+') har ukendt felt '+x)});if(!c.t)E(w,'krav '+i+' mangler tekst');
+    if(c.k==='pos')(c.in||c.not||[]).forEach(x=>{if(!pids.has(x))E(w,'krav peger på ukendt stilling '+x)});
+    if(c.k==='attr'){if(!attrNames.has(c.a))E(w,'krav bruger ukendt egenskab '+c.a);else{const miss=m.pos.filter(p=>!p.attrs||!(c.a in p.attrs));if(miss.length)E(w,'egenskab '+c.a+' mangler på '+miss.map(p=>p.id).join(', '))}if(c.is===undefined)E(w,'attr-krav uden is')}
+    if(c.k==='anc'){if(c.min==null&&c.max==null)E(w,'anc-krav uden grænser');if(c.min!=null&&c.max!=null&&!(c.min<c.max))E(w,'anc min skal være mindre end max');[c.min,c.max].forEach(x=>{if(x!=null&&(typeof x!=='number'||x<0))E(w,'anc-grænse skal være tal ≥ 0')})}
+    if(c.k==='flag'&&!c.f)E(w,'flag-krav uden f');if(c.k==='train'&&typeof c.min!=='number')E(w,'train-krav uden min')});
+   ['ex','sup'].forEach(f=>(t[f]||[]).forEach(x=>{const o=m.tl.find(y=>y.id===x);if(!o)E(w,f+' peger på ukendt regel '+x);else if(f==='ex'&&!(o.ex||[]).includes(t.id))E(w,'ex er ikke gensidig med '+x)}));
+   if(t.v){if(!Array.isArray(t.v)||!t.v.length)E(w,'v skal være en liste');else{let prev={};t.v.forEach((x,i)=>{Object.keys(x).forEach(y=>{if(!['from','amt','niv','unit','when','pub'].includes(y))E(w,'v['+i+'] ukendt felt '+y)});
+     if(!RM_ISO.test(x.from||''))E(w,'v['+i+'].from skal være ÅÅÅÅ-MM');if(typeof x.amt!=='number'||!(x.amt>0))E(w,'v['+i+'].amt skal være et positivt tal');if(!['2018','nu'].includes(x.niv))E(w,'v['+i+'].niv skal være 2018 eller nu');if(!RMU[x.unit||'år'])E(w,'v['+i+'] ukendt enhed '+x.unit);
+     if(x.when)Object.keys(x.when).forEach(a=>{if(!attrNames.has(a))E(w,'v['+i+'].when bruger ukendt egenskab '+a)});
+     const key=JSON.stringify(x.when||{});if(prev[key]&&!(x.from>prev[key]))E(w,'v skal være stigende i from for samme egenskaber');prev[key]=x.from;
+     if(x.pub){if(!RM_ISO.test(x.pub.ym||'')||typeof x.pub.amt!=='number')E(w,'v['+i+'].pub skal have ym og amt');else if(x.niv==='2018'&&Math.abs(x.pub.amt-x.amt*rmFac(x.pub.ym,k))>0.5)E(w,'v['+i+'].pub afviger mere end 0,50 kr. fra beløb × regulering')}})}}
+   else if(t.bind&&t.bind.kind!=='manual')E(w,'bundet regel uden v');
+   if(t.bind){if(!['extra','qual','tab'].includes(t.bind.kind))E(w,'ukendt bind.kind '+t.bind.kind);if(t.bind.kind!=='tab'&&!t.bind.k)E(w,'bind uden k')}
+  });
+  {const L=(m.tl||[]).filter(t=>t.req.some(c=>c.k==='pos')).map(t=>t.id);if(L.length)(strict?E:W)(k,L.length+' regler bruger stillingslister i stedet for egenskaber (ikke migreret): '+L.join(', '))}
+  // veje
+  const inV=new Set();(m.veje||[]).forEach(v=>(v.steps||[]).forEach(s=>s.forEach(x=>{if(!pids.has(x))E(k,'vej peger på ukendt stilling '+x);inV.add(x)})));
+  (m.pos||[]).forEach(p=>{if(!inV.has(p.id))E(k,'stilling '+p.id+' er ikke på nogen uddannelsesvej')});
+  // kommende
+  (m.kommende||[]).forEach(x=>{if(!RM_ISO.test(x.from||'')||!x.l)E(k,'kommende ændring skal have from (ÅÅÅÅ-MM) og l')});
+  // lønopbygning
+  (m.pos||[]).forEach(p=>{if(p.lon){if(!m.lon)E(k+'.'+p.id,'lon uden modellens lon-tabel');else p.lon.forEach(x=>{if(!m.lon.trin[x[1]])E(k+'.'+p.id,'ukendt løntrin '+x[1])})}});
+  // kobling til appens profil
+  if(!pr){W(k,'ingen appprofil med samme id');continue}
+  const roles=(pr.roles||[]).map(r=>r.k),miss=roles.filter(r=>!pids.has(r));
+  if(miss.length)(strict?E:W)(k,'appens roller uden modelstilling: '+miss.join(', '));
+  const noApp=m.pos.filter(p=>!roles.includes(p.id)&&p.app!==false).map(p=>p.id);if(noApp.length)W(k,'modelstillinger uden rolle i appen (og uden app:false): '+noApp.join(', '));
+  const bound=new Set();m.tl.forEach(t=>{const b=t.bind;if(!b||b.kind==='tab')return;const list=b.kind==='extra'?pr.extras:pr.quals,x=(list||[]).find(y=>y.k===b.k);if(!x){E(k+'.'+t.id,'bundet til '+b.kind+' '+b.k+', som ikke findes i appens profil');return}bound.add(b.kind+':'+b.k);
+   const ym=pr.fac?pr.fac[pr.fac.length-1][0]:null;if(t.v&&ym){const a=rmAmt(t,ym);if(!a)E(k+'.'+t.id,'ingen beløb i modellen pr. '+ym);else{const pv=a.unit==='time'?x.hr:x.a,mv=a.unit==='time'?a.amt:rmYr(a);if(Math.abs(pv-mv)>0.011)E(k+'.'+t.id,'modellen siger '+mv+', appen bruger '+pv)}
+    if(t.pg!==undefined&&x.pg!==undefined&&!!t.pg!==!!x.pg)E(k+'.'+t.id,'pensionsgivende: modellen '+t.pg+', appen '+x.pg)}});
+  // regulering
+  if(pr.fac){const a=JSON.stringify(pr.fac.map(x=>[x[0],x[1]])),bb=JSON.stringify((m.regTab||RMREG).filter(x=>x[0]!=='2018-03'));if(a!==bb)E(k,'appens reguleringsfaktorer afviger fra modellens (RMREG)')}
+  const unb=[...(pr.extras||[]).map(x=>'extra:'+x.k),...(pr.quals||[]).map(x=>'qual:'+x.k)].filter(x=>!bound.has(x));
+  if(unb.length)(strict?E:W)(k,'appens poster uden binding til modellen: '+unb.join(', '));
+  st[k]={bundet:bound.size,ialt:(pr.extras||[]).length+(pr.quals||[]).length,strict}}
+ return{errors:err,warnings:warn,stats:st}}
+rmApply();
+
+// Anvend bundne beløb fra modellen i appens profiler, og meld modelfejl i konsollen
+rmApply();
+{const v=rmValidate();if(v.errors.length)console.warn("Regelmodel: "+v.errors.length+" fejl",v.errors.slice(0,10))}
 //RM-FIN
 function render(){try{palApply()}catch(e){}if(S.tab==='sc'||((S.tab==='mail'||S.tab==='okadm'||S.tab==='admdata'||S.tab==='rules')&&!(tkAdm()&&avOn()&&EMB)))S.tab='work';const n=check().reduce((a,r)=>a+r.v.filter(x=>!S.ack[x]).length,0),tabs=[['work','Kalender'],...(emp()&&R().evac?[['ev','Evakuering']]:[]),['pay','Løn'],['reg','Regnskab'],['stat','Statistik'],['rt','Rettigheder'],['check','Overenskomsttjek'],...(tkAdm()&&avOn()&&EMB?[['mail','Postkasse'],['okadm','OK-overblik'],['rules','Regelmodel'],['admdata','Data og import']]:[])],SET=[['cal','Kalenderabonnement'],['shifts','Vagtformer'],['sc','Importér'],['emps','Ansættelser'],['inst','App-opsætning'],['acct','Konto']],inSet=SET.some(t=>t[0]===S.tab);
  if(!EMB&&!tabs.concat(SET,[['help']]).some(t=>t[0]===S.tab))S.tab='work';
@@ -1402,7 +1621,7 @@ function upd(){if(ed&&ed._new&&!ed.cM)autoColor();render()}
 function saveShift(){if(!ed.ab&&ed.name)ed.ab=abbr(ed.name);gsync();if(!ed.ab||!ed.t.some(t=>t[0]&&t[1])){tell('Udfyld navn og tider.');return}delete ed.G;const sh=shifts(),i=sh.findIndex(x=>x.id===ed.id),nw=!!ed._new,sv=ed;delete ed._new;if(i>=0)sh[i]=ed;else sh.push(ed);ed=null;save();render();if(nw&&typeof sfOffer==='function')sfOffer(sv)}
 function delShift(){ask('Slet vagtformen og fjern den fra planen?',()=>{const id=ed.id;S.shifts[S.cur]=shifts().filter(x=>x.id!==id);for(const k in S.plan)if(S.plan[k].endsWith('|'+id))delete S.plan[k];ed=null;save();render()})}
 function DEMOCARD(){const g=grpGet(),has=S.emps.some(e=>e.demo);return`<div class="card"><h3>Eksempeldata</h3><p class="note">Se, hvordan appen ser ud med en realistisk vagtplan for din faggruppe (${esc(grpName(g))}): typiske vagtformer, en måned med dag-, aften-, nat- og weekendvagter, løn og ulempetillæg regnet efter overenskomsten, og et enkelt bevidst regelbrud, så du kan se, hvordan overenskomsttjekket advarer. Eksemplet er opdigtet og kan fjernes igen uden at røre dine egne data.</p>${has?'<button class="b d" onclick="demoDel()">Fjern eksempeldata</button>':`<button class="b p" onclick="demoGrp('${g}')">Indlæs eksempel: ${esc(grpName(g))}</button>`}${g==='laege'?'':''}</div>`}
-function efRole(){const rs=(S.oks[ef.ok]||S.oks.dk).roles,pos=rs.find(x=>x.k===ef.pos)||rs[0];return`<div class="row" style="margin-top:10px"><label>Stilling<select onchange="ef.pos=this.value;render()">${rs.map(x=>`<option value="${x.k}" ${x.k===pos.k?'selected':''}>${x.n}</option>`).join('')}</select></label>${pos.byTrin?`<label>Løntrin nu<select onchange="ef.trin=+this.value"><option value="">Vælg</option>${pos.tiers.map((t,i)=>`<option value="${i+pos.tb}" ${+ef.trin===i+pos.tb?'selected':''}>Løntrin ${i+pos.tb}</option>`).join('')}</select></label><label>Dato for næste løntrin<input type="date" value="${ef.trinNext||''}" onchange="ef.trinNext=this.value"></label>`:pos.tiers?`<label>${(S.oks[ef.ok]||S.oks.dk).areas?'Anciennitetsdato (første ansættelse i faget)':'Anciennitetsdato (kandidateksamen)'}<input type="date" value="${ef.ancFrom||''}" onchange="ef.ancFrom=this.value"></label>`:''}${!pos.a&&!pos.tiers?`<label>Månedsløn (kr.)<input type="number" step="0.01" value="${ef.monthly||''}" onchange="ef.monthly=+this.value" style="width:130px"></label>`:''}</div>${pos.areaT?`<div class="row" style="margin-top:10px">${areaCtl(ef.area,"ef.area=+this.value;render()","ef.area=areaOfKom(this.value)||1;render()")}</div>`:''}<p class="note">${pos.d||''} Kvalifikationstillæg og andre tillæg vælger du bagefter her på siden.</p>`}
+function efRole(){const rs=(S.oks[ef.ok]||S.oks.dk).roles,pos=rs.find(x=>x.k===ef.pos)||rs[0];return`<div class="row" style="margin-top:10px"><label>Stilling<select onchange="ef.pos=this.value;efAuto();render()">${rs.map(x=>`<option value="${x.k}" ${x.k===pos.k?'selected':''}>${x.n}</option>`).join('')}</select></label>${pos.byTrin?`<label>Løntrin nu<select onchange="ef.trin=+this.value"><option value="">Vælg</option>${pos.tiers.map((t,i)=>`<option value="${i+pos.tb}" ${+ef.trin===i+pos.tb?'selected':''}>Løntrin ${i+pos.tb}</option>`).join('')}</select></label><label>Dato for næste løntrin<input type="date" value="${ef.trinNext||''}" onchange="ef.trinNext=this.value"></label>`:pos.tiers?`<label>${(S.oks[ef.ok]||S.oks.dk).areas?'Anciennitetsdato (første ansættelse i faget)':'Anciennitetsdato (kandidateksamen)'}<input type="date" value="${ef.ancFrom||''}" onchange="ef.ancFrom=this.value"></label>`:''}${!pos.a&&!pos.tiers?`<label>Månedsløn (kr.)<input type="number" step="0.01" value="${ef.monthly||''}" onchange="ef.monthly=+this.value" style="width:130px"></label>`:''}</div>${pos.areaT?`<div class="row" style="margin-top:10px">${areaCtl(ef.area,"ef.area=+this.value;render()","ef.area=areaOfKom(this.value)||1;render()")}</div>`:''}<p class="note">${pos.d||''} Kvalifikationstillæg og andre tillæg vælger du bagefter her på siden.</p>`}
 let newEmp=false,empOpen=null;
 function openEmp(id){if(empOpen===id)empOpen=null;else{empOpen=id;S.cur=id;save()}render()}
 function empsV(){const oname=k=>(S.oks[k]||{}).n||'',pos=e=>{const o=S.oks[e.ok]||S.oks.dk,r=o.roles.find(x=>x.k===e.pos);return r?r.n:''};
@@ -1443,8 +1662,9 @@ const grpCard=()=>`<details class="card"><summary><b>Ændre faggruppe</b> <span 
 function newEmpV(){if(!grpOk(ef.ok)){ef.ok=grpDef(ef.region);ef.pos=''}{const P0=S.oks[ef.ok]||S.oks.dk,gp=(ef.ok==='glpk'?GRPPOSG:GRPPOS)[grpGet()];if(!ef.pos&&gp&&P0.roles.some(x=>x.k===gp))ef.pos=gp}const P1=S.oks[ef.ok]||S.oks.dk,H=(n,t)=>`<div class="nes${n===1?' f':''}"><span class="nen">${n}</span><b>${t}</b></div>`;return`<div class="card nec"><h3>Ny ansættelse</h3>${GRPOK[grpGet()].length<=2?'<p class="note" style="margin:0 0 8px">Overenskomsten for '+esc(grpName(grpGet()))+' er ikke bygget ind endnu. Vælg «Egen aftale», og skriv din løn og dine satser selv, så regner appen stadig timer, hvile og normperioder.</p>':''}
  ${H(1,'Hvor arbejder du?')}<div class="row"><label>Region<select onchange="ef.region=this.value;ef.pos='';ef.ok=grpDef(this.value);if(ef.hos&&!hospOpts(ef.region).includes(ef.hos))ef.hos='';if(ef.shak&&!depAll(ef.region,ef.hos).some(x=>x[0]===ef.dep)){ef.dep='';ef.shak=''}render()">${REG.map(r=>`<option ${ef.region===r?'selected':''}>${r}</option>`).join('')}</select></label><label>Hospital<input list="dlh" autocomplete="off" value="${esc(ef.hos||'')}" oninput="ef.hos=this.value" onchange="this.value=ef.hos=snapDl(this.value,hospOpts(ef.region));render()" style="width:230px" placeholder="Begynd at skrive, fx Aalborg"></label><label>Afdeling eller vikarbureau<input list="dld" autocomplete="off" value="${esc(ef.dep||'')}" oninput="ef.dep=this.value;ef.shak=''" onchange="const q=depPick(this.value,ef.region,ef.hos);this.value=ef.dep=q.dep;ef.shak=q.shak;render()" style="width:230px" placeholder="${ef.ok==='stud'?'Fx Intensivafdeling eller bureau':'Fx Medicinsk afdeling'}"></label><label>Speciale (valgfri)<input list="dls" autocomplete="off" placeholder="fx Akutmedicin" value="${esc(ef.spec||'')}" oninput="ef.spec=this.value" style="width:200px"></label></div><p class="note" style="margin:6px 0 0">Vælg fra listen, når du kan. Så matcher din afdeling dine kolleger, og I kan dele normperioder og vagtformer.</p>${hosDl(ef.region)}${depDl(ef.region,ef.hos)}<datalist id="dls"><option value="Akutmedicin"><option value="Almen medicin"><option value="Anæstesiologi"><option value="Arbejdsmedicin"><option value="Børne- og ungdomspsykiatri"><option value="Dermatologi og venerologi"><option value="Diagnostisk radiologi"><option value="Endokrinologi"><option value="Gastroenterologi"><option value="Geriatri"><option value="Gynækologi og obstetrik"><option value="Hæmatologi"><option value="Infektionsmedicin"><option value="Kardiologi"><option value="Karkirurgi"><option value="Klinisk biokemi"><option value="Klinisk farmakologi"><option value="Klinisk fysiologi og nuklearmedicin"><option value="Klinisk genetik"><option value="Klinisk immunologi"><option value="Klinisk mikrobiologi"><option value="Klinisk neurofysiologi"><option value="Kirurgi (gastroenterologisk)"><option value="Lungemedicin"><option value="Nefrologi"><option value="Neurokirurgi"><option value="Neurologi"><option value="Oftalmologi"><option value="Onkologi"><option value="Ortopædisk kirurgi"><option value="Otorhinolaryngologi"><option value="Patologisk anatomi"><option value="Pædiatri"><option value="Plastikkirurgi"><option value="Psykiatri"><option value="Reumatologi"><option value="Retspsykiatri"><option value="Samfundsmedicin"><option value="Thoraxkirurgi"><option value="Urologi"><option value="Intern medicin"></datalist>
  ${H(2,'Hvad er din ansættelse?')}<div class="row"><label>Overenskomst eller aftale<select onchange="ef.ok=this.value;ef.pos='';if(ef.ok==='glpk')ef.region='Grønland';else if(ef.region==='Grønland'&&ef.ok!=='own')ef.region='Region Hovedstaden';if(ef.ok==='stud')ef.kind='vikar';render()">${GRPOK[grpGet()].filter(k=>S.oks[k]).map(k=>[k,S.oks[k]]).map(([k,o])=>`<option value="${k}" ${ef.ok===k?'selected':''}>${o.n}</option>`).join('')}</select></label>${ef.ok==='stud'||(S.oks[ef.ok]||{}).hourlyPay?'':`<label>Type<select onchange="ef.kind=this.value"><option value="fast">Fast ansættelse</option><option value="vikar" ${ef.kind==='vikar'?'selected':''}>Vikar / bureau</option></select></label>`}</div>${P1.beta?`<p class="note" style="margin:8px 0 0">${P1.beta}</p>`:''}${efRole()}
- ${H(3,'Hvornår?')}<div class="row" style="align-items:flex-end"><label>Start<input type="date" value="${ef.from||''}" onchange="ef.from=this.value"></label><label>Slut<input type="date" value="${ef.to||''}" ${ef.open?'disabled':''} onchange="ef.to=this.value"></label><label style="flex-direction:row;align-items:center;gap:6px;white-space:nowrap"><input type="checkbox" ${ef.open?'checked':''} onchange="ef.open=this.checked;if(ef.open)ef.to='';render()"> Ingen slutdato endnu</label></div>
+ ${H(3,'Hvornår?')}<div class="row" style="align-items:flex-end"><label>Start<input type="date" value="${ef.from||''}" onchange="ef.from=this.value;efAuto();render()"></label><label>Slut<input type="date" value="${ef.to||''}" ${ef.open?'disabled':''} onchange="ef.to=this.value;ef.toAuto=false;render()"></label><label style="flex-direction:row;align-items:center;gap:6px;white-space:nowrap"><input type="checkbox" ${ef.open?'checked':''} onchange="ef.open=this.checked;if(ef.open){ef.to='';ef.toAuto=false}else efAuto();render()"> Ingen slutdato endnu</label></div>${ef.toAuto?'<p class="note" style="margin-top:6px">En introduktionsstilling varer typisk et år, så slutdatoen er udfyldt. Ret den, hvis din stilling er kortere eller længere.</p>':''}
  <div class="row nef"><button class="b p" onclick="addEmp()">Tilføj ansættelse</button><button class="b" onclick="newEmp=false;render()">Annuller</button></div></div>`}
+function efAuto(){if(ef.pos!=='intro'||ef.ok!=='dk'){if(ef.toAuto){ef.to='';ef.toAuto=false}return}if(ef.kind!=='fast'||ef.open||!ef.from||(ef.to&&!ef.toAuto))return;const d=new Date(ef.from+'T00:00');if(isNaN(d))return;d.setFullYear(d.getFullYear()+1);d.setDate(d.getDate()-1);ef.to=dkey(d);ef.toAuto=true}
 function addEmp(){if(!ef.dep||(ef.kind==='fast'&&(!ef.from||(!ef.to&&!ef.open)))){tell('Udfyld afdeling og start, og slut for en fast ansættelse (eller sæt kryds ved «Ingen slutdato endnu»).');return}const e={id:uid(),from:ef.from||'',to:ef.to||'',dep:ef.dep,spec:ef.spec||'',hos:ef.hos||'',shak:ef.shak||'',region:ef.region,kind:ef.ok==='stud'?'vikar':ef.kind,ok:ef.ok,pos:((S.oks[ef.ok]||S.oks.dk).roles.find(x=>x.k===ef.pos)||(S.oks[ef.ok]||S.oks.dk).roles[0]).k,ancFrom:ef.ancFrom||'',area:+ef.area||1,trin:+ef.trin||0,trinNext:ef.trinNext||'',monthly:+ef.monthly||0,hourly:0,pay:{},periods:[],extras:[],slips:{}};S.emps.push(e);S.cur=e.id;const kal=/^gl/.test(e.ok),far=/^fo/.test(e.ok);ef={region:ef.region,kind:'fast',ok:ef.ok};newEmp=false;empOpen=e.id;S.tab='emps';save();render();if(kal)kalHello();if(far)farHello()}
 function eggHello(k,msg){const g=EGG[k];try{if(localStorage.getItem(g.key)==='1')return;localStorage.setItem(g.key,'1');const p=localStorage.getItem('vp_pal');if(p&&p!=='hav')return;localStorage.setItem('vp_pal',k)}catch(e){return}palApply();render();tell(msg)}
 function kalHello(){eggHello('kal','Qujanaq! 🇬🇱 Du har oprettet en grønlandsk ansættelse, og det har låst et hemmeligt tema op: Kalaallit Nunaat. Vi har sat det på for dig. Du kan altid skifte tema med knappen «Tema» øverst til højre.')}
