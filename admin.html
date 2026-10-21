@@ -6,7 +6,7 @@
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--bad:#ff7b72;--ok:#4cc38a;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#10151f;--card:#18202e;--ink:#e8edf5;--mut:#9aa6b8;--line:#2a3547;--acc:#4fb4d0;--bad:#ff7b72;--ok:#4cc38a;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
-header{background:var(--ink);color:#fff;padding:12px 18px;display:flex;gap:14px;align-items:center}header b{font-size:18px}header a{color:#bfe9f6;margin-left:auto;font-size:14px}
+header[hidden]{display:none}header{background:var(--ink);color:#fff;padding:12px 18px;display:flex;gap:14px;align-items:center}header b{font-size:18px}header a{color:#bfe9f6;margin-left:auto;font-size:14px}
 main{max-width:1150px;margin:0 auto;padding:18px 14px 50px}h2{font-size:18px;margin:26px 0 10px}
 .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.k div,.c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}.k small{display:block;color:var(--mut);font-size:12px;font-weight:600}.k b{font-size:26px;letter-spacing:-.02em}
 .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;align-items:start}.c h3{margin:0 0 4px;font-size:14px}.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
@@ -25,7 +25,7 @@ header .brand{display:flex;flex-direction:column;justify-content:center;padding:
 header .at{display:flex;margin:0;gap:2px;overflow:visible}header .at a{color:#aab6c8;padding:14px 12px;font:600 14px inherit;font-family:inherit;border-bottom:3px solid transparent;border-radius:0;white-space:nowrap}header .at a.on{color:#fff;border-color:#5fd0ef;background:none}
 header .ctxsw{display:flex;margin:auto 0 auto auto;background:rgba(255,255,255,.12);border-radius:8px;padding:2px;flex:none}header .ctxsw a,header .ctxsw span{font-size:12px;padding:5px 10px;border-radius:6px;color:#fff;opacity:.75;text-decoration:none}header .ctxsw span{background:#fff;color:#14213d;opacity:1;font-weight:600}
 </style></head><body>
-<header><span class="brand"><b>Vagtløn</b><i>beta · admin</i></span><nav class="at"><a class="on" href="admin.html">Statistik</a><a href="app.html?embed=1#postkasse">Postkasse</a><a href="app.html?embed=1#okadm">OK-overblik</a><a href="app.html?embed=1#regelmodel">Regelmodel</a><a href="app.html?embed=1#admdata">Data og import</a></nav><span class="ctxsw"><a href="app.html">Bruger</a><span>Admin</span></span></header><main id="m"><p class="note">Henter ...</p></main>
+<header id="ah" hidden><span class="brand"><b>Vagtløn</b><i>beta · admin</i></span><nav class="at"><a class="on" href="admin.html">Statistik</a><a href="app.html?embed=1#postkasse">Postkasse</a><a href="app.html?embed=1#okadm">OK-overblik</a><a href="app.html?embed=1#regelmodel">Regelmodel</a><a href="app.html?embed=1#admdata">Data og import</a></nav><span class="ctxsw"><a href="app.html">Bruger</a><span>Admin</span></span></header><main id="m"><p class="note">Henter ...</p></main>
 <script>
 const $=document.querySelector.bind(document),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]),nf=n=>Number(n||0).toLocaleString('da-DK');
 async function api(a,body){const r=await fetch('api/?a='+a,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-Requested-With':'vagtplan'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){}j._status=r.status;return j}
@@ -51,7 +51,7 @@ async function ver(id){const r=await api('admin_verify',{id});if(r.ok)load();els
 async function del(id,e){if(!confirm('Slet brugeren '+e+' og alle brugerens data permanent?'))return;const r=await api('admin_delete',{id});if(r.ok)load();else alert(r.error||'Noget gik galt.')}
 async function load(){const me=await api('me');if(me._status!==200){$('#m').innerHTML='<div class="msg"><h2>Serveren svarer ikke</h2><p class="note">Tjek at api/ er uploadet, og at config.php findes.</p></div>';return}
  if(!me.user){$('#m').innerHTML='<div class="msg"><h2>Log ind først</h2><p>Log ind i <a href="app.html">appen</a> med en administratorkonto, og kom tilbage hertil.</p></div>';return}
- if(!me.admin){$('#m').innerHTML='<div class="msg"><h2>Ingen adgang</h2><p class="note">Kontoen er ikke angivet som administrator i config.php.</p></div>';return}
- D=await api('admin_stats');if(D.error){$('#m').innerHTML='<div class="msg"><h2>'+esc(D.error)+'</h2></div>';return}view();shView()}
+ if(!me.admin){$('#m').innerHTML='<div class="msg"><h2>Ingen adgang</h2><p class="note"><a href="app.html">Tilbage til appen</a></p></div>';return}
+ $('#ah').hidden=false;D=await api('admin_stats');if(D.error){$('#m').innerHTML='<div class="msg"><h2>'+esc(D.error)+'</h2></div>';return}view();shView()}
 load();
 </script></body></html>
