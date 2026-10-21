@@ -2458,8 +2458,7 @@ function adopt(sv){S=fix(JSON.parse(sv));try{localStorage.setItem('vagtplan3',se
 async function pull(){const j=await api('state');if(j._status!==200)return;AUTH.ver=j.version||0;
  if(!j.s&&S.emps.length&&S.emps.every(e=>e.demo)&&typeof demoClear==='function')demoClear();
  if(j.s){const hasLocal=S.emps.some(e=>!e.demo)&&ser()!==j.s;
-  if(hasLocal){const useAcc=await new Promise(res=>ask('Du har data på din konto, og denne browser har også sin egen. Hvilken skal bruges?\n\nDen ene overskriver den anden.',()=>res(true),'Brug kontoens data','Overskriv kontoen med denne enhed',()=>res(false)));
-   if(!useAcc){await push(true);return}}
+  if(hasLocal){try{localStorage.setItem('vagtplan3_gaest_backup',ser())}catch(e){}}
   adopt(j.s)}else await push(true)}
 async function push(now){if(!AUTH.user)return;if(AUTH.busy){AUTH.dirty=true;return}AUTH.busy=true;AUTH.dirty=false;
  try{const r=await api('state',{s:ser(),version:AUTH.ver});
