@@ -1700,7 +1700,7 @@ function gUI(){const G=ed.G,un=[0,1,2,3,4,5,6].filter(i=>!G.some(h=>h.d.includes
 function editShift(id){const s=shifts().find(x=>x.id===id);ed=s?Object.assign(JSON.parse(JSON.stringify(s)),{abM:1,cM:1}):{id:uid(),ab:'',name:'',color:COLORS[2],byDay:false,t:Array.from({length:7},()=>['','']),oncall:'',leave:false,_new:true};ed.G=gFrom(ed);render()}
 const DEPCODES=new Set('Alb ROS OUH SHS SVS HOL KOE SLA SLB HI NFS Hjr PSY NAE Thy GAR PSL EHO RHN Hob FRI Frh PRO Far Brø CVI KAL Thi PVO BFH'.split(' '));
 /* Fjerner stedkoden (fx «Alb ») foran afdelingsnavnet, men kun hvor navnet bliver entydigt i den valgte liste */
-function depMap(reg,hos){const L=depAll(reg,hos).map(x=>x[0]),st=n=>{const m=/^(\S+) (\S.*)$/.exec(n);return m&&DEPCODES.has(m[1])?m[2]:n},c={};L.forEach(n=>{const k=cbN(st(n));c[k]=(c[k]||0)+1});const o={};L.forEach(n=>{const l=st(n);o[n]=c[cbN(l)]>1?n:l});return o}
+function depMap(reg,hos){const L=depAll(reg,hos).map(x=>x[0]),st=n=>{const m=/^(\S+) (\S.*)$/.exec(n);return m&&DEPCODES.has(m[1])?m[2]:n},c={};L.forEach(n=>{const k=npNormL(st(n));c[k]=(c[k]||0)+1});const o={};L.forEach(n=>{const l=st(n);o[n]=c[npNormL(l)]>1?n:l});return o}
 function depLab(n,reg,hos){return n&&depMap(reg,hos)[n]||n}
 /* Søgbar liste til hospital og afdeling (erstatter datalist, der er uhåndterlig på iPhone) */
 const cbN=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -1750,7 +1750,7 @@ const mine=k=>[...new Set(S.emps.filter(e=>!e.demo&&e[k]).map(e=>e[k]))],
  depAll=(reg,hos)=>{const d=depList(reg,hos),k=new Set(d.map(x=>x[0])),own=mine('dep').filter(x=>!k.has(x)).map(x=>[x,'']);return d.concat(own,d.length?[]:DEPS.map(x=>[x,'']))},
  depDl=(reg,hos)=>`<datalist id="dld">${depAll(reg,hos).map(x=>`<option value="${esc(x[0])}">`).join('')}</datalist>`,
  snapDl=(v,a)=>{const n=npNormL(v),m=a.find(x=>npNormL(x)===n);return m||v},
- depPick=(v,reg,hos)=>{const n=npNormL(v),M=depMap(reg,hos),m=depAll(reg,hos).find(x=>npNormL(x[0])===n)||depAll(reg,hos).find(x=>npNormL(M[x[0]])===n);return m?{dep:M[m[0]]||m[0],shak:m[1]}:{dep:v,shak:''}};
+ depPick=(v,reg,hos)=>{const n=npNormL(v),M=depMap(reg,hos),m=depAll(reg,hos).find(x=>x[0]===v||M[x[0]]===v)||depAll(reg,hos).find(x=>npNormL(x[0])===n)||depAll(reg,hos).find(x=>npNormL(M[x[0]])===n);return m?{dep:M[m[0]]||m[0],shak:m[1]}:{dep:v,shak:''}};
 const npNormL=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'');
 const AREAK={1:['Kalundborg','Næstved','Slagelse','Esbjerg','Faaborg-Midtfyn','Kerteminde','Nyborg','Odense','Sønderborg','Skanderborg','Frederikshavn','Aalborg'],2:['Køge','Lejre','Roskilde','Solrød','Aarhus'],3:['Allerød','Fredensborg','Frederikssund','Gribskov','Halsnæs','Helsingør','Hillerød','Hørsholm'],4:['Albertslund','Ballerup','Brøndby','Dragør','Egedal','Frederiksberg','Furesø','Gentofte','Gladsaxe','Glostrup','Greve','Herlev','Hvidovre','Høje-Taastrup','Ishøj','København','Lyngby-Taarbæk','Rudersdal','Rødovre','Tårnby','Vallensbæk']};
 const AREAT={0:'Område 0 (intet tillæg, fx Herning, Viborg)',1:'Område 1 (fx Aalborg, Odense, Esbjerg)',2:'Område 2 (Aarhus, Roskilde, Køge, Lejre, Solrød)',3:'Område 3 (Nordsjælland: Hillerød, Helsingør, Allerød m.fl.)',4:'Område 4 (København, Frederiksberg og omegn)'};
