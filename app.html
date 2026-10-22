@@ -1415,7 +1415,7 @@ function render(){try{palApply()}catch(e){}try{ferieNudge()}catch(e){}if(S.tab==
  $('#nav').classList.remove('dd','mo');{const tb=document.querySelector('#nav .tabs'),on=tb&&tb.querySelector('.on');if(on&&tb.scrollWidth>tb.clientWidth)tb.scrollLeft=Math.max(0,on.offsetLeft-(tb.clientWidth-on.offsetWidth)/2)}
  $('#nav').insertAdjacentHTML('beforeend',`<button class="pb" type="button" aria-label="Farvetema" title="Skift farvetema" onclick="palMenu(event)"><span class="pe" aria-hidden="true">${PE[palGet()]||PE.hav}</span><span class="pbl">Tema</span></button><button class="tg" role="switch" aria-checked="${themeGet()==='dark'}" aria-label="Mørk tilstand" title="${themeGet()==='dark'?'Skift til lys tilstand':'Skift til mørk tilstand'}" onclick="themeNext()"><span class="tgk"></span></button>`);
  
- if(typeof isAdm==='function'&&isAdm())$('#nav').insertAdjacentHTML('beforeend','<span class="ctxsw" title="Skift kontekst"><button class="'+(EMB?'':'on')+'" type="button" onclick="location.href=\'app.html\'">Bruger</button><button class="'+(EMB?'on':'')+'" type="button" onclick="location.href=\'admin.html\'">Admin</button></span>');
+ if(typeof isAdm==='function'&&isAdm())$('#nav').insertAdjacentHTML('beforeend','<span class="ctxsw" title="Skift kontekst"><button class="'+(EMB?'':'on')+'" type="button" onclick="location.href=\'app.html\'">Bruger</button><button class="'+(EMB?'on':'')+'" type="button" onclick="location.href=\'admin.html\'+(/github\\.io$/i.test(location.hostname)?\'?demo=1\':\'\')">Admin</button></span>');
  const v={work:()=>xCard()+work(),ev:evV,pay:payV,reg:()=>xCard()+regV(),stat:statV,rt:rtV,check:checkV,shifts:shiftsV,sc:scV,emps:empsV,help:helpV,mail:mailV,okadm:okAdmV,rules:rmV,admdata:admdataV,data:dataV,cal:calV,hlp:hlpV,inst:instV,acct:acctV}[S.tab]||work;
  $('#m').style.maxWidth=S.tab==='work'?'1180px':'';{const ft=document.querySelector('footer');if(ft)ft.style.maxWidth=S.tab==='work'?'1180px':''}$('#m').innerHTML=betaBar()+instBanner()+(inSet?`<div class="row" style="margin-bottom:12px;gap:6px">${SET.filter(t=>t[0]!=='sc').map(([k,l])=>`<button class="b ${S.tab===k?'p':''}" onclick="S.tab='${k}';save();render()">${l}</button>`).join('')}</div>`:'')+(S.tab==='shifts'?'':empRow())+((!emp()&&S.tab!=='emps'&&S.tab!=='data'&&S.tab!=='inst'&&S.tab!=='acct'&&S.tab!=='help'&&S.tab!=='mail'&&S.tab!=='cal'&&S.tab!=='hlp'&&S.tab!=='admdata'&&S.tab!=='okadm'&&S.tab!=='rules')?'<div class="card"><h2>Kom i gang</h2><p>Opret først en ansættelse, så du kan oprette vagtformer og planlægge vagter.</p><button class="b p" onclick="if(guestWall())return;S.tab=\'emps\';render()">Opret ansættelse</button> <button class="b" onclick="demoStart()">Prøv med eksempel</button></div>':v().replace(/kr\.\.(?!\.)/g,'kr.').replace(/kr\.,/g,'kr,'))+(S.tab==='shifts'?empRow():'')+discl()+askV()+((AUTH.api&&!AUTH.user&&!AUTH.guest)?authV():'')+ctxV()+calPopV()+tourEndV()}
 const empOn=e=>!e.to||e.to>=new Date().toISOString().slice(0,10);const empDot=e=>`<i class="ed ${empOn(e)?'ea':'ei'}" aria-label="${empOn(e)?'Aktiv':'Afsluttet'}">${empOn(e)?'●':'○'}</i>`;
@@ -2090,7 +2090,7 @@ function palSet(k){try{localStorage.setItem('vp_pal',k)}catch(e){}palApply();con
 const TKS={ny:['Ny','#c8352f'],igang:['Under udarbejdelse','#b26a00'],adr:['Adresseret','#0b6e8a'],loest:['Løst','#1f8a5b']},TKK={fejl:'Fejl',forslag:'Forslag',spoerg:'Spørgsmål',ok:'OK-tjek',lon:'Lønseddel'};
 const TK={img:{},kind:'fejl',msg:'',ctx:true,mail:true,busy:false,err:'',done:'',show:false,mine:null,mineAt:0,mineBusy:false,mineErr:'',adm:null,admAt:0,admBusy:false,admErr:'',filter:'open',sel:null,rep:{},ast:{},q:'',sn:0};
 const tkMode=()=>typeof AUTH==='undefined'?'mock':!AUTH.api?'none':AUTH.user?'user':'guest';
-const tkAdm=()=>typeof AUTH==='undefined'?true:!!(AUTH.admin||(AUTH.user&&AUTH.user.admin));
+const tkAdm=()=>typeof AUTH==='undefined'?true:!!(/github\.io$/i.test(location.hostname)||AUTH.admin||(AUTH.user&&AUTH.user.admin));
 const tkSeen=()=>{try{return JSON.parse(localStorage.getItem('vp_tkseen')||'{}')||{}}catch(e){return{}}};
 const tkSeenSet=o=>{try{localStorage.setItem('vp_tkseen',JSON.stringify(o))}catch(e){}};
 const tkWhen=iso=>{if(!iso)return'';const d=new Date(iso);if(isNaN(d))return'';const n=new Date(),y=new Date(n);y.setDate(n.getDate()-1);const hm=pad(d.getHours())+':'+pad(d.getMinutes()),same=(a,b)=>a.toDateString()===b.toDateString();return same(d,n)?'i dag '+hm:same(d,y)?'i går '+hm:d.getDate()+'. '+MON[d.getMonth()].toLowerCase().slice(0,3)+(d.getFullYear()!==n.getFullYear()?' '+d.getFullYear():'')+' '+hm};
@@ -2576,7 +2576,8 @@ async function push(now){if(!AUTH.user||(typeof PV!=='undefined'&&PV))return;if(
   else if(r._status===401){AUTH.user=null;AUTH.msg='Du er logget ud. Log ind igen.';render()}
   else if(r.version){AUTH.ver=r.version;if(AUTH.cal)calSync()}}catch(e){}
  AUTH.busy=false;if(AUTH.dirty)push()}
-function isAdm(){return !!(AUTH.admin||(AUTH.user&&AUTH.user.admin))}
+const TESTSITE=/github\.io$/i.test(location.hostname);
+function isAdm(){return !!(TESTSITE||AUTH.admin||(AUTH.user&&AUTH.user.admin))}
 function ctxSeen(){return true}
 function ctxPick(w){try{sessionStorage.setItem('vp_ctx','1')}catch(e){}if(w==='admin'){location.href='admin.html';return}AUTH.ctxDone=1;render()}
 function ctxV(){return'';}
