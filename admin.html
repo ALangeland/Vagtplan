@@ -44,7 +44,7 @@ function mkDemo(){const ks=Object.keys(MT.pos).filter(k=>!DOK||k.startsWith(DOK+
  const sorted=Object.fromEntries(Object.entries(agg.pos).sort((a,b)=>b[1]-a[1]).slice(0,12));agg.pos=sorted;
  return{totals:{users:users.length,new7:5,new30:users.length,dau:4,wau:12,mau:users.length,unverified:0,normshare:3,shiftshare:7},agg,visits,days,signups:days.map((x,i)=>i%4?0:1),refs:[{host:'eksempel.dk',n:12}],users,now:D0}}
 const D0=Math.floor(Date.now()/1000);
-function demoBar(){return'<div class="c" style="margin-bottom:10px;border:2px dashed #e0a030"><b>Eksempeldata</b> (ikke rigtige brugere). Vælg overenskomst: <select onchange="DOK=this.value;D=mkDemo();view()"><option value="">Alle</option>'+Object.keys(MT.ok).map(k=>'<option value="'+k+'"'+(k===DOK?' selected':'')+'>'+esc(MT.ok[k])+'</option>').join('')+'</select></div>'}
+function demoBar(){return'<div class="c" style="margin-bottom:10px;border:2px dashed #e0a030"><b>Eksempeldata</b> (ikke rigtige brugere). Vælg overenskomst: <select onchange="DOK=this.value;D=mkDemo();view()"><option value="">Alle</option>'+Object.keys(MT.ok).map(k=>'<option value="'+k+'"'+(k===DOK?' selected':'')+'>'+esc(MT.ok[k])+'</option>').join('')+'</select> <a href="app.html">Se eksempler i brugerkonteksten</a> (vælg «Faggruppe» i topbjælken)</div>'}
 
 function view(){const t=D.totals,a=D.agg,v=D.visits,sum=k=>v.reduce((x,y)=>x+y[k],0),us=D.users.filter(u=>u.email.toLowerCase().includes(Q.toLowerCase())),avg=t.users?Math.round(a.plan/t.users):0;
  const T=(rows)=>'<table>'+rows.map(([k,v])=>`<tr><td>${k}</td><td class="n"><b>${v}</b></td></tr>`).join('')+'</table>',
