@@ -2441,7 +2441,8 @@ const tourRundtur=()=>{const E=emp(),demo=!!(E&&E.demo),nm=(()=>{try{return grpN
 const tourSteps=()=>TOUR&&TOUR.k==='rundtur'?tourRundtur():tourSetup();
 function tourOwn(){tourStop();demoClear();S.cur=S.emps[0]?S.emps[0].id:null;WARN=[];S.tab='emps';save();render();tourStart()}
 let RTB=false;
-function rundturBoot(){if(RTB)return;let q=null;try{q=new URLSearchParams(location.search).get('rundtur')}catch(e){}if(q===null)return;RTB=true;try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
+function rundturBoot(){if(RTB)return;let q=null;try{q=new URLSearchParams(location.search).get('rundtur')}catch(e){}if(q===null)return;try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}rundturGo(q)}
+function rundturGo(q){RTB=true;
  if(typeof AUTH!=='undefined'&&AUTH.api&&!AUTH.user){AUTH.guest=true;try{gset(1)}catch(e){}}
  if(!S.emps.some(e=>!e.demo)){const g=GRPOK[q]?q:(guestHasGrp()?grpGet():'sygepl');demoGrp(g,1)}
  setTimeout(()=>tourStart('rundtur'),250)}
@@ -2525,7 +2526,7 @@ async function authInit0(){const h=location.hash.match(/^#reset=([a-f0-9]{64})$/
   if(h){AUTH.mode='reset';AUTH.token=h[1];AUTH.user=null;render();return}
   let st=null;try{st=new URLSearchParams(location.search).get('start');if(st!==null)history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
   if(st!==null&&typeof GRPOK!=='undefined'&&GRPOK[st]){try{localStorage.setItem('vp_grp',st);S.grp=st}catch(e){}
-   if(j.user){AUTH.user=j.user;await pull();calInfo();onbStart()}else{gset(0);AUTH.guest=false;AUTH.mode='reg';AUTH.grp=st;AUTH.onb=true;try{localStorage.setItem('vp_onb','1')}catch(e){}}
+   if(j.user){AUTH.user=j.user;await pull();calInfo();if(!S.emps.some(e=>!e.demo))onbStart()}else{AUTH.grp=st;rundturGo(st)}
    render();return}
   if(j.user){AUTH.user=j.user;await pull();calInfo();if(typeof shareNotify==='function')shareNotify()}else if(!gget()||!S.emps.some(e=>!e.demo)){gset(0);AUTH.mode='login'}else AUTH.guest=true}catch(e){AUTH.api=false}
  render()}
