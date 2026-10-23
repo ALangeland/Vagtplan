@@ -2760,7 +2760,10 @@ function sfPack(s){return{n:String(s.name||'').slice(0,60),a:String(s.ab||'').sl
 function sfClean(p){try{const tm=v=>/^\d\d:\d\d$/.test(v)||v==='';if(!p||!Array.isArray(p.t)||p.t.length!==7)return null;const t=p.t.map(a=>{if(!Array.isArray(a)||!tm(a[0])||!tm(a[1]))throw 0;const r=[a[0],a[1]];if(a[2])r.push(true);return r});
  const n=String(p.n||'').slice(0,60),a=String(p.a||'').slice(0,8);if(!n&&!a)return null;if(!t.some(x=>x[0]&&x[1]))return null;
  return{name:n,ab:a||abbr(n),color:/^#[0-9a-fA-F]{6}$/.test(p.c)?p.c:COLORS[2],byDay:!!p.b,t,oncall:['on','off'].includes(p.o)?p.o:'',leave:!!p.l}}catch(e){return null}}
-async function sfMineLoad(e){const dk=sfDk(e),j=await api('sf_mine',{dk}),j0=await api('sf_mine',{dk:npKeys(e).dk});SFM[dk]=(j.items||[]).concat(j0.items||[]);return SFM[dk]}
+async function sfMineLoad(e,again){const dk=sfDk(e),j=await api('sf_mine',{dk}),j0=await api('sf_mine',{dk:npKeys(e).dk}),old=j0.items||[];
+ /* Egne delinger fra før faggruppe-opdelingen flyttes automatisk over til brugerens faggruppe */
+ if(old.length&&!again&&sfGr()){try{const r=await api('sf_put',{dk,items:old.map(x=>x.j)});if(r&&r.ok){await api('sf_unshare',{ids:old.map(x=>x.id)});return sfMineLoad(e,true)}}catch(_){}}
+ SFM[dk]=(j.items||[]).concat(old);return SFM[dk]}
 const sfMine=e=>SFM[sfDk(e)]||[];
 const sfJ=s=>JSON.stringify(sfPack(s));
 const sfFindMine=(e,s)=>sfMine(e).find(x=>x.j===sfJ(s));
