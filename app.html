@@ -184,7 +184,7 @@ label.chk{display:flex;flex-direction:row!important;gap:9px;align-items:flex-sta
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='142';
+const REV='143';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2906,8 +2906,8 @@ function lpTogDays(i){if(LPD&&LPD.codes){const id=LPD.codes[i].id;LPD.open[id]=!
 function lpSetDay(k,v){if(!LPD)return;if(v)LPD.ovr[k]=v;else delete LPD.ovr[k];render()}
 function lpDayRows(e,o,L){const sh=(S.shifts[e.id]||[]).filter(s=>!!s.leave===(o.kind==='leave')),base=L.map[o.id],bn=base==='+'?'ny «'+o.code+'»':((sh.find(s=>s.id===base)||{}).name||'ingen');
  const ks=Object.keys(L.days).filter(k=>lpKey(L.days[k])===o.id).sort();
- return`<tr><td colspan="4" style="background:var(--bg);padding:8px 10px"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px 14px">${ks.map(k=>{const x=L.days[k],d=new Date(k+'T00:00'),v=L.ovr[k]&&sh.some(s=>s.id===L.ovr[k])?L.ovr[k]:'';
-  return`<label style="flex-direction:row;align-items:center;gap:8px;font-size:13.5px"><span style="min-width:86px"><b>${DAYS[wdi(d)].slice(0,3)} ${+k.slice(8)}/${+k.slice(5,7)}</b> <span class="note" style="margin:0">${x.a}–${x.b}${x.nx?'+1':''}</span></span><select onchange="lpSetDay('${k}',this.value)" style="flex:1;min-width:0;${v?'border-color:var(--acc);font-weight:700':''}"><option value="">Som koden (${esc(bn)})</option>${lpOpts(sh,wdi(d),x.a,x.b,x.nx,v)}</select></label>`}).join('')}</div></td></tr>`}
+ return`<tr><td colspan="4" style="background:var(--bg);padding:8px 10px"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:6px 14px">${ks.map(k=>{const x=L.days[k],d=new Date(k+'T00:00'),v=L.ovr[k]&&sh.some(s=>s.id===L.ovr[k])?L.ovr[k]:'';
+  return`<label style="flex-direction:row;align-items:center;gap:8px;font-size:13.5px"><span style="min-width:86px"><b>${DAYS[wdi(d)].slice(0,3)} ${+k.slice(8)}/${+k.slice(5,7)}</b> <span class="note" style="margin:0">${x.a}–${x.b}${x.nx?'+1':''}</span></span><select onchange="lpSetDay('${k}',this.value)" style="flex:1;min-width:150px;${v?'border-color:var(--acc);font-weight:700':''}"><option value="">Som koden (${esc(bn)})</option>${lpOpts(sh,wdi(d),x.a,x.b,x.nx,v)}</select></label>`}).join('')}</div></td></tr>`}
 function lpTag(k,v){const im=(S.imp||{})[k];return im&&!im.x&&S.plan[k]===im.v&&v===im.v?'<span class="lpt" title="Hentet fra Loop. Vælg en anden vagtform i feltet for at rette den.">Loop</span>':''}
 function lpIs(k,v){const im=(S.imp||{})[k];return !!(im&&!im.x&&S.plan[k]===im.v&&v===im.v)}
 function lpCard(){
