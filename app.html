@@ -462,7 +462,7 @@ function parseT(v){const d=String(v||'').replace(/\D/g,'');if(d.length<3||d.leng
 function plT(s,d){return s.byDay?s.t[wdi(d)]:s.t[0]}
 function movedMin(pt,at){const A=tm(pt[0]),B=A+dur(pt),C=tm(at[0]),D=C+dur(at),ov=Math.max(0,Math.min(B,D)-Math.max(A,C));return Math.max(0,(D-C)-ov)}
 function omlagOf(e,k,s){const r=PF(e),a=(S.act||{})[k];if(!r.omlaeg||!a||!a.late||!a.a||!a.b)return null;const pt=plT(s,new Date(k+'T00:00'));if(!pt||!pt[0]||!pt[1])return null;const mv=movedMin(pt,[a.a,a.b,'']),hh=Math.ceil(mv/30);if(!hh)return null;const rt=Math.round(r.omlaeg*rmFac(k.slice(0,7),'sk')*100)/100;return{hh,rt,amt:hh*rt/2,mv}}
-const FRL=()=>{const e=emp();return e&&PF(e).fri14?'Beskyttet fridag':'Fri'};
+const FRL=()=>{const e=emp();return e&&PF(e).fri14?'Beskyttet fridag':e&&e.ok==='dk'?'Fridøgn':'Fri'};
 function tfriEmp(k){const ok=e=>PF(e).fri14&&k>=(e.from||'')&&(!e.to||k<=e.to),c=S.emps.find(e=>e.id===S.cur&&ok(e))||S.emps.find(ok);return c?c.id:null}
 function tilkOf(e,k){const r=PF(e),t=(S.tfri||{})[k];if(!t||!t.a||!t.b)return null;const h=Math.max(r.tilkMin||6,dur([t.a,t.b,''])/60),q=rates(e,k.slice(0,7)),rate=(q&&q.ot)||0,f=t.short?Math.round(r.fri14*rmFac(k.slice(0,7),'sk')*100)/100:0;return{h,ot:h*rate,f,rate,amt:h*rate+f}}
 function setAct(k){const a=parseT((document.getElementById('ac-a')||{}).value),b=parseT((document.getElementById('ac-b')||{}).value),l=document.getElementById('ac-l');if(!a||!b){tell('Skriv start og slut som klokkeslæt, fx 19:30.');return}const[eid,sid]=(S.plan[k]||'|').split('|'),sh=(S.shifts[eid]||[]).find(x=>x.id===sid),pt=sh&&plT(sh,new Date(k+'T00:00'));S.act=S.act||{};if(pt&&pt[0]===a&&pt[1]===b)delete S.act[k];else S.act[k]={a,b,late:l&&l.value==='1'?1:0};save();render()}
