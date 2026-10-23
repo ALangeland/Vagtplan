@@ -184,7 +184,7 @@ label.chk{display:flex;flex-direction:row!important;gap:9px;align-items:flex-sta
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='144';
+const REV='145';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2846,10 +2846,10 @@ const lpOpts=(list,wd,a,b,nx,sel,withNew)=>{const m=list.filter(z=>lpFits(z,wd,a
  return(m.length?`<optgroup label="Passer til tiderne i Loop">${m.map(op).join('')}</optgroup>`:'')+(withNew||'')+(r.length?`<optgroup label="${m.length?'Andre vagtformer':'Dine vagtformer'}">${r.map(op).join('')}</optgroup>`:'')};
 function lpSuggest(e,o){const sh=(S.shifts[e.id]||[]).filter(s=>!!s.leave===(o.kind==='leave'));
  const sm=sh.filter(s=>s.loop===o.code);if(sm.length)return sm[0].id;
- if(o.kind==='leave'){const w=o.code.split(/\s+/)[0].toLowerCase(),n=sh.find(s=>(s.name||s.ab||'').toLowerCase().includes(w));return n?n.id:'+'}
+ if(o.kind==='leave'){const w=o.code.split(/\s+/)[0].toLowerCase(),n=sh.find(s=>(s.name||s.ab||'').toLowerCase().includes(w));return n?n.id:null}
  const W=o.wd||[0,1,2,3,4,5,6],sc=s=>W.filter(i=>{const d=lpShT(s,i);return d&&d[0]===o.a&&d[1]===o.b&&!!d[2]===o.nx}).length;
  let best=null,bs=0;for(const s of sh){const n=sc(s);if(n>bs){bs=n;best=s}}
- return best&&bs===W.length?best.id:best&&bs*2>=W.length?best.id:'+'}
+ return best&&bs===W.length?best.id:best&&bs*2>=W.length?best.id:null}
 function lpNewShift(e,o){const used={};(S.shifts[e.id]||[]).forEach(x=>{if(!x.leave)used[x.color]=(used[x.color]||0)+1});
  const t=[o.a,o.b],part=!!(o.wd&&o.wd.length&&o.wd.length<7);if(o.nx)t.push(true);
  const s={id:uid(),ab:o.code.replace(/\s+/g,'').slice(0,8),name:o.code,color:'#8b95a5',byDay:part,t:Array.from({length:7},(_,i)=>!part||o.wd.includes(i)?t.slice():['','']),oncall:'',leave:o.kind==='leave',loop:o.code};
@@ -2858,9 +2858,9 @@ function lpNewShift(e,o){const used={};(S.shifts[e.id]||[]).forEach(x=>{if(!x.le
 async function lpGet(url){const j=await api('ical_fetch',{url});if(!j||!j.text)throw new Error((j&&j.error)||'Kalenderen kunne ikke hentes.');return j.text}
 /* Lægger kalenderen ind i planen. Dage, brugeren selv har lagt eller rettet, røres ikke. */
 function lpApply(e,evs,map,ovr){ovr=ovr||{};
- S.imp=S.imp||{};S.act=S.act||{};const days=lpDays(e,evs),fresh=[];
- for(const o of lpCodes(days)){let v=map[o.id];if(v===undefined||(v&&v!=='+'&&!(S.shifts[e.id]||[]).some(s=>s.id===v)))v=lpSuggest(e,o);if(v==='+'){const s=lpNewShift(e,o);v=s.id;fresh.push(o.code)}map[o.id]=v}
- const r={n:0,u:0,del:0,skip:0,fresh};
+ S.imp=S.imp||{};S.act=S.act||{};const days=lpDays(e,evs),fresh=[],unm=[];
+ for(const o of lpCodes(days)){let v=map[o.id];if(v&&v!=='+'&&!(S.shifts[e.id]||[]).some(s=>s.id===v))v=undefined;if(v===undefined){const sg=lpSuggest(e,o);v=sg||undefined}if(v==='+'){const s=lpNewShift(e,o);v=s.id;fresh.push(o.code)}if(v===undefined){unm.push(o.code)}else map[o.id]=v}
+ const r={n:0,u:0,del:0,skip:0,fresh,unm};
  const ks=Object.keys(days).sort();
  for(const k of ks){const x=days[k];let v,sid;
   if(x.kind==='fri'){v='_|fri';sid=null}else{sid=(ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]))?ovr[k]:map[lpKey(x)];if(!sid){r.skip++;continue}v=e.id+'|'+sid}
@@ -2881,20 +2881,20 @@ async function lpSync(e,silent){
  if(!e||!e.loop||!e.loop.url)return null;
  const txt=await lpGet(e.loop.url),evs=lpParse(txt);if(!evs.length)throw new Error('Kalenderen indeholder ingen vagter.');
  const r=lpApply(e,evs,e.loop.map=e.loop.map||{},e.loop.ovr);e.loop.last=Date.now();e.loop.n=evs.length;save();render();return r}
-const lpMsg=r=>[r.n&&r.n+' nye',r.u&&r.u+' ændret',r.del&&r.del+' fjernet',r.skip&&r.skip+' sprunget over, fordi du selv har rettet dem'].filter(Boolean).filter(x=>x).join(', ')||'ingen ændringer';
+const lpMsg=r=>[r.n&&r.n+' nye',r.u&&r.u+' ændret',r.del&&r.del+' fjernet',r.skip&&r.skip+' sprunget over (rettet af dig eller uden vagtform)',r.unm&&r.unm.length&&'ingen vagtform valgt til '+r.unm.join(', ')].filter(Boolean).filter(x=>x).join(', ')||'ingen ændringer';
 async function lpAuto(){
  if(!(typeof AUTH!=='undefined'&&AUTH.user&&AUTH.api)||(typeof PV!=='undefined'&&PV))return;
  for(const e of S.emps){if(!e.loop||!e.loop.url||e.demo)continue;if(Date.now()-(e.loop.last||0)<3*36e5)continue;
-  try{const r=await lpSync(e,true);if(r&&(r.n||r.u||r.del||(r.fresh&&r.fresh.length)))tell('Vagter fra Loop er opdateret: '+lpMsg(r)+'.'+(r.fresh.length?' Nye koder: '+r.fresh.join(', ')+'. Tjek, om vagtformerne passer.':''))}catch(_){e.loop.last=Date.now()-2*36e5}}}
+  try{const r=await lpSync(e,true);if(r&&(r.n||r.u||r.del||(r.fresh&&r.fresh.length)||(r.unm&&r.unm.length)))tell('Vagter fra Loop er opdateret: '+lpMsg(r)+'.'+(r.fresh.length?' Nye koder: '+r.fresh.join(', ')+'. Tjek, om vagtformerne passer.':''))}catch(_){e.loop.last=Date.now()-2*36e5}}}
 async function lpPreview(){
  const e=emp();if(!e)return;const el=document.getElementById('lpUrl'),url=(el?el.value:(e.loop&&e.loop.url)||'').trim();
  if(!/^https:\/\//i.test(url)){LPD={err:'Indsæt hele linket til din kalender. Det starter med https://'};render();return}
  LPD={busy:true,url};render();
  try{const evs=lpParse(await lpGet(url));if(!evs.length)throw new Error('Kalenderen indeholder ingen vagter.');
-  const days=lpDays(e,evs),codes=lpCodes(days),map={};codes.forEach(o=>{map[o.id]=(e.loop&&e.loop.map&&e.loop.map[o.id]!==undefined&&(e.loop.map[o.id]==='+'||(S.shifts[e.id]||[]).some(s=>s.id===e.loop.map[o.id])))?e.loop.map[o.id]:lpSuggest(e,o)});
+  const days=lpDays(e,evs),codes=lpCodes(days),map={};codes.forEach(o=>{map[o.id]=(e.loop&&e.loop.map&&e.loop.map[o.id]!==undefined&&(e.loop.map[o.id]==='+'||(S.shifts[e.id]||[]).some(s=>s.id===e.loop.map[o.id])))?e.loop.map[o.id]:lpSuggest(e,o);if(map[o.id]==null)delete map[o.id]});
   LPD={url,evs,days,codes,map,ovr:Object.assign({},(e.loop&&e.loop.ovr)||{}),open:{},fri:Object.values(days).filter(x=>x.kind==='fri').length,total:Object.keys(days).length,out:evs.length-Object.keys(days).length}}
  catch(x){LPD={err:x.message||'Kalenderen kunne ikke hentes.'}}render()}
-function lpGo(){const e=emp();if(!e||!LPD||!LPD.evs)return;
+function lpGo(){const e=emp();if(!e||!LPD||!LPD.evs)return;const un=(LPD.codes||[]).filter(o=>LPD.map[o.id]===undefined).map(o=>o.code);if(un.length){tell('Vælg en vagtform til '+un.join(', ')+', eller «Spring over».');return}
  e.loop=Object.assign(e.loop||{},{url:LPD.url,map:Object.assign({},LPD.map),ovr:Object.assign({},LPD.ovr)});
  const r=lpApply(e,LPD.evs,e.loop.map,e.loop.ovr);e.loop.last=Date.now();e.loop.n=LPD.evs.length;LPD=null;save();render();
  tell('Vagter fra Loop: '+lpMsg(r)+'.'+(r.fresh.length?' Der er oprettet '+r.fresh.length+' nye vagtformer.':''))}
@@ -2932,7 +2932,7 @@ function lpTable(e,L){
   let days='';
   if(L.open[o.id]){const ks=Object.keys(L.days).filter(k=>lpKey(L.days[k])===o.id).sort(),bn=sel==='+'?'ny «'+o.code+'»':((sh.find(z=>z.id===sel)||{}).name||'ingen');
    days=`<div class="lpl">${ks.map(k=>{const x=L.days[k],d=new Date(k+'T00:00'),v=L.ovr[k]&&sh.some(z=>z.id===L.ovr[k])?L.ovr[k]:'';return`<div class="lpr"><span class="d"><b>${DAYS[wdi(d)].slice(0,3)} ${+k.slice(8)}/${+k.slice(5,7)}</b><span class="t">${x.a}–${x.b}${x.nx?' (+1)':''}</span></span><select onchange="lpSetDay('${k}',this.value)" style="${v?'border-color:var(--acc);font-weight:700':''}"><option value="">Som koden: ${esc(bn)}</option>${lpOpts(sh,wdi(d),x.a,x.b,x.nx,v)}</select></div>`}).join('')}</div>`}
-  return`<div class="lpk"><h4>${esc(o.code)}${o.kind==='leave'?' <span>fravær</span>':''}<span>${o.n} ${o.n===1?'dag':'dage'} · ${lpWdTxt(o.wd)} · ${lpTt(o)}${o.multi?' · tiderne varierer':''}</span></h4><div class="lpq">${chips}</div><div style="margin-top:8px"><button class="b" style="padding:3px 10px;font-size:12.5px" onclick="lpTogDays(${i})">${L.open[o.id]?'Skjul dage':'Vælg dag for dag'}${nOv?' · '+nOv+' valgt':''}</button></div>${days}</div>`}).join('');
+  return`<div class="lpk"><h4>${esc(o.code)}${o.kind==='leave'?' <span>fravær</span>':''}<span>${o.n} ${o.n===1?'dag':'dage'} · ${lpWdTxt(o.wd)} · ${lpTt(o)}${o.multi?' · tiderne varierer':''}</span></h4>${sel===undefined?'<div class="note" style="margin:8px 0 0;color:var(--warn)"><b>Vælg vagtform</b> eller «Spring over».</div>':''}<div class="lpq">${chips}</div><div style="margin-top:8px"><button class="b" style="padding:3px 10px;font-size:12.5px" onclick="lpTogDays(${i})">${L.open[o.id]?'Skjul dage':'Vælg dag for dag'}${nOv?' · '+nOv+' valgt':''}</button></div>${days}</div>`}).join('');
  return lpCss+`<p class="note" style="margin:10px 0 0">Fandt <b>${L.total}</b> dage i din ansættelse. Vælg for hver Loop-kode, hvilken vagtform den svarer til. Vagtformer med de samme tider som Loop er markeret med ✓. Passer koden til flere vagtformer, så vælg dem dag for dag.</p>${cards}${L.fri?`<div class="lpk"><h4>Beskyttet fridag<span>Loops betegnelse · ${L.fri} dage</span></h4><p class="note" style="margin:6px 0 0">Bliver til <b>${frTxt}</b>.</p></div>`:''}<p class="note" style="margin:10px 0 0">Afviger tiderne en enkelt dag fra vagtformen, gemmes den dags faktiske tider. Dage, du selv har lagt eller rettet, bliver aldrig overskrevet.</p><div class="row" style="margin-top:10px"><button class="b p" onclick="lpGo()">Læg vagterne ind</button><button class="b" onclick="LPD=null;render()">Annullér</button></div>`}
 
 /* ===== Hjemmeskærm / webapp ===== */
