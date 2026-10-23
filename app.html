@@ -251,7 +251,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='160';
+const REV='161';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2020,7 +2020,7 @@ const TZR=e=>e&&e.region==='Grønland'||e&&e.ok==='gl'?'America/Nuuk':e&&(e.regi
 function tzOff(ms,tz){const p={};for(const x of new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(ms)))p[x.type]=+x.value;return Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second)-Math.floor(ms/1000)*1000}
 function icsUtc(day,hm,tz){const[y,m,d]=day.split('-').map(Number),[H,M]=hm.split(':').map(Number),g=Date.UTC(y,m-1,d,H,M);let u=g-tzOff(g,tz);u=g-tzOff(u,tz);return new Date(u).toISOString().replace(/[-:]|\.\d+/g,'')}
 function icsText(){const esc=x=>x.replace(/[,;]/g,'\\$&'),st=new Date().toISOString().replace(/[-:]|\.\d+/g,''),o=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Vagtlon//DA','CALSCALE:GREGORIAN','X-WR-CALNAME:Vagtløn','REFRESH-INTERVAL;VALUE=DURATION:PT1H','X-PUBLISHED-TTL:PT1H'];
- for(const e of entries()){const j=S.emps.find(x=>x.id===e.emp)||{},tz=TZR(j),den=nx(e.t)?new Date(e.d.getFullYear(),e.d.getMonth(),e.d.getDate()+1):e.d,key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());o.push('BEGIN:VEVENT','UID:'+e.k+e.s.id+'@vagtplan','DTSTAMP:'+st,'DTSTART:'+icsUtc(key(e.d),e.t[0],tz),'DTEND:'+icsUtc(key(den),e.t[1],tz),'SUMMARY:'+esc(e.s.ab+(e.s.name?' – '+e.s.name:'')+' ('+(j.dep||'')+')'),'END:VEVENT')}
+ for(const e of entries()){const j=S.emps.find(x=>x.id===e.emp)||{},tz=TZR(j),den=nx(e.t)?new Date(e.d.getFullYear(),e.d.getMonth(),e.d.getDate()+1):e.d,key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());o.push('BEGIN:VEVENT','UID:'+e.k+e.s.id+'@vagtplan','DTSTAMP:'+st,'DTSTART:'+icsUtc(key(e.d),e.t[0],tz),'DTEND:'+icsUtc(key(den),e.t[1],tz),'SUMMARY:'+esc((e.s.name?e.s.name+(e.s.ab?' ('+e.s.ab+')':''):e.s.ab||'')+(j.dep?' – '+j.dep:'')),...(j.dep?['LOCATION:'+esc(j.dep)]:[]),'END:VEVENT')}
  for(const e of S.emps)for(const v of e.evacs||[]){if(!v.sd||!v.ed)continue;o.push('BEGIN:VEVENT','UID:ev'+v.id+'@vagtplan','DTSTAMP:'+st,'DTSTART:'+icsUtc(v.sd,v.st,TZR(e)),'DTEND:'+icsUtc(v.ed,v.et,TZR(e)),'SUMMARY:'+esc('Evakuering ('+e.dep+')'),'END:VEVENT')}
  o.push('END:VCALENDAR');return o.join('\r\n')}
 function ics(){dl(ONHOST?'vagter.ics':'vagter-kalender.txt',icsText(),'text/calendar;charset=utf-8')}
