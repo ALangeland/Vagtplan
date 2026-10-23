@@ -251,7 +251,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='166';
+const REV='167';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -1808,7 +1808,9 @@ Object.assign(PVD,{ldk:{g:'laege',n:'Læge, Danmark (Yngre Læger)',x:[]},lgl:{g
 function pvSet(k){if(!tkAdm())return;if(!k){if(PV){S=fix(JSON.parse(PV.bak));PV=null;WARN=[];NAVOPEN=false;render()}return}
  const d=PVD[k];if(!d)return;if(!PV)PV={bak:ser()};PV.k=k;S=fix(JSON.parse(JSON.stringify(def)));S.grp=d.g==='glpk'?'sygepl':d.g;demoGrp(d.g,false);const e=emp();if(e){if(d.reg)e.region=d.reg;if(d.ok){e.ok=d.ok;e.pos=d.pos}e.extras=d.x.slice();S=fix(S)}WARN=[];NAVOPEN=false;S.tab='work';render()}
 function pvSel(){return tkAdm()&&!EMB?'<select class="pvsel" aria-label="Forhåndsvis faggruppe" title="Forhåndsvis en faggruppe med fiktive data" onchange="pvSet(this.value)"><option value="">Faggruppe: min konto</option>'+Object.entries(PVD).map(([k,d])=>'<option value="'+k+'"'+(PV&&PV.k===k?' selected':'')+'>'+d.n+'</option>').join('')+'</select>':''}
-function pvBar(){if(!(typeof tkAdm==='function'&&tkAdm()&&!EMB))return'';return'<div class="pvb"><span class="pvt">Admin</span>'+pvSel()+(PV?'<button class="b p" onclick="pvSet(\'\')">Tilbage til min konto</button>':'')+(PV?'<span class="note pvn">Du ser eksempeldata for '+esc(PVD[PV.k].n)+'. Intet gemmes.</span>':'')+'</div>'}
+function pvOff(){try{return localStorage.getItem('vp_pvoff')==='1'}catch(e){return false}}
+function pvTog(){try{localStorage.setItem('vp_pvoff',pvOff()?'0':'1')}catch(e){}render()}
+function pvBar(){if(!(typeof tkAdm==='function'&&tkAdm()&&!EMB))return'';if(pvOff()&&!PV)return'<div class="pvb"><span class="pvt">Admin</span><button class="b" onclick="pvTog()">Vis faggruppevælger</button></div>';return'<div class="pvb"><span class="pvt">Admin</span>'+pvSel()+(PV?'':'<button class="b" onclick="pvTog()">Skjul</button>')+(PV?'<button class="b p" onclick="pvSet(\'\')">Tilbage til min konto</button>':'')+(PV?'<span class="note pvn">Du ser eksempeldata for '+esc(PVD[PV.k].n)+'. Intet gemmes.</span>':'')+'</div>'}
 function guestHasGrp(){let h=!!S.grp;try{h=h||!!localStorage.getItem('vp_grp')}catch(e){}return h}
 function guestStart(){if(S.emps.length)return;if(guestHasGrp())demoGrp(grpGet());else demoLoad()}
 function demoStart(){if(guestHasGrp())demoGrp(grpGet());else{S.tab='emps';render()}}
