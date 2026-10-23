@@ -2824,7 +2824,12 @@ function lpParse(txt){
  return out}
 const lpKey=x=>x.kind+'|'+x.code;
 /* Dage i ansættelsen: én post pr. dag, vagt går forud for fravær og fridøgn */
+const lpMn=t=>+t.slice(0,2)*60+ +t.slice(3);
+/* Hele-dags-poster (fx «Kursus/møde» 00:00–23:59) regnes som en normal arbejdsdag: dagsnormen fra 08:00 */
+function lpNorm(e,x){if(x.nx||x.kind==='fri'||x.a!=='00:00'||lpMn(x.b)<23*60)return x;let wh=37;try{wh=+PF(e).weekHours||37}catch(_){}
+ const m=Math.round(wh/5*60),a=8*60,b=a+m,f=v=>String(Math.floor(v/60)%24).padStart(2,'0')+':'+String(v%60).padStart(2,'0');return Object.assign({},x,{a:f(a),b:f(b),nx:false,norm:1})}
 function lpDays(e,evs){const rank={work:3,leave:2,fri:1},m={};
+ evs=evs.map(x=>lpNorm(e,x));
  for(const x of evs){if(x.k<(e.from||'0000')||(e.to&&x.k>e.to))continue;const o=m[x.k];if(!o||rank[x.kind]>rank[o.kind]||(rank[x.kind]===rank[o.kind]&&lpMin(x)>lpMin(o)))m[x.k]=x}
  return m}
 const lpMin=x=>{const f=t=>+t.slice(0,2)*60+ +t.slice(3);return f(x.b)-f(x.a)+(x.nx?1440:0)};
