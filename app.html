@@ -2838,7 +2838,9 @@ const lpShT=(s,i)=>s.byDay?s.t[i]:s.t[0];
 function lpSuggest(e,o){const sh=(S.shifts[e.id]||[]).filter(s=>!!s.leave===(o.kind==='leave'));
  const sm=sh.filter(s=>s.loop===o.code);if(sm.length)return sm[0].id;
  if(o.kind==='leave'){const w=o.code.split(/\s+/)[0].toLowerCase(),n=sh.find(s=>(s.name||s.ab||'').toLowerCase().includes(w));return n?n.id:'+'}
- const t=sh.find(s=>(o.wd||[0,1,2,3,4,5,6]).every(i=>{const d=lpShT(s,i);return d&&d[0]===o.a&&d[1]===o.b&&!!d[2]===o.nx}));return t?t.id:'+'}
+ const W=o.wd||[0,1,2,3,4,5,6],sc=s=>W.filter(i=>{const d=lpShT(s,i);return d&&d[0]===o.a&&d[1]===o.b&&!!d[2]===o.nx}).length;
+ let best=null,bs=0;for(const s of sh){const n=sc(s);if(n>bs){bs=n;best=s}}
+ return best&&bs===W.length?best.id:best&&bs*2>=W.length?best.id:'+'}
 function lpNewShift(e,o){const used={};(S.shifts[e.id]||[]).forEach(x=>{if(!x.leave)used[x.color]=(used[x.color]||0)+1});
  const t=[o.a,o.b],part=!!(o.wd&&o.wd.length&&o.wd.length<7);if(o.nx)t.push(true);
  const s={id:uid(),ab:o.code.replace(/\s+/g,'').slice(0,8),name:o.code,color:'#8b95a5',byDay:part,t:Array.from({length:7},(_,i)=>!part||o.wd.includes(i)?t.slice():['','']),oncall:'',leave:o.kind==='leave',loop:o.code};
