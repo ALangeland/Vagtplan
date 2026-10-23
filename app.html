@@ -185,7 +185,7 @@ label.chk{display:flex;flex-direction:row!important;gap:9px;align-items:flex-sta
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='151';
+const REV='152';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2745,8 +2745,9 @@ function npsPanel(e,r){if(!NPS)return'';const k=npKeys(e),T=n=>String(Math.round
 /* ===== Status og tak: bidrag ===== */
 const SHB=['','🌱 Bidragyder','⭐ Hjælper','🏆 Kollegahelt'];
 const shareBadge=st=>SHB[st.level]||st.name;
-async function shareStats(mark){try{const j=await api('share_stats',{mark:!!mark});if(j.points!==undefined){AUTH.ss=j;return j}}catch(_){}return AUTH.ss||null}
-async function shareNotify(){const j=await shareStats(true);if(j&&j.new>0)setTimeout(()=>tell('Tak for din deling! Kolleger har brugt dine delinger '+j.new+(j.new===1?' gang':' gange')+' siden sidst.'),900)}
+async function shareStats(mark,tseen){try{const j=await api('share_stats',{mark:!!mark,tseen:!!tseen});if(j.points!==undefined){AUTH.ss=j;return j}}catch(_){}return AUTH.ss||null}
+async function shareNotify(){const j=await shareStats(true);const nt=j&&(j.trophies||[]).filter(t=>!t.seen).length;if(nt){setTimeout(()=>{ask(nt>1?'Du har fået en overraskelse (faktisk '+nt+')!\n\nTak for din hjælp til appen. Tryk på knappen for at se, hvad det er.':'Du har fået en overraskelse!\n\nTak for din hjælp til appen. Tryk på knappen for at se, hvad det er.',()=>{S.tab='acct';render();window.scrollTo(0,0)},'Se min overraskelse','Senere');shareStats(false,true)},1200);return}
+ if(j&&j.new>0)setTimeout(()=>tell('Tak for din deling! Kolleger har brugt dine delinger '+j.new+(j.new===1?' gang':' gange')+' siden sidst.'),900)}
 function shareCard(){if(!AUTH.user||!AUTH.api)return'';if(AUTH.ss===undefined){AUTH.ss=null;shareStats().then(()=>render());return''}const st=AUTH.ss;if(!st)return'';
  const pc=st.next?Math.min(100,Math.round(st.points/st.next*100)):100;
  const tr=(st.trophies||[]).map(t=>`<div style="display:flex;gap:12px;align-items:center;margin:0 0 10px;padding:10px 12px;border-radius:12px;background:var(--line)"><span style="font-size:30px">🏆</span><span><b>Trofæ: Hjælp til appen</b><br><span class="note" style="margin:0">${t.note?esc(t.note):'Tak, fordi du har hjulpet med at gøre appen bedre.'}</span></span></div>`).join('');
