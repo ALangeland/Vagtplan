@@ -2760,7 +2760,7 @@ function sfPack(s){return{n:String(s.name||'').slice(0,60),a:String(s.ab||'').sl
 function sfClean(p){try{const tm=v=>/^\d\d:\d\d$/.test(v)||v==='';if(!p||!Array.isArray(p.t)||p.t.length!==7)return null;const t=p.t.map(a=>{if(!Array.isArray(a)||!tm(a[0])||!tm(a[1]))throw 0;const r=[a[0],a[1]];if(a[2])r.push(true);return r});
  const n=String(p.n||'').slice(0,60),a=String(p.a||'').slice(0,8);if(!n&&!a)return null;if(!t.some(x=>x[0]&&x[1]))return null;
  return{name:n,ab:a||abbr(n),color:/^#[0-9a-fA-F]{6}$/.test(p.c)?p.c:COLORS[2],byDay:!!p.b,t,oncall:['on','off'].includes(p.o)?p.o:'',leave:!!p.l}}catch(e){return null}}
-async function sfMineLoad(e){const dk=sfDk(e),j=await api('sf_mine',{dk});SFM[dk]=j.items||[];return SFM[dk]}
+async function sfMineLoad(e){const dk=sfDk(e),j=await api('sf_mine',{dk}),j0=await api('sf_mine',{dk:npKeys(e).dk});SFM[dk]=(j.items||[]).concat(j0.items||[]);return SFM[dk]}
 const sfMine=e=>SFM[sfDk(e)]||[];
 const sfJ=s=>JSON.stringify(sfPack(s));
 const sfFindMine=(e,s)=>sfMine(e).find(x=>x.j===sfJ(s));
@@ -2769,7 +2769,7 @@ function sfChip(s){if(!sfOk())return'';const e=emp(),dk=sfDk(e);if(SFM[dk]===und
 async function sfAutoUnshare(e,s,lead){if(!sfOk()||!s)return 0;try{const ms=await sfMineLoad(e),hit=ms.filter(x=>x.j===sfJ(s));if(!hit.length)return 0;const j=await api('sf_unshare',{ids:hit.map(x=>x.id)});if(j.ok){await sfMineLoad(e);delete SFC[sfDk(e)];tell(lead||'Din deling af vagtformen er også fjernet, så kollegerne ikke ser den længere.');return hit.length}}catch(_){}return 0}
 async function sfReshare(e,old,nw){const n=await sfAutoUnshare(e,old,'');if(n)sfOffer(nw,'Du havde delt den gamle version, og den er nu fjernet. Vil du dele den rettede vagtform?')}
 async function sfFetch(){const e=emp();if(!e||!sfOk())return;const dk=sfDk(e);if(SFC[dk]!==undefined)return;SFC[dk]=null;
- const js=[await api('sf_list',{dk})];for(const d2 of npAltDks(e))js.push(await api('sf_list',{dk:d2+'#'+sfGr()}));const seenJ={},its=[];for(const jj of js)for(const x of (jj.items||[])){const o=seenJ[x.j];if(o){o.n=(o.n||0)+(x.n||0);o.mine=o.mine||x.mine;continue}seenJ[x.j]=x;its.push(x)}const j={items:its};SFC[dk]=(j.items||[]).map(x=>{let p=null;try{p=sfClean(JSON.parse(x.j))}catch(_){}return p&&Object.assign(p,{n:x.n,id:x.id,at:x.at,mine:x.mine})}).filter(Boolean);render()}
+ const js=[await api('sf_list',{dk}),await api('sf_list',{dk:npKeys(e).dk})];for(const d2 of npAltDks(e)){js.push(await api('sf_list',{dk:d2+'#'+sfGr()}));js.push(await api('sf_list',{dk:d2}))}const seenJ={},its=[];for(const jj of js)for(const x of (jj.items||[])){const o=seenJ[x.j];if(o){o.n=(o.n||0)+(x.n||0);o.mine=o.mine||x.mine;continue}seenJ[x.j]=x;its.push(x)}const j={items:its};SFC[dk]=(j.items||[]).map(x=>{let p=null;try{p=sfClean(JSON.parse(x.j))}catch(_){}return p&&Object.assign(p,{n:x.n,id:x.id,at:x.at,mine:x.mine})}).filter(Boolean);render()}
 const sfAll=()=>{const e=emp();return e&&sfOk()?(SFC[sfDk(e)]||[]).slice().sort((a,b)=>b.n-a.n):[]};
 function sfMissing(){const have=new Set(shifts().map(sfSig)),seen=new Set();return sfAll().filter(x=>{const g=sfSig(x);if(sfNo(x)||have.has(g)||seen.has(g))return false;seen.add(g);return true})}
 function sfBar(){if(!sfOk())return AUTH.api?'<p class="note" style="margin-top:10px">Log ind for at hente kollegers vagtformer eller dele dine egne.</p>':'';sfFetch();
