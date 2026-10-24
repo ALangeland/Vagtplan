@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='171';
+const REV='172';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -539,7 +539,7 @@ function dayVal(x,qc){const e=S.emps.find(z=>z.id===x.emp);if(!e||!x.work)return
  const tot=P.reduce((a,b)=>a+b[1],0);return{tot,P,vikar:!!(q.hr&&(e.kind==='vikar'||r.hourlyPay))}}
 /* ===== Ændret mødetid, omlagt tjeneste og tilkald på fridøgn ===== */
 function tFmt(el){let d=el.value.replace(/\D/g,'').slice(0,4);el.value=d.length>2?d.slice(0,2)+':'+d.slice(2):d}
-function parseT(v){const d=String(v||'').replace(/\D/g,'');if(d.length<3||d.length>4)return null;const h=+d.slice(0,d.length-2),m=+d.slice(-2);return h<24&&m<60?pad(h)+':'+pad(m):null}
+function parseT(v){const d=String(v||'').replace(/\D/g,'');if(!d||d.length>4)return null;let h,m;if(d.length<=2){h=+d;m=0}else{h=+d.slice(0,d.length-2);m=+d.slice(-2)}if(h===24&&m===0)h=0;return h<24&&m<60?pad(h)+':'+pad(m):null}
 function plT(s,d){return s.byDay?s.t[wdi(d)]:s.t[0]}
 function movedMin(pt,at){const A=tm(pt[0]),B=A+dur(pt),C=tm(at[0]),D=C+dur(at),ov=Math.max(0,Math.min(B,D)-Math.max(A,C));return Math.max(0,(D-C)-ov)}
 function omlagOf(e,k,s){const r=PF(e),a=(S.act||{})[k];if(!r.omlaeg||!a||!a.late||!a.a||!a.b)return null;const pt=plT(s,new Date(k+'T00:00'));if(!pt||!pt[0]||!pt[1])return null;const mv=movedMin(pt,[a.a,a.b,'']),hh=Math.ceil(mv/30);if(!hh)return null;const rt=Math.round(r.omlaeg*rmFac(k.slice(0,7),'sk')*100)/100;return{hh,rt,amt:hh*rt/2,mv}}
