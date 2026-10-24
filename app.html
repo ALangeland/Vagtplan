@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='177';
+const REV='178';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2215,7 +2215,7 @@ PE.gb=pxIco('#0f380f','#9bbc0f','#9bbc0f','#8bac0f');PE.arc=pxIco('#12002b','#00
 //TKMOD
 /* ===== Hjælp, henvendelser (tickets) og postkasse ===== */
 const TKS={ny:['Ny','#c8352f'],igang:['Under udarbejdelse','#b26a00'],adr:['Adresseret','#0b6e8a'],loest:['Løst','#1f8a5b']},TKK={fejl:'Fejl',forslag:'Forslag',spoerg:'Spørgsmål',ok:'OK-tjek',lon:'Lønseddel'};
-const TK={img:{},kind:'fejl',msg:'',ctx:true,mail:true,snap:false,busy:false,err:'',done:'',show:false,mine:null,mineAt:0,mineBusy:false,mineErr:'',adm:null,admAt:0,admBusy:false,admErr:'',filter:'open',sel:null,rep:{},ast:{},q:'',sn:0};
+const TK={img:{},kind:'fejl',msg:'',ctx:true,mail:true,busy:false,err:'',done:'',show:false,mine:null,mineAt:0,mineBusy:false,mineErr:'',adm:null,admAt:0,admBusy:false,admErr:'',filter:'open',sel:null,rep:{},ast:{},q:'',sn:0};
 const tkMode=()=>typeof AUTH==='undefined'?'mock':!AUTH.api?'none':AUTH.user?'user':'guest';
 const tkAdm=()=>typeof AUTH==='undefined'?true:!!(/github\.io$/i.test(location.hostname)||AUTH.admin||(AUTH.user&&AUTH.user.admin));
 const tkSeen=()=>{try{return JSON.parse(localStorage.getItem('vp_tkseen')||'{}')||{}}catch(e){return{}}};
@@ -2227,9 +2227,6 @@ const tkNew=()=>(TK.adm||[]).filter(t=>t.st==='ny').length;
 const TKL={ans:'Ansættelser (overenskomst · stilling · region · sygehus · afdeling · speciale · periode)',v:'Version',tab:'Side',grp:'Faggruppe',ok:'Overenskomster',tema:'Tema',skærm:'Skærm',pwa:'Installeret som app',sprog:'Sprog',browser:'Browser',fejl:'Seneste fejl',rt:'Underside'};
 function tkPretty(j){let o;try{o=JSON.parse(j)}catch(e){return j||''}return Object.entries(o).map(([k,v])=>(TKL[k]||k)+': '+(Array.isArray(v)?(v.length?v.join('; '):'ingen'):typeof v==='boolean'?(v?'ja':'nej'):v)).join('\n')}
 function tkAns(e){const P=S.oks[e.ok]||PROFILES[e.ok]||{},r=(P.roles||[]).find(x=>x.k===e.pos),c=x=>String(x||'').replace(/\s+/g,' ').trim().slice(0,45);return [okName(e.ok),r&&(r.t||r.n),e.region,e.hos,e.dep,e.spec,(e.from||'?')+' til '+(e.to||(e.kind==='fast'?'åben':'?'))+(e.kind==='vikar'?' (vikar)':'')].map(c).filter(Boolean).join(' · ')}
-function tkSnap(){const o=JSON.parse(ser());for(const k of ['consent','cal','imp','statY','demo'])delete o[k];(o.emps||[]).forEach(e=>{delete e.slips;delete e.tax;delete e.loop;delete e.barsel;(e.evacs||[]).forEach(v=>delete v.note)});for(const d in (o.plan||{}))if(o.plan[d]==='_|syg')delete o.plan[d];return JSON.stringify(o)}
-async function tkShare(id,on){const r=await tkApi('snapset',{id,snap:on?tkSnap():''});if(r.ok){await tkLoadMine(true)}else tell(r.error||'Kunne ikke dele.')}
-async function tkOpenSnap(id){const r=await tkApi('snap&id='+encodeURIComponent(id));if(!r.s){tell(r.error||'Kunne ikke hente opsætningen.');return}if(!tkAdm())return;if(!PV)PV={bak:ser()};PV.k='__tk';PVD.__tk={n:'brugerens delte opsætning (#'+id+')'};try{S=fix(JSON.parse(r.s))}catch(e){tell('Opsætningen kunne ikke læses.');return}WARN=[];NAVOPEN=false;S.tab='work';render()}
 function tkCtx(){const o={grp:grpGet(),ans:(S.emps||[]).filter(e=>!e.demo).slice(0,4).map(tkAns),v:typeof REV!=='undefined'?REV:'',tab:S.tab,ok:(S.emps||[]).filter(e=>!e.demo).slice(0,6).map(e=>(e.ok||'dk')+':'+(e.pos||'')),tema:themeGet(),skærm:innerWidth+'x'+innerHeight,pwa:(()=>{try{return matchMedia('(display-mode: standalone)').matches}catch(e){return false}})(),sprog:navigator.language,browser:navigator.userAgent.slice(0,150),fejl:VPERR.slice(-3)};if(S.tab==='rt'&&typeof RTS!=='undefined')o.rt=RTS;return JSON.stringify(o).slice(0,2400)}
 
 /* lokal demo (kun i prøveversionen uden server), så skærmbillederne kan prøves */
@@ -2268,14 +2265,13 @@ function hlpBody(){const mode=tkMode(),X=`<div class="row" style="flex-wrap:nowr
  <textarea id="hlpt" rows="6" maxlength="3000" placeholder="${ph}" style="width:100%" oninput="TK.msg=this.value">${esc(TK.msg)}</textarea>
  <label class="chk"><input type="checkbox" ${TK.ctx?'checked':''} onchange="TK.ctx=this.checked;hlpDraw()"><span>Send oplysninger om din ansættelse og tekniske oplysninger med (overenskomst, stilling, region, sygehus, afdeling, version, side, browser, seneste fejl). Ingen løn eller vagter.</span></label>
  ${TK.ctx?`<details class="note"><summary>Se præcis hvad der sendes</summary><pre class="tkpre">${esc(tkPretty(tkCtx()))}</pre></details>`:''}
- <label class="chk"><input type="checkbox" ${TK.snap?'checked':''} onchange="TK.snap=this.checked"><span>Administratoren må åbne en skrivebeskyttet kopi af min opsætning (vagtformer, ansættelser og vagtplan, men ikke sygedage, lønsedler, skat eller Loop-link), så fejlen kan genskabes.</span></label>
  <label class="chk"><input type="checkbox" ${TK.mail?'checked':''} onchange="TK.mail=this.checked"><span>Administratoren må se og skrive til min e-mail${email?' ('+esc(email)+')':''}, hvis svaret ikke kan stå her.</span></label>
  ${TK.err?`<p style="color:var(--bad);margin:8px 0 0"><b>${esc(TK.err)}</b></p>`:''}
  <p style="margin:12px 0 0"><button class="b p" style="width:100%" ${TK.busy?'disabled':''} onclick="tkSend()">${TK.busy?'Sender ...':'Send henvendelse'}</button></p>
  <p class="note">Kun administratoren kan læse den. Skriv ikke cpr-nummer, patientoplysninger eller navne på kolleger.</p></div>`}
 async function tkSend(){const m=TK.msg.trim();if(m.length<5){TK.err='Skriv et par ord om, hvad det handler om.';hlpDraw();return}TK.busy=true;TK.err='';hlpDraw();
  const em=TK.mail?(typeof AUTH!=='undefined'&&AUTH.user?AUTH.user.email:tkMode()==='mock'?'du@eksempel.dk':''):'';
- const r=await tkApi('new',{k:TK.kind,m:m.slice(0,3000),ctx:TK.ctx?tkCtx():'',em,snap:TK.snap?tkSnap():''});TK.busy=false;
+ const r=await tkApi('new',{k:TK.kind,m:m.slice(0,3000),ctx:TK.ctx?tkCtx():'',em});TK.busy=false;
  if(r.id){TK.done=r.id;TK.msg='';TK.mineAt=0;await tkLoadMine(true);if(tkAdm())tkLoadAdm(true)}else TK.err=r.error||'Noget gik galt. Prøv igen.';hlpDraw()}
 async function tkLoadMine(force){const m=tkMode();if(m!=='user'&&m!=='mock')return;if(TK.mineBusy||(!force&&Date.now()-TK.mineAt<60000))return;TK.mineBusy=true;const r=await tkApi('mine');TK.mineBusy=false;TK.mineAt=Date.now();if(r.items){TK.mine=r.items;TK.mineErr=''}else{if(TK.mine===null)TK.mine=[];TK.mineErr=r.error||''}tkRender()}
 const tkPill=st=>`<span class="stp" style="background:${(TKS[st]||TKS.ny)[1]}">${(TKS[st]||TKS.ny)[0]}</span>`;
@@ -2283,7 +2279,7 @@ function tkBubbles(t,me){const mk=(w,tm,m,im)=>`<div class="tkb ${w===me?'me':'o
 const tkImgSrc=i=>String(i).startsWith('data:')?String(i):'api/?a=tk_img&id='+encodeURIComponent(i);
 function tkCard(t,sn){const nw=t.ua&&t.ua>(sn[t.id]||'');return`<div class="card tk ${nw?'new':''}"><div class="row" style="gap:6px"><span class="tag" style="margin:0">${TKK[t.k]||t.k}</span>${tkPill(t.st)}${nw?'<span class="stp" style="background:#c8352f">Opdateret</span>':''}<span class="note sp" style="text-align:right">#${esc(t.id)} · ${tkWhen(t.c)}${t.demo?' · eksempel':''}</span></div>${tkBubbles(t,'u')}
  <label style="margin-top:8px">Skriv tilbage<textarea rows="2" maxlength="3000" style="width:100%" placeholder="Tilføj noget, eller svar ..." oninput="TK.rep['${t.id}']=this.value">${esc(TK.rep[t.id]||'')}</textarea></label>
- <div class="row"><button class="b p" onclick="tkReply('${t.id}')">Send</button><button class="b" onclick="tkShare('${t.id}',${t.sn?'false':'true'})" title="Administratoren kan åbne en skrivebeskyttet kopi af din opsætning, uden sygedage, lønsedler, skat og Loop-link">${t.sn?'Træk deling af opsætning tilbage':'Del min opsætning med support'}</button><button class="b d" onclick="tkDel('${t.id}')">Slet henvendelse</button></div></div>`}
+ <div class="row"><button class="b p" onclick="tkReply('${t.id}')">Send</button><button class="b d" onclick="tkDel('${t.id}')">Slet henvendelse</button></div></div>`}
 async function tkReply(id){const m=(TK.rep[id]||'').trim();if(!m)return;const r=await tkApi('reply',{id,m:m.slice(0,3000)});if(r._status===200||r.ok){TK.rep[id]='';await tkLoadMine(true);if(tkAdm())tkLoadAdm(true)}else tell(r.error||'Kunne ikke sende.')}
 function tkDel(id){ask('Slet denne henvendelse? Det kan ikke fortrydes.',async()=>{await tkApi('del',{id});await tkLoadMine(true)})}
 function helpV(){const mode=tkMode();if(mode==='user')tkLoadMine();const sn=tkSeen(),L=(TK.mine||[]).slice().sort((a,b)=>a.u<b.u?1:-1);
@@ -2309,7 +2305,6 @@ function tkADel(id){ask('Slet denne henvendelse for altid?',async()=>{await tkAp
 function tkMailDetail(t){const ast=TK.ast[t.id]!==undefined?TK.ast[t.id]:(t.st==='ny'?'adr':''),opt=(v,l)=>`<option value="${v}" ${ast===v?'selected':''}>${l}</option>`;
  return`<div class="card tk"><div class="row" style="gap:6px"><button class="b mback" onclick="TK.sel=null;render()">‹ Alle</button><span class="tag" style="margin:0">${TKK[t.k]||t.k}</span>${tkPill(t.st)}<span class="note sp" style="text-align:right">#${esc(t.id)} · ${tkWhen(t.c)}${t.demo?' · eksempel':''}</span></div>${tkBubbles(t,'a')}
  <p class="note" style="margin:8px 0">${t.em?`Skriv til brugeren på e-mail: <a href="mailto:${esc(t.em)}?subject=${encodeURIComponent('Vagtløn, henvendelse '+t.id)}">${esc(t.em)}</a>`:'Brugeren har ikke givet lov til at se e-mailadressen. Svar her i appen.'}</p>
- ${t.sn?`<p style="margin:8px 0"><button class="b p" onclick="tkOpenSnap('${t.id}')">Åbn brugerens opsætning (skrivebeskyttet)</button> <span class="note">Adgangen logges.</span></p>`:'<p class="note">Brugeren har ikke delt sin opsætning.</p>'}
  ${t.ctx?`<details class="note" open><summary>Om brugeren og tekniske oplysninger</summary><pre class="tkpre">${esc(tkPretty(t.ctx))}</pre></details>`:'<p class="note">Ingen tekniske oplysninger sendt med.</p>'}
  <label style="margin-top:10px">Dit svar til brugeren<textarea rows="4" maxlength="3000" style="width:100%" oninput="TK.rep['${t.id}']=this.value" onpaste="tkPaste(event,'${t.id}')">${esc(TK.rep[t.id]||'')}</textarea></label>
  <div class="row" style="margin-top:6px;gap:8px;align-items:center"><button type="button" class="b" onclick="this.nextElementSibling.click()">Tilføj billede</button><input type="file" accept="image/*" multiple hidden onchange="tkPick('${t.id}',this)"><span class="note">Du kan også sætte et billede ind i svarfeltet med Ctrl+V. Højst 4 pr. svar.</span></div>
