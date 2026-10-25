@@ -118,7 +118,7 @@ h2{font-size:24px;font-weight:800}
 .row:has(>input[type=month]){flex-wrap:wrap}.row:has(>input[type=month])>h2.sp{flex:1 0 100%;margin-bottom:0}.row:has(>input[type=month])>input[type=month]{flex:1;min-width:0;text-align:center}
 .fl0{width:auto!important;min-width:0;height:24px!important;padding:0 7px!important;font-size:12px!important;min-height:0!important}
 }
-@media(max-width:700px){button.b,button.p,select,input[type=month],input[type=date]{min-height:42px}.pk{min-height:42px}.pk .tm{margin-left:4px}.pk .pkn{flex:0 0 auto;max-width:42%}.pk .vv.vi{margin-left:2px}.nudge{flex-wrap:wrap}}
+@media(max-width:700px){button.b,button.p,select,input[type=month],input[type=date]{min-height:42px}.pk{min-height:42px}.pk .tm{margin-left:4px}.pk .pkn{flex:0 1 auto;max-width:100%}.pk .vv.vi{margin-left:2px}.nudge{flex-wrap:wrap}.pk{flex-wrap:wrap;row-gap:3px;min-width:0;overflow:hidden}.pk{position:relative;padding-right:28px}.pk .cv{position:absolute;right:9px;top:50%;transform:translateY(-50%);margin:0}.pk .lpt,.pk .xt{margin-left:0;margin-right:0}.day .fl0{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.day>span{min-width:0}}
 
 :root{--acc2:#2a5fc4;--btn:#0b6e8a;--btn2:#2a5fc4;--nav1:#14213d;--nav2:#173a5e}
 nav{background:var(--nav1);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 2px 10px rgba(0,0,0,.14)}
@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='190';
+const REV='191';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
