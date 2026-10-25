@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='193';
+const REV='194';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -517,7 +517,7 @@ function check(){const A0=entries().filter(e=>e.work).concat(evs()).filter(e=>em
 function bonusOf(e,ym){const r=PF(e);if(!r.bonus||e.kind==='vikar')return 0;const y=+ym.slice(0,4);if(y<2025)return 0;let t=0;for(let yy=y===2025?2024:y;yy<=y;yy++)for(let m=1;m<=12;m++){const k=yy+'-'+pad(m);if(k<'2024-04')continue;if(e.from&&k<e.from.slice(0,7))continue;if(e.to&&k>e.to.slice(0,7))continue;const sl=sal(e,k);if(sl.ro.nb)continue;let pc=0;for(const x of r.bonus)if(k>=x[0])pc=x[1];t+=sl.g*sl.kp/12*pc/100}return t}
 function pay(ym,e){const r=PF(e),q=rates(e,ym),E=entries().filter(x=>x.work&&x.emp===e.id&&x.k.startsWith(ym));let tot=0,lo=0,hi=0,vu=0,ef=0,n=0,ev=0,pcm=0,pgm=0,krm=0,pgk=0,acm=0;const fc={S:0,B:0,K:0};
  for(const x of E){const m=dur(x.t),off=x.s.oncall==='off',em=hrsOf(x);tot+=em;if(x.s.oncall)n++;if(off){vu+=m/60;ef+=em/60}else if(r.vagtFee&&x.s.oncall)ef+=+x.s.effH||0;if(x.fl)fc[x.fl]++;
-  if(!r.noUl)for(let i=0;i<Math.min(em,m);i+=5){const a=tm(x.t[0])+i,d=new Date(x.d.getFullYear(),x.d.getMonth(),x.d.getDate()+Math.floor(a/1440));if(r.ulPct){const u=pctBand(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d),a>=1440);pcm+=u[0]*5;krm+=(u[2]||0)*5;pgk+=(u[3]||0)*5;if(u[1])pgm+=u[0]*5;if(r.skAcc&&u[0]>0)acm+=5}else{const b=band(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d));if(b==='lo')lo+=5;else if(b==='hi')hi+=5}}}
+  if(!r.noUl)for(let i=0;i<Math.min(em,m+Math.round((x.ot||0)*60));i+=5){const a=tm(x.t[0])+i,d=new Date(x.d.getFullYear(),x.d.getMonth(),x.d.getDate()+Math.floor(a/1440));if(r.ulPct){const u=pctBand(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d),a>=1440);pcm+=u[0]*5;krm+=(u[2]||0)*5;pgk+=(u[3]||0)*5;if(u[1])pgm+=u[0]*5;if(r.skAcc&&u[0]>0)acm+=5}else{const b=band(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d));if(b==='lo')lo+=5;else if(b==='hi')hi+=5}}}
  let om=0,tk=0;for(const x of E){const o=omlagOf(e,x.k,x.s);if(o)om+=o.amt}for(const k in (S.tfri||{}))if(k.startsWith(ym)&&tfriEmp(k)===e.id){const t=tilkOf(e,k);if(t)tk+=t.amt}
  let ot=0;if(!r.noOT)for(const p of periods(e)){const s=pStats(e,p),a=new Date(s.to.getFullYear(),s.to.getMonth()+1,1);if(a.getFullYear()+'-'+pad(a.getMonth()+1)===ym)ot+=s.ot;for(const z of s.strak){const q2=new Date(z.k+'T00:00'),m2=new Date(q2.getFullYear(),q2.getMonth()+1,1);if(m2.getFullYear()+'-'+pad(m2.getMonth()+1)===ym)ot+=z.h}}
  if(r.evac)for(const v of e.evacs||[])if(v.sd&&v.sd.startsWith(ym))ev+=evCalc(e,v).pay;
@@ -528,7 +528,7 @@ function pay(ym,e){const r=PF(e),q=rates(e,ym),E=entries().filter(x=>x.work&&x.e
 /* Hvad en enkelt vagt udløser: samme regler som pay(), regnet pr. vagt (qc = cache af satser pr. ansættelse og måned) */
 function dayVal(x,qc){const e=S.emps.find(z=>z.id===x.emp);if(!e||!x.work)return null;const r=PF(e),ym=x.k.slice(0,7),ck=e.id+ym;qc=qc||{};const q=qc[ck]||(qc[ck]=rates(e,ym)),m=dur(x.t),off=x.s.oncall==='off',em=hrsOf(x),kf=r.ulPct&&r.ulPct.krFac&&r.fac?facAt(r,ym):1,P=[],h1=v=>String(Math.round(v/60*100)/100).replace('.',',');
  let lo=0,hi=0,krm=0;const bp={};
- if(!r.noUl)for(let i=0;i<Math.min(em,m);i+=5){const a=tm(x.t[0])+i,d=new Date(x.d.getFullYear(),x.d.getMonth(),x.d.getDate()+Math.floor(a/1440));if(r.ulPct){const u=pctBand(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d),a>=1440);krm+=(u[2]||0)*5;if(u[0])bp[u[0]]=(bp[u[0]]||0)+5}else{const b=band(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d));if(b==='lo')lo+=5;else if(b==='hi')hi+=5}}
+ if(!r.noUl)for(let i=0;i<Math.min(em,m+Math.round((x.ot||0)*60));i+=5){const a=tm(x.t[0])+i,d=new Date(x.d.getFullYear(),x.d.getMonth(),x.d.getDate()+Math.floor(a/1440));if(r.ulPct){const u=pctBand(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d),a>=1440);krm+=(u[2]||0)*5;if(u[0])bp[u[0]]=(bp[u[0]]||0)+5}else{const b=band(r,d,(a%1440)/60,wdi(d),isHol(r.holi,d));if(b==='lo')lo+=5;else if(b==='hi')hi+=5}}
  if(q.hr&&(e.kind==='vikar'||r.hourlyPay))P.push(['Timeløn: '+h1(em)+' t à '+kr(q.hr),em/60*q.hr]);
  if(r.ulPct){const rt=q.s.a/r.divisor;for(const pc of Object.keys(bp).sort((a,b)=>b-a))P.push(['Ulempetillæg: '+h1(bp[pc])+' t à '+pc+' % af '+kr(rt),bp[pc]/60*pc/100*rt]);if(krm)P.push(['Ulempetillæg i kr.: '+h1(krm)+' t',krm/60*kf])}
  else{if(lo)P.push(['Ulempetillæg (lavt): '+h1(lo)+' t à '+kr(q.ul.lo),lo/60*q.ul.lo]);if(hi)P.push(['Ulempetillæg (højt): '+h1(hi)+' t à '+kr(q.ul.hi),hi/60*q.ul.hi])}
