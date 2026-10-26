@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='205';
+const REV='206';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -3038,7 +3038,7 @@ function lpApply(e,evs,map,ovr){ovr=ovr||{};
  const ks=Object.keys(days).sort();
  for(const k of ks){const x=days[k];let v,sid;if(dl[k]&&(dl[k].k==='own'||dl[k].k==='nomap'))delete dl[k];
   if(x.kind==='fri'){v='_|fri';sid=null}else{sid=(ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]))?ovr[k]:map[lpKey(x)];if(!sid){r.skip++;r.nm=(r.nm||0)+1;dl[k]={k:'nomap',code:x.code,a:x.a,b:x.b,at:Date.now()};continue}v=e.id+'|'+sid}
-  const cur=S.plan[k],im=S.imp[k];
+  const cur=S.plan[k],im=S.imp[k];if(im&&im.x&&cur&&cur===v){delete im.x;im.v=v}
   if(((im&&im.x)||(cur&&(!im||cur!==im.v)))&&cur&&x.kind!=='fri'&&cur!=='_|fri'&&(()=>{const a=(S.act||{})[k];let t=a&&a.a&&a.b?[a.a,a.b]:null;if(!t){const sh=(S.shifts[e.id]||[]).find(z=>z.id===String(cur).split('|')[1]),d=new Date(k+'T00:00'),q=sh&&(sh.byDay?sh.t[wdi(d)]:sh.t[0]);t=q&&q[0]&&q[1]?[q[0],q[1]]:null}return t&&t[0]===x.a&&t[1]===x.b})()){
    S.imp[k]=Object.assign({},im||{},{v:cur,uid:x.uid,code:x.code,a:x.a,b:x.b});delete S.imp[k].x;delete S.imp[k].diff;delete dl[k];continue}
   if(((im&&im.x)||(cur&&(!im||cur!==im.v)))&&!(x.kind==='fri'&&!cur)){if(cur!==v){r.skip++;dl[k]={k:'own',code:x.code,a:x.a,b:x.b,cur,at:Date.now()}}if(im&&(im.x||cur!==im.v)&&((im.code!==x.code||(x.kind!=='fri'&&(im.a!==x.a||im.b!==x.b))))){im.diff=1;im.pc=im.code;im.pa=im.a;im.pb=im.b;im.dm=lpDelta(im.a,im.b,x.a,x.b);im.nc=x.code;im.na=x.a;im.nb=x.b;im.code=x.code;im.a=x.a;im.b=x.b;r.diff++}continue}
@@ -3102,6 +3102,7 @@ function lpSec(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{}
  const R=(a,b)=>`<tr><td style="vertical-align:top;color:var(--mut);padding-right:10px">${a}</td><td>${b}</td></tr>`,tm=(a,b)=>a&&b?esc(a)+'–'+esc(b):esc(a||''),[ei,si]=(S.plan[k]||'|').split('|'),sh=(S.shifts[ei]||[]).find(x=>x.id===si),when=t=>t?new Date(t).toLocaleString('da-DK',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'',rows=[];
  if(im&&!im.x){rows.push(R('Hentet fra Loop',`<b>${esc(im.code||'')}</b> ${tm(im.a,im.b)}${im.v==='_|fri'?' (fridøgn)':''}`));
   if(sh&&!sh.leave){const d0=new Date(k+'T00:00'),pt=plT(sh,d0);rows.push(R('Vagtform i appen',`${esc(sh.name||sh.ab)}${pt?' ('+tm(pt[0],pt[1])+')':''}`));if(pt&&(pt[0]!==im.a||pt[1]!==im.b))rows.push(R('Tid i kalenderen',`Loops tid ${tm(im.a,im.b)} er lagt ind som <b>ændret mødetid</b>, fordi vagtformens tid er en anden.`))}}
+ if(im&&im.x)rows.push(R('Hentet fra Loop',`<b>${esc(im.code||'')}</b> ${tm(im.a,im.b)}${im.v==='_|fri'?' (fridøgn)':''}<br>${S.plan[k]===im.v?'<span style="color:var(--ok)">✓ Stemmer med din dag.</span>':'Du har selv rettet dagen. Din rettelse er bevaret, og Loops vagt er ikke lagt ind.'}`));
  if(im&&im.ua)rows.push(R('Din egen tid',`<b>${tm(im.ua.a,im.ua.b)}</b> ${im.ua.a===im.a&&im.ua.b===im.b?'<span style="color:var(--ok)">✓ Loop stemmer</span>':'<span style="color:var(--warn)">Loop viser '+tm(im.a,im.b)+' ('+(lpFmtD(lpDelta(im.a,im.b,im.ua.a,im.ua.b))||'')+' mod Loop)</span>'}. Din tid bevares, når Loop hentes.`));
  if(im&&im.diff&&im.pc!==undefined)rows.push(R('Ændret i Loop siden sidst',`Før: ${esc(im.pc||'')} ${tm(im.pa,im.pb)}<br>Nu: ${esc(im.nc||'')} ${tm(im.na,im.nb)}${im.dm?' ('+lpFmtD(im.dm)+')':''}<br><span class="note">Din egen rettelse er bevaret. Vælg Loops vagtform i feltet, hvis Loops tider skal gælde.</span>`));
  if(d){if(d.k==='chg')rows.push(R('Ændret i Loop '+when(d.at),`Før: ${esc(d.f)}<br>Nu: ${esc(d.t)}${d.dm?' ('+lpFmtD(d.dm)+')':''}`));
