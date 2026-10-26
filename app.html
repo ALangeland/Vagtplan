@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='200';
+const REV='201';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2980,7 +2980,7 @@ function lpParse(txt){
   const i=l.indexOf(':');if(i<0)continue;const key=l.slice(0,i),val=l.slice(i+1),nm=key.split(';')[0].toUpperCase();
   if(nm==='DTSTART')c.s=lpDt(key,val);else if(nm==='DTEND')c.e=lpDt(key,val);else if(nm==='SUMMARY')c.sum=lpUn(val);else if(nm==='UID')c.uid=val;else if(nm==='STATUS')c.st=val.toUpperCase()}
  const out=[];
- for(const r of raw){if(r.st==='CANCELLED'||!r.sum)continue;const i=r.sum.indexOf(' - '),code=(i>0?r.sum.slice(0,i):r.sum).trim().slice(0,40);if(!code)continue;
+ for(const r of raw){if(r.st==='CANCELLED'||!r.sum||/^\s*uge\s*\d+\s*$/i.test(r.sum))continue;const i=r.sum.indexOf(' - '),code=(i>0?r.sum.slice(0,i):r.sum).trim().slice(0,40);if(!code)continue;
   const kind=/beskyttet\s*fri|fridøgn|fridog/i.test(code)?'fri':/^(ferie|afspads|afspad|syg|barsel|orlov|fridag|feriefri)/i.test(code)?'leave':'work';
   let b=r.e.t,nx=r.e.k>r.s.k||(r.e.k===r.s.k&&r.e.t<=r.s.t&&!r.s.day);
   if(r.s.day){r.s.t='07:00';b='15:00';nx=false}
@@ -3036,7 +3036,7 @@ function lpApply(e,evs,map,ovr){ovr=ovr||{};
  for(const k of ks){const x=days[k];let v,sid;if(dl[k]&&(dl[k].k==='own'||dl[k].k==='nomap'))delete dl[k];
   if(x.kind==='fri'){v='_|fri';sid=null}else{sid=(ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]))?ovr[k]:map[lpKey(x)];if(!sid){r.skip++;r.nm=(r.nm||0)+1;dl[k]={k:'nomap',code:x.code,a:x.a,b:x.b,at:Date.now()};continue}v=e.id+'|'+sid}
   const cur=S.plan[k],im=S.imp[k];
-  if((im&&im.x)||(cur&&(!im||cur!==im.v))){if(cur!==v){r.skip++;dl[k]={k:'own',code:x.code,a:x.a,b:x.b,cur,at:Date.now()}}if(im&&(im.x||cur!==im.v)&&(im.code!==x.code||im.a!==x.a||im.b!==x.b)){im.diff=1;im.pc=im.code;im.pa=im.a;im.pb=im.b;im.dm=lpDelta(im.a,im.b,x.a,x.b);im.nc=x.code;im.na=x.a;im.nb=x.b;im.code=x.code;im.a=x.a;im.b=x.b;r.diff++}continue}
+  if(((im&&im.x)||(cur&&(!im||cur!==im.v)))&&!(x.kind==='fri'&&!cur)){if(cur!==v){r.skip++;dl[k]={k:'own',code:x.code,a:x.a,b:x.b,cur,at:Date.now()}}if(im&&(im.x||cur!==im.v)&&(im.code!==x.code||im.a!==x.a||im.b!==x.b)){im.diff=1;im.pc=im.code;im.pa=im.a;im.pb=im.b;im.dm=lpDelta(im.a,im.b,x.a,x.b);im.nc=x.code;im.na=x.a;im.nb=x.b;im.code=x.code;im.a=x.a;im.b=x.b;r.diff++}continue}
   const had=!!cur,ua=im&&im.ua,same=had&&im&&cur===v&&im.v===v&&im.code===x.code&&im.a===x.a&&im.b===x.b;
   if(same){im.uid=x.uid;lpUa(im,x,r,k);continue}
   if(had&&im&&(im.code!==x.code||im.a!==x.a||im.b!==x.b))r.chg.push({k,f:im.code+' '+im.a+'–'+im.b,t:x.code+' '+x.a+'–'+x.b,dm:lpDelta(im.a,im.b,x.a,x.b)});else if(had&&im&&im.v!==v)r.chg.push({k,f:'andet valg',t:x.code});
