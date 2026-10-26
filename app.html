@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='201';
+const REV='202';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -3013,7 +3013,10 @@ function lpSuggest(e,o){const sh=(S.shifts[e.id]||[]).filter(s=>!!s.leave===(o.k
  if(o.kind==='leave'){const w=o.code.split(/\s+/)[0].toLowerCase(),n=sh.find(s=>(s.name||s.ab||'').toLowerCase().includes(w));return n?n.id:null}
  const W=o.wd||[0,1,2,3,4,5,6],sc=s=>W.filter(i=>{const d=lpShT(s,i);return d&&d[0]===o.a&&d[1]===o.b&&!!d[2]===o.nx}).length;
  let best=null,bs=0;for(const s of sh){const n=sc(s);if(n>bs){bs=n;best=s}}
- return best&&bs===W.length?best.id:best&&bs*2>=W.length?best.id:null}
+ if(best&&(bs===W.length||bs*2>=W.length))return best.id;
+ const M=t=>t?+t.slice(0,2)*60+ +t.slice(3):null,dd=(x,y)=>{const q=Math.abs(x-y);return Math.min(q,1440-q)};let nb=null,nd=1e9;
+ for(const s of sh){let tot=0,c=0;for(const i of W){const d=lpShT(s,i);if(!d||!d[0]||!!d[2]!==o.nx)continue;const a=dd(M(d[0]),M(o.a)),b=dd(M(d[1]),M(o.b));if(a<=90&&b<=90){tot+=a+b;c++}}if(c*2>=W.length&&c&&tot/c<nd){nd=tot/c;nb=s}}
+ return nb?nb.id:null}
 function lpNewShift(e,o){const used={};(S.shifts[e.id]||[]).forEach(x=>{if(!x.leave)used[x.color]=(used[x.color]||0)+1});
  const t=[o.a,o.b],part=!!(o.wd&&o.wd.length&&o.wd.length<7);if(o.nx)t.push(true);
  const s={id:uid(),ab:o.code.replace(/\s+/g,'').slice(0,8),name:o.code,color:'#8b95a5',byDay:part,t:Array.from({length:7},(_,i)=>!part||o.wd.includes(i)?t.slice():['','']),oncall:'',leave:o.kind==='leave',loop:o.code};
@@ -3036,6 +3039,8 @@ function lpApply(e,evs,map,ovr){ovr=ovr||{};
  for(const k of ks){const x=days[k];let v,sid;if(dl[k]&&(dl[k].k==='own'||dl[k].k==='nomap'))delete dl[k];
   if(x.kind==='fri'){v='_|fri';sid=null}else{sid=(ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]))?ovr[k]:map[lpKey(x)];if(!sid){r.skip++;r.nm=(r.nm||0)+1;dl[k]={k:'nomap',code:x.code,a:x.a,b:x.b,at:Date.now()};continue}v=e.id+'|'+sid}
   const cur=S.plan[k],im=S.imp[k];
+  if(((im&&im.x)||(cur&&(!im||cur!==im.v)))&&cur&&x.kind!=='fri'&&cur!=='_|fri'&&(()=>{const a=(S.act||{})[k];let t=a&&a.a&&a.b?[a.a,a.b]:null;if(!t){const sh=(S.shifts[e.id]||[]).find(z=>z.id===String(cur).split('|')[1]),d=new Date(k+'T00:00'),q=sh&&(sh.byDay?sh.t[wdi(d)]:sh.t[0]);t=q&&q[0]&&q[1]?[q[0],q[1]]:null}return t&&t[0]===x.a&&t[1]===x.b})()){
+   S.imp[k]=Object.assign({},im||{},{v:cur,uid:x.uid,code:x.code,a:x.a,b:x.b});delete S.imp[k].x;delete S.imp[k].diff;delete dl[k];continue}
   if(((im&&im.x)||(cur&&(!im||cur!==im.v)))&&!(x.kind==='fri'&&!cur)){if(cur!==v){r.skip++;dl[k]={k:'own',code:x.code,a:x.a,b:x.b,cur,at:Date.now()}}if(im&&(im.x||cur!==im.v)&&(im.code!==x.code||im.a!==x.a||im.b!==x.b)){im.diff=1;im.pc=im.code;im.pa=im.a;im.pb=im.b;im.dm=lpDelta(im.a,im.b,x.a,x.b);im.nc=x.code;im.na=x.a;im.nb=x.b;im.code=x.code;im.a=x.a;im.b=x.b;r.diff++}continue}
   const had=!!cur,ua=im&&im.ua,same=had&&im&&cur===v&&im.v===v&&im.code===x.code&&im.a===x.a&&im.b===x.b;
   if(same){im.uid=x.uid;lpUa(im,x,r,k);continue}
@@ -3067,7 +3072,7 @@ const lpUnmNew=(e,r)=>{const sig=r.unm.slice().sort().join(',');if(e.loop.unmSee
 async function lpAuto(){
  if(!(typeof AUTH!=='undefined'&&AUTH.user&&AUTH.api)||(typeof PV!=='undefined'&&PV))return;
  for(const e of S.emps){if(!e.loop||!e.loop.url||e.demo)continue;if(Date.now()-(e.loop.last||0)<3*36e5)continue;
-  try{const r=await lpSync(e,true);if(r&&(r.n||r.u||r.del||(r.own&&r.own.length)||(r.dis&&r.dis.length)||(r.fresh&&r.fresh.length)||(r.unm&&r.unm.length&&lpUnmNew(e,r))))(r.unm&&r.unm.length?(ASK={msg:'Vagter fra Loop er hentet\n\n'+lpMsg(r)+'.\n\nHvad skal du gøre? Vælg en vagtform til hver kode (fx den vagtform, der svarer til koden), så kommer vagterne ind i kalenderen. Koder, du ikke bruger, kan du springe over.',fn:()=>{S.tab='cal';render();lpPreview()},y:'Vælg vagtformer',n:'Senere'},render()):tell('Vagter fra Loop er opdateret: '+lpMsg(r)+'.'+(r.fresh.length?' Nye koder: '+r.fresh.join(', ')+'. Tjek, om vagtformerne passer.':'')))}catch(_){e.loop.last=Date.now()-2*36e5}}}
+  try{const r=await lpSync(e,true);if(r&&(r.n||r.u||r.del||(r.own&&r.own.length)||(r.dis&&r.dis.length)||(r.fresh&&r.fresh.length)||(r.unm&&r.unm.length&&lpUnmNew(e,r))))(r.unm&&r.unm.length?(ASK={msg:'Vagter fra Loop er hentet\n\n'+lpMsg(r)+'.\n\nHvad skal du gøre? En kode kan passe til flere af dine vagtformer, for Loop kender kun tiden. Vælg den vagtform, der passer oftest, så kommer vagterne ind, og ret de få dage, hvor det er en anden, i kalenderen bagefter. Koder, du ikke bruger, kan du springe over.',fn:()=>{S.tab='cal';render();lpPreview()},y:'Vælg vagtformer',n:'Senere'},render()):tell('Vagter fra Loop er opdateret: '+lpMsg(r)+'.'+(r.fresh.length?' Nye koder: '+r.fresh.join(', ')+'. Tjek, om vagtformerne passer.':'')))}catch(_){e.loop.last=Date.now()-2*36e5}}}
 async function lpPreview(){
  const e=emp();if(!e)return;const el=document.getElementById('lpUrl'),url=(el?el.value:(e.loop&&e.loop.url)||'').trim();
  if(!/^https:\/\//i.test(url)){LPD={err:'Indsæt hele linket til din kalender. Det starter med https://'};render();return}
