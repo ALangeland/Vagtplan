@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='202';
+const REV='203';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -3022,7 +3022,7 @@ function lpNewShift(e,o){const used={};(S.shifts[e.id]||[]).forEach(x=>{if(!x.le
  const s={id:uid(),ab:o.code.replace(/\s+/g,'').slice(0,8),name:o.code,color:'#8b95a5',byDay:part,t:Array.from({length:7},(_,i)=>!part||o.wd.includes(i)?t.slice():['','']),oncall:'',leave:o.kind==='leave',loop:o.code};
  if(!s.leave){try{s.color=pickColor({name:o.code,t:s.t,oncall:'',leave:false},used)}catch(_){s.color='#4a78e8'}}
  (S.shifts[e.id]=S.shifts[e.id]||[]).push(s);return s}
-async function lpGet(url){const j=await api('ical_fetch',{url});if(!j||!j.text)throw new Error((j&&j.error)||'Kalenderen kunne ikke hentes.');return j.text}
+async function lpGet(url){if(url==='test:')return window.__lpTest||'';const j=await api('ical_fetch',{url});if(!j||!j.text)throw new Error((j&&j.error)||'Kalenderen kunne ikke hentes.');return j.text}
 /* Lægger kalenderen ind i planen. Dage, brugeren selv har lagt eller rettet, røres ikke. */
 const lpHm=t=>{const m=/^(\d+):(\d+)/.exec(t||'');return m?+m[1]*60+ +m[2]:null};
 const lpDur=(a,b)=>{const x=lpHm(a),y=lpHm(b);if(x===null||y===null)return null;return y>x?y-x:y+1440-x};
@@ -3075,7 +3075,7 @@ async function lpAuto(){
   try{const r=await lpSync(e,true);if(r&&(r.n||r.u||r.del||(r.own&&r.own.length)||(r.dis&&r.dis.length)||(r.fresh&&r.fresh.length)||(r.unm&&r.unm.length&&lpUnmNew(e,r))))(r.unm&&r.unm.length?(ASK={msg:'Vagter fra Loop er hentet\n\n'+lpMsg(r)+'.\n\nHvad skal du gøre? En kode kan passe til flere af dine vagtformer, for Loop kender kun tiden. Vælg den vagtform, der passer oftest, så kommer vagterne ind, og ret de få dage, hvor det er en anden, i kalenderen bagefter. Koder, du ikke bruger, kan du springe over.',fn:()=>{S.tab='cal';render();lpPreview()},y:'Vælg vagtformer',n:'Senere'},render()):tell('Vagter fra Loop er opdateret: '+lpMsg(r)+'.'+(r.fresh.length?' Nye koder: '+r.fresh.join(', ')+'. Tjek, om vagtformerne passer.':'')))}catch(_){e.loop.last=Date.now()-2*36e5}}}
 async function lpPreview(){
  const e=emp();if(!e)return;const el=document.getElementById('lpUrl'),url=(el?el.value:(e.loop&&e.loop.url)||'').trim();
- if(!/^https:\/\//i.test(url)){LPD={err:'Indsæt hele linket til din kalender. Det starter med https://'};render();return}
+ if(!/^https:\/\//i.test(url)&&!(url==='test:'&&lpTestOn())){LPD={err:'Indsæt hele linket til din kalender. Det starter med https://'};render();return}
  LPD={busy:true,url};render();
  try{const evs=lpParse(await lpGet(url));if(!evs.length)throw new Error('Kalenderen indeholder ingen vagter.');
   const days=lpDays(e,evs),codes=lpCodes(days),map={};codes.forEach(o=>{map[o.id]=(e.loop&&e.loop.map&&e.loop.map[o.id]!==undefined&&(e.loop.map[o.id]==='+'||(S.shifts[e.id]||[]).some(s=>s.id===e.loop.map[o.id])))?e.loop.map[o.id]:lpSuggest(e,o);if(map[o.id]==null)delete map[o.id]});
@@ -3113,7 +3113,8 @@ function lpSec(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{}
 function lpDayPanel(k){const t=lpSec(k);return t?`<div class="dpanel"><b>${dd(k)}</b>${t}<p style="margin:8px 0 0"><button class="b p" onclick="DO=null;render()">OK</button></p></div>`:''}
 function lpTag(k,v){const im=(S.imp||{})[k];if(!im)return'';if(im.diff&&(im.x||S.plan[k]!==im.v)){const dm=lpFmtD(im.dm);return'<span class="lpt w" style="cursor:pointer" onclick="event.stopPropagation();lpTell(\''+k+'\')" title="Loop har ændret denne dag til '+esc((im.nc||'')+' '+(im.na||'')+'–'+(im.nb||''))+(dm?' ('+dm+')':'')+', efter du selv rettede den. Din rettelse er bevaret. Tryk for detaljer.">Loop ændret'+(dm&&im.dm?' '+dm:'')+'</span>'}if(im.ua&&!im.x&&S.plan[k]===im.v&&v===im.v&&im.a){const ok=im.ua.a===im.a&&im.ua.b===im.b;return ok?'<span class="lpt" title="Loop viser samme tid som din rettelse">Loop ✓</span>':'<span class="lpt w" style="cursor:pointer" onclick="event.stopPropagation();tell(\'Loop viser '+im.a+'–'+im.b+', din tid er '+im.ua.a+'–'+im.ua.b+'. Din tid bevares, når vagter hentes fra Loop.\')" title="Loop viser '+esc(im.a+'–'+im.b)+', din tid er '+esc(im.ua.a+'–'+im.ua.b)+'. Din tid bevares.">Loop afviger</span>'}return !im.x&&S.plan[k]===im.v&&v===im.v?'<span class="lpt" title="Hentet fra Loop. Vælg en anden vagtform i feltet for at rette den.">Loop</span>':''}
 function lpIs(k,v){const im=(S.imp||{})[k];return !!(im&&!im.x&&S.plan[k]===im.v&&v===im.v)}
-function lpCard(){
+function lpCard(){return lpCard0()+lpTestCard()}
+function lpCard0(){
  const e=emp();if(!e||e.demo||!AUTH.api)return'';
  if(!AUTH.user)return`<div class="card"><h3>Hent vagter fra Loop</h3><p class="note">Log ind for at hente din vagtplan automatisk fra Loop eller en anden kalender.</p></div>`;
  const has=!!(e.loop&&e.loop.url),n=Object.values(S.imp||{}).filter(x=>!x.x).length,L=LPD||{};
@@ -3149,6 +3150,20 @@ function lpHist(e){const c=e.loop&&e.loop.chg;if(!c||(!c.l.length&&!c.diff))retu
  return`<div class="lpk" style="margin:12px 0 0"><h4>Seneste ændringer fra Loop<span>${new Date(c.at).toLocaleString('da-DK',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></h4>${c.l.length?`<div class="lpl">${c.l.slice(0,8).map(x=>`<div class="lpr"><span class="d"><b>${lpDk(x.k)}</b></span><span style="font-size:13.5px">${esc(x.f)} <span class="t">→</span> <b>${esc(x.t)}</b>${x.dm?` <span class="t">(${lpFmtD(x.dm)})</span>`:''}</span></div>`).join('')}</div>${c.l.length>8?`<p class="note" style="margin:6px 0 0">og ${c.l.length-8} flere</p>`:''}`:''}${c.diff?`<p class="note" style="margin:8px 0 0;color:var(--warn)"><b>${c.diff} ${c.diff===1?'dag':'dage'}</b> er ændret i Loop, efter du selv rettede ${c.diff===1?'den':'dem'}. De er markeret «Loop ændret» i kalenderen og er ikke overskrevet.</p>`:''}<div style="margin-top:8px"><button class="b" style="padding:3px 10px;font-size:12.5px" onclick="delete emp().loop.chg;save();render()">Skjul</button></div></div>`}
 function lpNudge(){if(window._lnDone||(typeof PV!=='undefined'&&PV)||ASK||S.tab!=='work'||S.loopNote)return;if(!(typeof AUTH!=='undefined'&&AUTH.api&&AUTH.user))return;const e=emp();if(!e||e.demo||e.loop)return;window._lnDone=1;S.loopNote=1;setTimeout(save,0);
  ASK={msg:'Nyt: hent dine vagter fra Loop\n\nBruger din arbejdsplads Loop? Så kan du hente din vagtplan direkte ind i kalenderen på få minutter. Under Opsætning, Kalenderabonnement indsætter du dit kalenderlink fra Loop, og så kobler du Loops koder til dine vagtformer.',fn:()=>{S.tab='cal';render()},y:'Prøv det',n:'Senere'}}
+
+/* Test af Loop uden rigtigt kalenderlink: kun på testversionen eller med ?looptest=1 */
+const lpTestOn=()=>(typeof TESTSITE!=='undefined'&&TESTSITE)||/looptest/.test(location.search);
+function lpTestIcs(sc){const ym=S.ym||new Date().toISOString().slice(0,7),p2=n=>String(n).padStart(2,'0'),dt=(d,t)=>ym.replace('-','')+p2(d)+'T'+t.replace(':','')+'00',nx=d=>{const x=new Date(+ym.slice(0,4),+ym.slice(5,7)-1,d+1);return x.getFullYear()+p2(x.getMonth()+1)+p2(x.getDate())},
+ ev=(i,d,a,b,sum,next)=>'BEGIN:VEVENT\r\nUID:t'+i+'\r\nDTSTART:'+dt(d,a)+'\r\nDTEND:'+(next?nx(d)+'T'+b.replace(':','')+'00':dt(d,b))+'\r\nSUMMARY:'+sum+'\r\nEND:VEVENT\r\n',
+ allday=(i,d,sum)=>'BEGIN:VEVENT\r\nUID:t'+i+'\r\nDTSTART;VALUE=DATE:'+ym.replace('-','')+p2(d)+'\r\nDTEND;VALUE=DATE:'+nx(d)+'\r\nSUMMARY:'+sum+'\r\nEND:VEVENT\r\n';
+ let t='BEGIN:VCALENDAR\r\n';
+ if(sc==='a')t+=allday(0,2,'Uge 44')+ev(1,3,'08:00','15:30','DV 8-1530')+ev(2,4,'08:00','15:30','DV 8-1530')+ev(3,5,'16:30','08:30','A/N 1630-0830',1)+ev(4,7,'23:30','23:45','Beskyttet fridag')+ev(5,10,'15:00','08:30','A/N FV',1);
+ else t+=allday(0,2,'Uge 44')+ev(1,3,'08:00','16:30','DV 8-1530')+ev(3,5,'16:30','08:30','A/N 1630-0830',1)+ev(4,7,'23:30','23:45','Beskyttet fridag')+ev(5,10,'15:00','08:30','A/N FV',1)+ev(6,8,'08:00','15:30','DV 8-1530');
+ return t+'END:VCALENDAR\r\n'}
+async function lpTestRun(txt){const e=emp();if(!e)return;window.__lpTest=txt;const first=!e.loop||e.loop.url!=='test:';e.loop=Object.assign({map:{},ovr:{}},e.loop||{},{url:'test:'});if(first){delete e.loop.seen;e.loop.log=[]}
+ try{const r=await lpSync(e,true);tell('Test: '+lpMsg(r)+'.')}catch(x){tell('Test fejlede: '+(x.message||x))}}
+function lpTestCard(){if(!lpTestOn())return'';const e=emp();if(!e||e.demo)return'';
+ return`<div class="card"><details><summary style="cursor:pointer"><b>Test Loop</b> <span class="note">kun på testversionen</span></summary><p class="note" style="margin:8px 0">Afprøv Loop uden dit rigtige link. Eksempel 1 lægger en række vagter ind for ${S.ym}: to dagvagter, en nattevagt, en beskyttet fridag, en heldagspost «Uge 44» og en kode uden vagtform. Eksempel 2 er en ny hentning, hvor en dag er ændret, en er fjernet og en er ny. Så kan du se alarmer, «Mere»-kortet og ændringslisten. Brug eventuelt «Fjern hentede vagter» bagefter.</p><div class="row"><button class="b p" onclick="lpTestRun(lpTestIcs('a'))">Eksempel 1: første hentning</button><button class="b" onclick="lpTestRun(lpTestIcs('b'))">Eksempel 2: ny hentning med ændringer</button></div><label style="display:block;margin-top:10px">Eller indsæt kalendertekst (.ics)<textarea id="lpTT" rows="5" style="width:100%" placeholder="BEGIN:VCALENDAR …"></textarea></label><div class="row" style="margin-top:6px"><button class="b" onclick="lpTestRun(document.getElementById('lpTT').value)">Kør</button></div></details></div>`}
 
 /* ===== Hjemmeskærm / webapp ===== */
 let INST_EVT=null;
