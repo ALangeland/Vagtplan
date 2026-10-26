@@ -257,7 +257,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='196';
+const REV='197';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2178,7 +2178,7 @@ function setFlag(k,v){S.flag=S.flag||{};v?S.flag[k]=v:delete S.flag[k];save();re
 let FE=null;
 let DO=null;
 function togDay(k){DO=DO===k?null:k;render()}
-function dayBtn(k,s){const r=R();if(!s||s.leave)return typeof lpBtn==='function'?lpBtn(k):'<span></span>';const f=(S.flag||{})[k]||'',o=+(S.otd||{})[k]||0,lab=[(S.act||{})[k]?(s.vt?'Tid':'Ændret tid'):'',f?({S:'Lille',B:'Stort',K:'Kort'})[f]:'',o?'+'+String(o).replace('.',',')+' t':'',afsH(k)?'Afspads. '+String(afsH(k)).replace('.',',')+' t':'',(S.cmt||{})[k]?'Notat':''].filter(Boolean).join(' · '),op=DO===k;return`<span><button class="fl0 ${lab?'has':'ic'}" aria-label="Mere" onclick="togDay('${k}')" aria-expanded="${op}" title="Overarbejde og tillæg for denne dag">${lab||(op?'×':'⋯')}${typeof lpLab==='function'&&lpLab(k)?'<i class="ldot" title="'+esc(lpLab(k))+'"></i>':''}</button></span>`}
+function dayBtn(k,s){const r=R();if(!s||s.leave)return typeof lpBtn==='function'?lpBtn(k):'<span></span>';const f=(S.flag||{})[k]||'',o=+(S.otd||{})[k]||0,lab=[(S.act||{})[k]?(s.vt?'Tid':'Ændret tid'):'',f?({S:'Lille',B:'Stort',K:'Kort'})[f]:'',o?'+'+String(o).replace('.',',')+' t':'',afsH(k)?'Afspads. '+String(afsH(k)).replace('.',',')+' t':'',(S.cmt||{})[k]?'Notat':''].filter(Boolean).join(' · '),op=DO===k;return`<span><button class="fl0 ${lab?'has':''}" aria-label="Mere" onclick="togDay('${k}')" aria-expanded="${op}" title="Overarbejde og tillæg for denne dag">${lab?lab+(op?' ▴':' ▾'):(op?'Luk ▴':'Mere ▾')}${typeof lpLab==='function'&&lpLab(k)?'<i class="ldot" title="'+esc(lpLab(k))+'"></i>':''}</button></span>`}
 function setCmt(k,v){S.cmt=S.cmt||{};v=String(v||'').trim().slice(0,500);v?S.cmt[k]=v:delete S.cmt[k];save();render()}
 function setAfs(k,v){S.afs=S.afs||{};const n=Math.max(0,Math.min(12,Math.round((+String(v).replace(',','.')||0)*4)/4));n?S.afs[k]=n:delete S.afs[k];save();render()}
 function setOt(k,v){S.otd=S.otd||{};const n=Math.max(0,Math.min(48,+String(v).replace(',','.')||0));n?S.otd[k]=n:delete S.otd[k];save();render()}
@@ -3085,7 +3085,7 @@ function lpTell(k){const im=(S.imp||{})[k];if(!im)return;const dm=lpFmtD(im.dm);
 const lpEmpOf=k=>{const id=(S.plan[k]||'').split('|')[0];return S.emps.find(x=>x.id===id&&x.loop)||S.emps.find(x=>x.loop&&x.id===S.cur)||S.emps.find(x=>x.loop)};
 function lpHas(k){const e=lpEmpOf(k);return !!(e&&e.loop&&((e.loop.dl||{})[k]||(S.imp||{})[k]))}
 function lpLab(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{})[k],d=(e.loop.dl||{})[k];if(d)return d.k==='nomap'?'Loop: ingen vagtform':d.k==='own'?'Loop afviger':d.k==='del'?'Loop fjernet':'Loop ændret';if(im&&im.ua&&!im.x&&(im.ua.a!==im.a||im.ua.b!==im.b))return'Loop afviger';return''}
-function lpBtn(k,v){if(!lpHas(k))return'<span></span>';const op=DO===k;return`<span><button class="fl0 has ic" aria-label="Mere" onclick="togDay('${k}')" aria-expanded="${op}" title="${esc(lpLab(k)||'Se, hvad Loop har hentet denne dag')}">${op?'×':'⋯'}${lpLab(k)?' <i class="ldot"></i>':''}</button></span>`}
+function lpBtn(k,v){if(!lpHas(k))return'<span></span>';const op=DO===k;return`<span><button class="fl0 has" aria-label="Mere" onclick="togDay('${k}')" aria-expanded="${op}" title="${esc(lpLab(k)||'Se, hvad Loop har hentet denne dag')}">${op?'Luk ▴':'Mere ▾'}${lpLab(k)?' <i class="ldot"></i>':''}</button></span>`}
 function lpAck(k){const e=lpEmpOf(k);if(e&&e.loop&&e.loop.dl)delete e.loop.dl[k];const im=(S.imp||{})[k];if(im&&im.diff){im.diff=0}save();render()}
 function lpSec(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{})[k],d=(e.loop.dl||{})[k];if(!im&&!d)return'';
  const R=(a,b)=>`<tr><td style="vertical-align:top;color:var(--mut);padding-right:10px">${a}</td><td>${b}</td></tr>`,tm=(a,b)=>a&&b?esc(a)+'–'+esc(b):esc(a||''),[ei,si]=(S.plan[k]||'|').split('|'),sh=(S.shifts[ei]||[]).find(x=>x.id===si),when=t=>t?new Date(t).toLocaleString('da-DK',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'',rows=[];
