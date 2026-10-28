@@ -307,7 +307,7 @@ a.b{display:inline-block;text-decoration:none;font:inherit;font-weight:700;color
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='244';
+const REV='245';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2796,7 +2796,7 @@ const themeGet=()=>{try{return localStorage.getItem('vp_theme')==='dark'?'dark':
 function themeApply(t){document.documentElement.setAttribute('data-theme',t);try{palApply()}catch(e){}}
 function themeNext(){const t=themeGet()==='dark'?'light':'dark';try{localStorage.setItem('vp_theme',t)}catch(e){}themeApply(t);render()}
 themeApply(themeGet());
-const ser=()=>JSON.stringify(S,(k,v)=>k==='oks'?undefined:v);
+const ser=()=>{try{S.vpPal=palGet();S.vpTh=themeGet()}catch(e){}return JSON.stringify(S,(k,v)=>k==='oks'?undefined:v)};
 function mAgo(n){const d=new Date();d.setMonth(d.getMonth()-n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function evSE(v){return[Math.round(new Date(v.sd+'T00:00')/864e5)*1440+tm(v.st),Math.round(new Date(v.ed+'T00:00')/864e5)*1440+tm(v.et)]}
 function evList(e){return(e.evacs||[]).slice().sort((a,b)=>(a.sd+a.st)<(b.sd+b.st)?-1:1)}
