@@ -276,7 +276,7 @@ html[data-pal=xp][data-theme=dark]{background:linear-gradient(#071a4a,#10337a 75
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='225';
+const REV='226';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -3004,17 +3004,19 @@ function lpDt(key,v){const m=/^(\d{4})(\d\d)(\d\d)(?:T(\d\d)(\d\d)(\d\d)?(Z)?)?$
  return{k:m[1]+'-'+m[2]+'-'+m[3],t:m[4]?m[4]+':'+m[5]:'00:00',day:!m[4]}}
 const lpUn=v=>String(v||'').replace(/\\n/gi,'\n').replace(/\\([,;\\])/g,'$1').trim();
 /* Læser en iCal-tekst og giver én post pr. hændelse: kode, tider (dansk tid), og type (vagt, fravær, fridøgn) */
+/* «Pause : 00:30» i Loops beskrivelse (timer:minutter) eller «Pause: 30 min» */
+function lpPause(d){if(!d)return{};let m=/pause\s*:?\s*(\d{1,2})[:.](\d{2})/i.exec(d),p=m?+m[1]*60+ +m[2]:0;if(!m){m=/pause\s*:?\s*(\d{1,3})\s*min/i.exec(d);p=m?+m[1]:0}return p>0&&p<600?{p}:{}}
 function lpParse(txt){
  const lines=String(txt).replace(/\r/g,'').replace(/\n[ \t]/g,'').split('\n'),raw=[];let c=null;
  for(const l of lines){if(l==='BEGIN:VEVENT'){c={};continue}if(l==='END:VEVENT'){if(c&&c.s&&c.e)raw.push(c);c=null;continue}if(!c)continue;
   const i=l.indexOf(':');if(i<0)continue;const key=l.slice(0,i),val=l.slice(i+1),nm=key.split(';')[0].toUpperCase();
-  if(nm==='DTSTART')c.s=lpDt(key,val);else if(nm==='DTEND')c.e=lpDt(key,val);else if(nm==='SUMMARY')c.sum=lpUn(val);else if(nm==='UID')c.uid=val;else if(nm==='STATUS')c.st=val.toUpperCase()}
+  if(nm==='DTSTART')c.s=lpDt(key,val);else if(nm==='DTEND')c.e=lpDt(key,val);else if(nm==='SUMMARY')c.sum=lpUn(val);else if(nm==='DESCRIPTION')c.desc=lpUn(val);else if(nm==='UID')c.uid=val;else if(nm==='STATUS')c.st=val.toUpperCase()}
  const out=[];
  for(const r of raw){if(r.st==='CANCELLED'||!r.sum||/^\s*uge\s*\d+\s*$/i.test(r.sum))continue;const i=r.sum.indexOf(' - '),code=(i>0?r.sum.slice(0,i):r.sum).trim().slice(0,40);if(!code)continue;
   const kind=/beskyttet\s*fri|fridøgn|fridog/i.test(code)?'fri':/^(ferie|afspads|afspad|syg|barsel|orlov|fridag|feriefri)/i.test(code)?'leave':'work';
   let b=r.e.t,nx=r.e.k>r.s.k||(r.e.k===r.s.k&&r.e.t<=r.s.t&&!r.s.day);
   if(r.s.day){r.s.t='07:00';b='15:00';nx=false}
-  out.push({uid:r.uid||'',code,kind,k:r.s.k,a:r.s.t,b,nx})}
+  out.push(Object.assign({uid:r.uid||'',code,kind,k:r.s.k,a:r.s.t,b,nx},lpPause(r.desc)))}
  return out}
 const lpKey=x=>x.kind+'|'+x.code;
 /* Dage i ansættelsen: én post pr. dag, vagt går forud for fravær og fridøgn */
@@ -3066,6 +3068,7 @@ function lpApply(e,evs,map,ovr){ovr=ovr||{};
  for(const o of lpCodes(days)){let v=map[o.id];if(v&&v!=='+'&&!(S.shifts[e.id]||[]).some(s=>s.id===v))v=undefined;if(v===undefined){const sg=lpSuggest(e,o);v=sg||undefined}if(v===undefined){const cov=Object.keys(days).filter(k=>days[k].kind!=='fri'&&lpKey(days[k])===o.id).every(k=>ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]));if(!cov)v='+'}if(v==='+'){const s=lpNewShift(e,o);v=s.id;fresh.push(o.code)}if(v===undefined){}else map[o.id]=v}
  const r={n:0,u:0,del:0,skip:0,fresh,unm,chg:[],diff:0,dis:[],news:[],own:[]},dl=e.loop?(e.loop.dl=e.loop.dl||{}):{};
  const ks=Object.keys(days).sort();
+ if(e.loop){const pz=e.loop.pz=e.loop.pz||{};for(const k of ks){if(days[k].p)pz[k]=days[k].p;else delete pz[k]}}
  for(const k of ks){const x=days[k];let v,sid;if(dl[k]&&(dl[k].k==='own'||dl[k].k==='nomap'))delete dl[k];
   if(x.kind==='fri'){v='_|fri';sid=null}else{sid=(ovr[k]&&(S.shifts[e.id]||[]).some(z=>z.id===ovr[k]))?ovr[k]:map[lpKey(x)];if(!sid){r.skip++;r.nm=(r.nm||0)+1;dl[k]={k:'nomap',code:x.code,a:x.a,b:x.b,at:Date.now()};continue}v=e.id+'|'+sid}
   const cur=S.plan[k],im=S.imp[k];if(im&&im.x&&cur&&cur===v){delete im.x;im.v=v}
@@ -3134,6 +3137,7 @@ function lpSec(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{}
  const R=(a,b)=>`<tr><td style="vertical-align:top;color:var(--mut);padding-right:10px">${a}</td><td>${b}</td></tr>`,tm=(a,b)=>a&&b?esc(a)+'–'+esc(b):esc(a||''),[ei,si]=(S.plan[k]||'|').split('|'),sh=(S.shifts[ei]||[]).find(x=>x.id===si),when=t=>t?new Date(t).toLocaleString('da-DK',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'',rows=[];
  if(im&&!im.x){rows.push(R('Hentet fra Loop',`<b>${esc(im.code||'')}</b> ${tm(im.a,im.b)}${im.v==='_|fri'?' (fridøgn)':''}`));
   if(sh&&!sh.leave){const d0=new Date(k+'T00:00'),pt=plT(sh,d0);rows.push(R('Vagtform i appen',`${esc(sh.name||sh.ab)}${pt?' ('+tm(pt[0],pt[1])+')':''}`));if(pt&&(pt[0]!==im.a||pt[1]!==im.b))rows.push(R('Tid i kalenderen',`Loops tid ${tm(im.a,im.b)} er lagt ind som <b>ændret mødetid</b>, fordi vagtformens tid er en anden.`))}}
+ {const pz=(e.loop.pz||{})[k];if(pz)rows.push(R('Pause i Loop',pz>=60?Math.floor(pz/60)+' t'+(pz%60?' '+pz%60+' min':''):pz+' min'))}
  if(im&&im.x)rows.push(R('Hentet fra Loop',`<b>${esc(im.code||'')}</b> ${tm(im.a,im.b)}${im.v==='_|fri'?' (fridøgn)':''}${im.v==='_|fri'&&S.plan[k]===im.v?'':'<br>'+(S.plan[k]===im.v?'<span style="color:var(--ok)">✓ Stemmer med din dag.</span>':'Du har selv rettet dagen. Din rettelse er bevaret, og Loops vagt er ikke lagt ind.')}`));
  if(im&&im.ua)rows.push(R('Din egen tid',`<b>${tm(im.ua.a,im.ua.b)}</b> ${im.ua.a===im.a&&im.ua.b===im.b?'<span style="color:var(--ok)">✓ Loop stemmer</span>':'<span style="color:var(--warn)">Loop viser '+tm(im.a,im.b)+' ('+(lpFmtD(lpDelta(im.a,im.b,im.ua.a,im.ua.b))||'')+' mod Loop)</span>'}. Din tid bevares, når Loop hentes.`));
  if(im&&im.diff&&im.pc!==undefined&&im.v!=='_|fri')rows.push(R('Ændret i Loop siden sidst',`Før: ${esc(im.pc||'')} ${tm(im.pa,im.pb)}<br>Nu: ${esc(im.nc||'')} ${tm(im.na,im.nb)}${im.dm?' ('+lpFmtD(im.dm)+')':''}<br><span class="note">Din egen rettelse er bevaret. Vælg Loops vagtform i feltet, hvis Loops tider skal gælde.</span>`));
@@ -3142,7 +3146,7 @@ function lpSec(k){const e=lpEmpOf(k);if(!e||!e.loop)return'';const im=(S.imp||{}
   else if(d.k==='own')rows.push(R('Loop afviger fra din dag',`Loop viser <b>${esc(d.code||'')}</b> ${tm(d.a,d.b)}, men du har selv rettet dagen. Din rettelse er bevaret, og Loops vagt er ikke lagt ind.`));
   else if(d.k==='nomap')rows.push(R('Ikke lagt ind',`Loop har koden <b>${esc(d.code||'')}</b> ${tm(d.a,d.b)}, men ingen vagtform er valgt til koden. Vælg en under Opsætning, Kalenderabonnement.`))}
  if(!rows.length)return'';
- return`<div class="dpx lpx" style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--bg)"><b>Fra Loop</b><table style="margin-top:6px;font-size:13.5px"><tbody>${rows.join('')}</tbody></table><p class="note" style="margin:8px 0 0">Loop leverer kun kode, dato og tider.${e.loop.last?' Sidst hentet '+when(e.loop.last)+'.':''} Tillæg, overarbejde, afspadsering og notater er dine egne registreringer og røres ikke.</p>${d?`<p style="margin:8px 0 0"><button class="b" onclick="lpAck('${k}')">Forstået, skjul beskeden</button></p>`:''}</div>`}
+ return`<div class="dpx lpx" style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--bg)"><b>Fra Loop</b><table style="margin-top:6px;font-size:13.5px"><tbody>${rows.join('')}</tbody></table><p class="note" style="margin:8px 0 0">Loop leverer kun kode, dato, tider og pause.${e.loop.last?' Sidst hentet '+when(e.loop.last)+'.':''} Tillæg, overarbejde, afspadsering og notater er dine egne registreringer og røres ikke.</p>${d?`<p style="margin:8px 0 0"><button class="b" onclick="lpAck('${k}')">Forstået, skjul beskeden</button></p>`:''}</div>`}
 function lpDayPanel(k){const t=lpSec(k);return t?`<div class="dpanel"><b>${dd(k)}</b>${t}<p style="margin:8px 0 0"><button class="b p" onclick="DO=null;render()">OK</button></p></div>`:''}
 function lpTag(k,v){const im=(S.imp||{})[k];if(!im)return'';if(im.v==='_|fri'&&v==='_|fri'&&S.plan[k]===im.v)return'<span class="lpt" title="Hentet fra Loop">Loop</span>';if(im.x&&S.plan[k]===im.v&&v===im.v&&!im.diff)return'<span class="lpt" title="Loop viser det samme som din dag">Loop ✓</span>';if(im.diff&&(im.x||S.plan[k]!==im.v)){const dm=lpFmtD(im.dm);return'<span class="lpt w" style="cursor:pointer" onclick="event.stopPropagation();lpTell(\''+k+'\')" title="Loop har ændret denne dag til '+esc((im.nc||'')+' '+(im.na||'')+'–'+(im.nb||''))+(dm?' ('+dm+')':'')+', efter du selv rettede den. Din rettelse er bevaret. Tryk for detaljer.">Loop ændret'+(dm&&im.dm?' '+dm:'')+'</span>'}if(im.ua&&!im.x&&S.plan[k]===im.v&&v===im.v&&im.a){const ok=im.ua.a===im.a&&im.ua.b===im.b;return ok?'<span class="lpt" title="Loop viser samme tid som din rettelse">Loop ✓</span>':'<span class="lpt w" style="cursor:pointer" onclick="event.stopPropagation();tell(\'Loop viser '+im.a+'–'+im.b+', din tid er '+im.ua.a+'–'+im.ua.b+'. Din tid bevares, når vagter hentes fra Loop.\')" title="Loop viser '+esc(im.a+'–'+im.b)+', din tid er '+esc(im.ua.a+'–'+im.ua.b)+'. Din tid bevares.">Loop afviger</span>'}return !im.x&&S.plan[k]===im.v&&v===im.v?'<span class="lpt" title="Hentet fra Loop. Vælg en anden vagtform i feltet for at rette den.">Loop</span>':''}
 function lpIs(k,v){const im=(S.imp||{})[k];return !!(im&&!im.x&&S.plan[k]===im.v&&v===im.v)}
