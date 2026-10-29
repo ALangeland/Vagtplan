@@ -331,11 +331,15 @@ html.emb .card,html.emb .wip,html.emb .card.warn{border-radius:10px!important}
 html.emb .card>h3:first-child{display:flex!important;align-items:center;gap:8px;margin:0 0 10px!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;font-size:12px!important;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)!important}
 html.emb .card>h3:first-child::before{width:8px!important;height:8px!important;box-shadow:none!important}
 html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]){border-radius:8px}html.emb button.b,html.emb .b{border-radius:8px}
+
+.vr{grid-template-columns:240px minmax(0,1fr) 366px}.vr .vs>*:first-child{width:100%;box-sizing:border-box;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vr .vn{display:grid;grid-template-columns:92px 84px 112px 56px;gap:6px;justify-content:end}.vr .vn span{text-align:center;overflow:hidden;text-overflow:ellipsis}.vr .vn:has(span:nth-child(2):last-child){grid-template-columns:92px 84px}
+@media(max-width:900px){.vr{grid-template-columns:200px minmax(0,1fr)}.vr .vn{grid-column:1/-1;justify-content:start}}
+@media(max-width:700px){.vr{grid-template-columns:1fr}.vr .vn{display:flex;justify-content:flex-start}}
 </style></head><body>
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='273';
+const REV='274';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
