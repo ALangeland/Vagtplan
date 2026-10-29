@@ -11,7 +11,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 #top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}nav{position:relative;z-index:5;background:#14213d;display:flex;gap:2px;overflow-x:auto;padding:0 12px}
-nav .brand b.bp{display:inline-flex;align-items:center;gap:7px;padding:2px 4px 2px 2px!important;border-radius:999px;background:transparent;border:0}nav .brand b.bp .bd{width:24px;height:24px;display:block;flex:none;line-height:0}nav .brand b.bp .bd svg{display:block}
+nav .brand b.bp{display:inline-flex;align-items:center;gap:7px;padding:2px 4px 2px 2px!important;border-radius:999px;background:transparent;border:0}nav .brand b.bp .bd{display:none}nav .brand b.bp .bd svg{display:block}
 nav .brand{display:flex;flex-direction:row;align-items:center;gap:8px;padding:6px 14px 6px 4px;line-height:1.1;flex:none}nav .brand i{font-style:normal;font-size:10px;line-height:1.15;color:#8fa0bb;letter-spacing:.02em;white-space:nowrap}nav .brand b{padding:0}nav b{color:#fff;padding:14px 14px 14px 4px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
 .tg{position:relative;width:48px;height:26px;border-radius:13px;border:0;padding:0;cursor:pointer;background:rgba(255,255,255,.28);flex:none;transition:background .2s}
 .tg .tgk{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d98a00' stroke-width='2.4' stroke-linecap='round'><circle cx='12' cy='12' r='4.2' fill='%23ffc233'/><path d='M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6'/></svg>") center/14px no-repeat;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .2s}
@@ -331,7 +331,7 @@ html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='265';
+const REV='266';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
