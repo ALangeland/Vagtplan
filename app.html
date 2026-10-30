@@ -189,7 +189,7 @@ label.chk{display:flex;flex-direction:row!important;gap:9px;align-items:flex-sta
 #tourHi{position:fixed;left:0;top:0;z-index:59;border-radius:10px;box-shadow:0 0 0 100vmax rgba(10,16,30,.5);pointer-events:none;opacity:0;will-change:transform,width,height;transition:transform .4s cubic-bezier(.22,.9,.28,1),width .4s cubic-bezier(.22,.9,.28,1),height .4s cubic-bezier(.22,.9,.28,1),opacity .25s}
 #tourHi.on{opacity:1}#tourHi.nd{box-shadow:none}#tourHi.snap{transition:opacity .25s}
 #tourHi::after{content:"";position:absolute;inset:-2px;border-radius:12px;border:2px solid #fff}
-#tourTip{position:fixed;left:0;top:0;z-index:60;background:var(--card);color:var(--ink);border-radius:10px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;will-change:transform;transition:transform .4s cubic-bezier(.22,.9,.28,1),opacity .25s}#tourTip.on{opacity:1}#tourTip.snap{transition:opacity .25s}
+#tourTip{position:fixed;left:0;top:0;z-index:60;background:var(--card);color:var(--ink);border-radius:10px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;will-change:transform;transition:transform .4s cubic-bezier(.22,.9,.28,1),opacity .25s}#tourTip.on{opacity:1}#tourTip.cmp{padding:10px 14px}#tourTip.cmp>p:not(.note){display:none}#tourTip.cmp>b{font-size:14px}#tourTip.cmp .note{margin:2px 0 8px!important}#tourTip.snap{transition:opacity .25s}
 #tourTip b{font-size:16.5px;letter-spacing:-.01em}.tdots{display:flex;gap:5px;align-items:center;flex:1;min-width:40px}.tdots i{width:6px;height:6px;border-radius:6px;background:var(--line);transition:width .25s,background .25s}.tdots i.on{width:18px;background:var(--acc)}
 @media(prefers-reduced-motion:reduce){#tourHi,#tourTip{transition:opacity .2s}#tourHi::after{animation:none}}
 .kps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}.kp{background:var(--card);border-radius:14px;padding:12px 14px;border-left:5px solid var(--k);box-shadow:0 1px 2px rgba(20,33,61,.06),0 6px 16px rgba(20,33,61,.06)}.kp span{font-size:12.5px;color:var(--mut);display:block}.kp b{font-size:21px;letter-spacing:-.01em}
@@ -340,7 +340,7 @@ html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='290';
+const REV='291';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -2904,13 +2904,14 @@ function tourDraw(){const L=tourSteps(),st=L[TOUR.i];if(!st){tourStop();return}
  let el=TOUR.el;if(!el||!el.isConnected){el=null;if(now>=TOUR.rt){TOUR.rt=now+250;el=st.fn?st.fn():st.sel?document.querySelector(st.sel):null;if(el&&!el.getClientRects().length)el=null;TOUR.el=el}}
  const snap=now>TOUR.glide;let r=null;
  if(el){r=el.getBoundingClientRect();
-  if(TOUR.sc!==TOUR.i){TOUR.sc=TOUR.i;const nv=!!el.closest('#nav');if(!nv){const avail=innerHeight-330,want=r.height<=avail?90+(avail-r.height)/3:70,d=r.top-want;if(Math.abs(d)>4)scrollBy(0,d);r=el.getBoundingClientRect()}}}
+  if(TOUR.sc!==TOUR.i){TOUR.sc=TOUR.i;const nv=!!el.closest('#nav');if(!nv){const avail=innerHeight-330,want=r.height<=avail?90+(avail-r.height)/3:70,d=r.top-want;if(Math.abs(d)>4)scrollBy(0,d);r=el.getBoundingClientRect()}else{let nn=el.parentElement;while(nn&&nn!==document.body&&!(nn.scrollWidth>nn.clientWidth+2&&/auto|scroll/.test(getComputedStyle(nn).overflowX)))nn=nn.parentElement;if(nn&&nn!==document.body){nn.scrollLeft+=r.left+r.width/2-innerWidth/2;r=el.getBoundingClientRect()}}}}
  const vis=!!r,was=hi.classList.contains('on');
  bg.classList.toggle('on',!vis);
+ const cmp=innerWidth<700&&!!st.need&&!(TOUR.i===L.length-1);if(tip.classList.contains('cmp')!==cmp){tip.classList.toggle('cmp',cmp);TOUR.th=tip.offsetHeight}
  const tw=Math.min(vis?340:380,innerWidth-24);if(TOUR.tw!==tw){tip.style.width=tw+'px';TOUR.tw=tw;TOUR.th=tip.offsetHeight}
  let hx=0,hy=0,hw=0,hh=0,tx,ty;
  if(vis){hx=Math.round(r.left-6);hy=Math.round(r.top-6);hw=Math.round(r.width+12);hh=Math.round(r.height+12);
-  const th=TOUR.th,below=r.bottom+14+th<=innerHeight-8,above=r.top-14-th>=56;tx=Math.max(12,Math.min(innerWidth-tw-12,r.left));ty=below?r.bottom+14:above?r.top-14-th:innerHeight-th-12}
+  const th=TOUR.th,below=r.bottom+14+th<=innerHeight-8,above=r.top-14-th>=56;tx=Math.max(12,Math.min(innerWidth-tw-12,r.left));ty=cmp?innerHeight-th-12:below?r.bottom+14:above?r.top-14-th:innerHeight-th-12;if(cmp)tx=(innerWidth-tw)/2}
  else{tx=(innerWidth-tw)/2;ty=Math.max(56,(innerHeight-TOUR.th)/2-20)}
  const mk=[vis,hx,hy,hw,hh,Math.round(tx),Math.round(ty)].join();
  if(mk!==TOUR.pos){TOUR.pos=mk;
