@@ -340,7 +340,7 @@ html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='289';
+const REV='290';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -358,9 +358,9 @@ dk:{n:'Danmark – Yngre Læger (Danske Regioner, løn pr. 1.4.2026)',short:'Dan
   {k:'intro',n:'Introduktionsstilling',t:'Læge (trin 1)',d:'Første stilling i speciallægeuddannelsen, typisk 1 år.',tiers:tr1},
   {k:'hu1',n:'Hoveduddannelse, de første 2½ år',t:'Læge (trin 1)',d:'De første 2½ år af hoveduddannelsen. I almen medicin er det de første 3 år.',tiers:tr1},
   {k:'hu2',n:'Hoveduddannelse, efter 2½ år',t:'Læge (trin 2)',d:'Resten af hoveduddannelsen. Her er der kun én grundløn.',a:568740},
-  {k:'ikke1',n:'Uklassificeret',t:'Læge (trin 1)',d:'Stilling uden uddannelsesforløb. Fx en 1-årig stilling før uddannelse, eller klinisk assistent (også ph.d.). Kan forlænges til i alt 3 år.',tiers:tr1},
+  {k:'ikke1',n:'Uklassificeret',t:'Læge (trin 1)',d:'Uklassificeret betyder, at stillingen ikke er en del af et speciallægeuddannelsesforløb (hverken introduktion, hoveduddannelse eller KBU). Det er fx en 1-årig stilling som reservelæge før en uddannelsesstilling, eller klinisk assistent (også ph.d.). Den kan forlænges til højst 3 år i alt. Lønnen er læge (trin 1) og afhænger af din anciennitet: under eller over 5 år efter kandidateksamen.',tiers:tr1},
   {k:'kass',n:'Klinisk assistent (også ph.d.)',t:'Læge (trin 1)',d:'Læge ansat som klinisk assistent, primært til forskning, fx som ph.d.-studerende. Mindst 1 år ad gangen. Lønnen er som læge (trin 1).',tiers:tr1},
-  {k:'ikke2',n:'Uklassificeret, fast (læge trin 2)',t:'Læge (trin 2)',d:'Fast stilling uden uddannelsesforløb. Ansat som læge (trin 2) for 5 år.',a:568740},
+  {k:'ikke2',n:'Uklassificeret, fast (læge trin 2)',t:'Læge (trin 2)',d:'Uklassificeret, fast er en fast stilling som 1. reservelæge uden uddannelsesforløb, hvor du er ansat for 5 år. Her er du læge (trin 2), som er en anden stillingstype end trin 1: én fast grundløn uden anciennitetstrin, så du skal ikke angive anciennitet.',a:568740},
   {k:'sp',n:'Speciallæge',t:'Speciallæge',d:'Du er ansat i en speciallægestilling. Kvalifikationstillæg gælder ikke her, for lønnen dækker det allerede.',a:782741}],
  ancTxt:'Som læge (trin 1) har du to lønniveauer: under og over 5 års anciennitet, regnet fra du bestod kandidateksamen. Læge (trin 2) er en anden stillingstype med én fast grundløn.',
  quals:[{k:'q1',n:'Tilladelse til selvstændigt virke',a:48952,d:'Du får tillægget, når du har tilladelsen til selvstændigt virke, eller har 2 års anciennitet efter KBU.'},{k:'q2',n:'Gennemført 1. år af speciallægeuddannelsen',a:73267,d:'Du får tillægget efter sammenlagt 1 års ansættelse i introduktions- og hoveduddannelsesstillinger.'},{k:'q3',n:'Speciallægeanerkendelse',a:91945,d:'Du får tillægget, når du har speciallægeautorisation, men er ansat under speciallægeniveau.'}],
