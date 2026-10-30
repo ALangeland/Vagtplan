@@ -152,7 +152,7 @@ h2{font-size:24px;font-weight:800}
 #nav{flex-wrap:wrap!important;overflow:visible!important;align-items:center;padding:2px 8px 0!important;row-gap:0!important}
 #nav .brand{order:1;padding:6px 8px 6px 2px!important}#nav .brand i{display:none}#nav .brand b{padding:0!important;flex:none!important;font-size:16px}
 #nav .ep{order:2;margin:0 0 0 auto!important;padding:4px 8px!important;min-width:0;flex:0 1 auto}.epl{max-width:105px!important}
-#nav .pb:not(.ep){order:3;margin:0 0 0 6px!important}#nav button.tg{order:4;margin:0 0 0 6px!important}#nav .ctxsw{order:5;margin:0 0 0 6px!important}
+#nav .pb:not(.ep){order:3;margin:0 0 0 auto!important}#nav .ep+.pb:not(.ep){margin:0 0 0 6px!important}#nav button.tg{order:4;margin:0 0 0 6px!important}#nav .ctxsw{order:5;margin:0 0 0 6px!important}
 #nav .tabs{order:9;display:flex;flex:1 0 100%;overflow-x:auto;scrollbar-width:none;margin:0 -8px;padding:0 6px;border-top:1px solid rgba(255,255,255,.1)}#nav .tabs::-webkit-scrollbar{display:none}
 #nav .tabs button{padding:9px 10px!important;font-size:13.5px!important;flex:none}
 #nav .mn{order:2;margin:0 0 0 auto!important;display:flex;align-items:center;gap:6px;padding:6px 10px!important;border-radius:8px}#nav .mn .ml{max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#nav .mn~.ep{margin-left:6px!important}#nav .mn .ch{transition:transform .15s}#nav.mo .mn .ch{transform:rotate(180deg)}
@@ -340,7 +340,7 @@ html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='291';
+const REV='292';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -360,7 +360,7 @@ dk:{n:'Danmark – Yngre Læger (Danske Regioner, løn pr. 1.4.2026)',short:'Dan
   {k:'hu2',n:'Hoveduddannelse, efter 2½ år',t:'Læge (trin 2)',d:'Resten af hoveduddannelsen. Her er der kun én grundløn.',a:568740},
   {k:'ikke1',n:'Uklassificeret',t:'Læge (trin 1)',d:'Uklassificeret betyder, at stillingen ikke er en del af et speciallægeuddannelsesforløb (hverken introduktion, hoveduddannelse eller KBU). Det er fx en 1-årig stilling som reservelæge før en uddannelsesstilling, eller klinisk assistent (også ph.d.). Den kan forlænges til højst 3 år i alt. Lønnen er læge (trin 1) og afhænger af din anciennitet: under eller over 5 år efter kandidateksamen.',tiers:tr1},
   {k:'kass',n:'Klinisk assistent (også ph.d.)',t:'Læge (trin 1)',d:'Læge ansat som klinisk assistent, primært til forskning, fx som ph.d.-studerende. Mindst 1 år ad gangen. Lønnen er som læge (trin 1).',tiers:tr1},
-  {k:'ikke2',n:'Uklassificeret, fast (læge trin 2)',t:'Læge (trin 2)',d:'Uklassificeret, fast er en fast stilling som 1. reservelæge uden uddannelsesforløb, hvor du er ansat for 5 år. Her er du læge (trin 2), som er en anden stillingstype end trin 1: én fast grundløn uden anciennitetstrin, så du skal ikke angive anciennitet.',a:568740},
+  {k:'ikke2',n:'Uklassificeret, fast (læge trin 2)',t:'Læge (trin 2)',d:'Uklassificeret, fast er en fast stilling som 1. reservelæge uden uddannelsesforløb. Her er du læge (trin 2), som er en anden stillingstype end trin 1: én fast grundløn uden anciennitetstrin, så du skal ikke angive anciennitet.',a:568740},
   {k:'sp',n:'Speciallæge',t:'Speciallæge',d:'Du er ansat i en speciallægestilling. Kvalifikationstillæg gælder ikke her, for lønnen dækker det allerede.',a:782741}],
  ancTxt:'Som læge (trin 1) har du to lønniveauer: under og over 5 års anciennitet, regnet fra du bestod kandidateksamen. Læge (trin 2) er en anden stillingstype med én fast grundløn.',
  quals:[{k:'q1',n:'Tilladelse til selvstændigt virke',a:48952,d:'Du får tillægget, når du har tilladelsen til selvstændigt virke, eller har 2 års anciennitet efter KBU.'},{k:'q2',n:'Gennemført 1. år af speciallægeuddannelsen',a:73267,d:'Du får tillægget efter sammenlagt 1 års ansættelse i introduktions- og hoveduddannelsesstillinger.'},{k:'q3',n:'Speciallægeanerkendelse',a:91945,d:'Du får tillægget, når du har speciallægeautorisation, men er ansat under speciallægeniveau.'}],
@@ -672,7 +672,7 @@ const RM={dk:{
   {id:'hu2',l:'Hoveduddannelse, derefter',sub:'1. reservelæge',trin:'Læge (trin 2)',hj:'OK § 4 stk. 1 c'},
   {id:'ikke1',l:'Uklassificeret',sub:'Reservelæge uden forløb, 1 år, højst 3 år i alt',trin:'Læge (trin 1)',hj:'OK § 4 stk. 2'},
   {id:'kass',l:'Klinisk assistent (også ph.d.)',sub:'Primært forskning. Mindst 1 år, forlænges 1 år ad gangen',trin:'Læge (trin 1)',hj:'OK § 4 stk. 2'},
-  {id:'ikke2',l:'Uklassificeret, fast',sub:'1. reservelæge, 5 år',trin:'Læge (trin 2)',hj:'OK § 4 stk. 2'},
+  {id:'ikke2',l:'Uklassificeret, fast',sub:'Fast 1. reservelæge, ikke-klassificeret',trin:'Læge (trin 2)',hj:'OK § 4 stk. 2'},
   {id:'sp',l:'Speciallæge',sub:'Fast stilling som speciallæge',trin:'Speciallæge',hj:'OK § 4 stk. 3 a'}],
  tl:[
   {id:'q1',ver:'fag',gr:'kval',l:'Tilladelse til selvstændigt virke',amt:'48.952 kr./år',
