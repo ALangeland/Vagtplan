@@ -340,7 +340,7 @@ html.emb select,html.emb input:not([type=checkbox]):not([type=radio]):not([type=
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
 const APP='Vagtløn';document.title=APP+' – vagter, løn og overenskomsttjek';
-const REV='292';
+const REV='293';
 const VPERR=[];try{addEventListener('error',e=>{VPERR.push(((e.message||'fejl')+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()});addEventListener('unhandledrejection',e=>{VPERR.push(('afvist: '+((e.reason&&e.reason.message)||e.reason||'')).slice(0,160));if(VPERR.length>5)VPERR.shift()})}catch(e){}
 /* ===== OVERENSKOMST-REGLER – ret tallene her, når aftalen ændres. Kontrollér altid mod din gældende overenskomst. ===== */
 const RULES={weekHours:37,restHours:11,lateAfter:18,lateGap:{on:6,off:3,mix:5},weekendShare:2};
@@ -1888,9 +1888,9 @@ Regler:
 - "oncall": "" for almindelig tjeneste, "on" for rådighedsvagt på tjenestestedet og "off" for vagt uden for tjenestestedet (hjemmevagt eller bagvagt). Ved "off" kan du tilføje "effH" med antal effektive arbejdstimer, hvis det fremgår.
 - "leave": true for ferie, afspadsering og andet fravær, ellers false.
 - "days" har én post pr. dato med en vagt. "date" er den dato, vagten starter, skrevet ÅÅÅÅ-MM-DD. "shift" er "ab" fra "shifts". Afviger en enkelt dag fra vagttypens tider, så tilføj "start" og "end" på dagen.
-- Fridage udelades.
+- Fridage udelades. En kolonne eller rubrik med navnet «Fri» betyder, at jeg har fri uden vagt: udelad de dage helt, de er ikke fravær.
 - Min planlægger kan kun have én vagt pr. dag. Har jeg flere vagter samme dag, så skriv kun den første i JSON og nævn de udeladte i en kort linje efter kodeblokken.
-- Gæt ikke. Er år, tider eller en forkortelses betydning uklar, så spørg mig først.
+- Svar altid med færdig JSON, også selv om noget er uklart. Vælg det mest sandsynlige, og skriv en kort linje efter kodeblokken om det, du var i tvivl om. Stil aldrig spørgsmål, og tilføj ikke egne felter som "question" i JSON.
 
 Her er min vagtplan:
 [indsæt din vagtplan her som tekst, tabel eller billede]`;
@@ -1901,11 +1901,11 @@ function scPrompt(){const ini=(sc.ini||'').trim()||'[MINE INITIALER]',sh=shifts(
 Mine initialer i planen: ${ini}
 
 Sådan læser du planen (gælder uanset hvordan den er sat op):
-- Planen kan være en tabel, en kalender, en liste eller flere ark (fx ét pr. måned). Navnet på arket, titlen eller overskrifterne angiver måned og år. Er året uklart, så spørg mig.
+- Planen kan være en tabel, en kalender, en liste eller flere ark (fx ét pr. måned). Navnet på arket, titlen eller overskrifterne angiver måned og år. Er året uklart, så brug det mest sandsynlige og skriv det i en kort linje efter kodeblokken.
 - Find KUN de steder, hvor mine initialer eller mit navn indgår, også i en celle med flere personer eller en skråstreg (fx "AB/CD"). Medtag aldrig andre personers initialer, navne, telefonnumre, mailadresser eller vagter, hverken i svaret eller i dine bemærkninger. Ignorér lister med kontaktoplysninger, telefonnumre og personalelister.
 - Kolonne-, række- eller blokoverskriften angiver, hvilken vagt eller hvilket sted jeg er sat på. Tider kan stå i overskriften, i selve cellen (fx i parentes) eller i en tegnforklaring. Læs tegnforklaringen, hvis der er en, og følg den for tegn som *, $, - og tilføjelser efter initialerne.
-- Står der fravær (ferie, fri, kursus, omsorgsdag, barsel, syg) ud for mig, er det en fraværsdag. Rubrikker for bytte og raskmelding ændrer en vagt: brug den ændrede vagt, hvis planen forklarer det.
-- Står tiderne ikke i planen, så brug mine vagtformer herunder, hvis navnet passer til overskriften. Passer ingen, så spørg mig om tiderne, i stedet for at gætte.
+- Står der fravær (ferie, kursus, omsorgsdag, barsel, syg) ud for mig, er det en fraværsdag. Rubrikken «Fri» er ikke fravær, men en fridag uden vagt: udelad den. Rubrikker for bytte og raskmelding ændrer en vagt: brug den ændrede vagt, hvis planen forklarer det.
+- Står tiderne ikke i planen, så brug mine vagtformer herunder, hvis navnet passer til overskriften. Passer ingen, så opret en ny vagttype med de tider, der står i planen, og skriv en kort linje efter kodeblokken, hvis tiderne er et gæt.
 - Vagter, der løber over midnat, hører til den dato, de starter. "end" er så tidligere end "start".
 
 Mine vagtformer (brug disse forkortelser, så vagterne passer ind i min kalender):
@@ -1915,7 +1915,7 @@ Regler for "shift":
 - Vælg den vagtform i listen, hvis tider og type bedst svarer til kolonnen. Brug forkortelsen ("ab") præcis som i listen.
 - Passer ingen af mine vagtformer, så opret en ny under "shifts" med en kort, unik forkortelse på højst 10 tegn, navn, "start", "end" (24-timers HH:MM) og "oncall" ("" for tjeneste, "on" for rådighed på tjenestestedet, "off" for rådighed uden for tjenestestedet). Fravær får "leave": true.
 - Har jeg flere vagter samme dag, så skriv kun den første i JSON, og nævn de udeladte dage i en kort linje efter kodeblokken.
-- Fridage uden registrering udelades. Gæt ikke: er en dato, et årstal, en tid eller et tegn uklart, så spørg mig først.
+- Fridage og rubrikken «Fri» udelades. Er en dato, et årstal, en tid eller et tegn uklart, så vælg det mest sandsynlige, og skriv en kort linje efter kodeblokken. Stil ikke spørgsmål, og svar altid med færdig JSON.
 
 Format:
 {"format":"vagtplan-v1","shifts":[{"ab":"NY","name":"Navn","start":"08:00","end":"16:00","oncall":"","leave":false}],"days":[{"date":"2026-10-12","shift":"FV"},{"date":"2026-10-13","shift":"NY","start":"15:00","end":"17:30"}]}
@@ -1930,14 +1930,14 @@ function scParse(t){const a=t.indexOf('{'),b=t.lastIndexOf('}');let j;try{if(a<0
  if(!Array.isArray(j.days))return{err:'Der mangler en liste med "days" i teksten.'}
  const W=[],F={};for(const s of j.shifts||[]){const ab=(String(s.ab||'').trim()||abbr(s.name)).slice(0,10).toUpperCase();if(!ab)continue;F[ab]={ab,name:String(s.name||'').slice(0,60),start:scT(s.start),end:scT(s.end),oncall:s.oncall==='on'||s.oncall==='off'?s.oncall:'',effH:+s.effH||0,leave:!!s.leave}}
  const days=[],seen={};for(const d of j.days){const k=String(d.date||'').trim(),dt=new Date(k+'T00:00');if(!/^\d{4}-\d{2}-\d{2}$/.test(k)||isNaN(dt)||dkey(dt)!==k){W.push('Ugyldig dato: '+esc(k||'(tom)'));continue}
-  const ab=String(d.shift||'').trim().slice(0,10).toUpperCase(),f=F[ab]||{},st=scT(d.start)||f.start,en=scT(d.end)||f.end;
+  const ab=String(d.shift||'').trim().slice(0,10).toUpperCase(),own=F[ab]?null:shifts().find(q=>q.ab&&q.ab.toUpperCase()===ab),f=F[ab]||(own?{name:own.name||'',start:scT(((own.t||[])[own.byDay?(dt.getDay()+6)%7:0]||[])[0]),end:scT(((own.t||[])[own.byDay?(dt.getDay()+6)%7:0]||[])[1]),oncall:own.oncall||'',effH:own.effH||0,leave:!!own.leave}:{}),st=scT(d.start)||f.start,en=scT(d.end)||f.end;
   if(!st||!en){W.push(k+': mangler tider for vagten "'+esc(ab)+'"');continue}
   if(seen[k]){W.push(k+': flere vagter samme dag, kun den første er med');continue}seen[k]=1;
-  days.push({k,ab:ab||'V',name:f.name||'',st,en,oncall:f.oncall||'',effH:f.effH||0,leave:!!f.leave})}
+  days.push({k,ab:ab||'V',name:f.name||'',st,en,oncall:f.oncall||'',effH:f.effH||0,leave:!!f.leave,own:own&&!d.start&&!d.end?own:null})}
  if(!days.length)return{err:'Jeg fandt ingen vagter, jeg kunne bruge.',warn:W};
  days.sort((x,y)=>x.k<y.k?-1:1);return{days,warn:W}}
 function scSame(s,x){return!s.byDay&&s.t[0][0]===x.st&&s.t[0][1]===x.en&&s.ab.toUpperCase()===x.ab&&!!s.leave===x.leave&&(s.oncall||'')===x.oncall}
-function scPlan(r){const sh=shifts(),forms=[],map={};for(const x of r.days){const key=[x.ab,x.st,x.en,x.oncall,x.leave].join('|');if(!map[key]){const old=sh.find(s=>scSame(s,x));map[key]=old?{s:old,isNew:false}:{s:null,isNew:true,x};forms.push(map[key])}x.m=map[key]}
+function scPlan(r){const sh=shifts(),forms=[],map={};for(const x of r.days){const key=x.own?'own|'+x.own.id:[x.ab,x.st,x.en,x.oncall,x.leave].join('|');if(!map[key]){const old=x.own||sh.find(s=>scSame(s,x));map[key]=old?{s:old,isNew:false}:{s:null,isNew:true,x};forms.push(map[key])}x.m=map[key]}
  const ex=r.days.filter(x=>S.plan[x.k]).length;return{forms,ex,map}}
 function scRead(){try{const t=sc.txt||'',x=t.indexOf('{'),y=t.lastIndexOf('}'),q=JSON.parse(t.slice(x,y+1));if(q&&q.format==='vagtplan-import-v1'){sc.txt='';mergeImport(q);return}}catch(e){}sc.res=scParse(sc.txt);sc.done='';render()}
 function scDo(){const r=sc.res;if(!r||!r.days)return;const sh=shifts(),used=new Set(sh.map(s=>s.color)),pal=COLORS.slice(3).filter(c=>!used.has(c));let ci=0,n=0,skip=0;const P=scPlan(r);
