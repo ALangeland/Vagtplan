@@ -508,6 +508,22 @@ h1,h2,h3,.hv,nav .brand b{font-family:'Plus Jakarta Sans','Hanken Grotesk',Figtr
 .dchip.gok{background:color-mix(in srgb,var(--ok) 20%,var(--card));color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}.dchip.gok .ics{stroke:var(--ok)!important;stroke-width:3}
 .dchip.gpend{background:#ffd23f;color:#3a2a00}
 .dchip.gown{background:color-mix(in srgb,#e8a33d 20%,var(--card));color:color-mix(in srgb,#b06d00 85%,var(--ink));box-shadow:inset 0 0 0 1px color-mix(in srgb,#e8a33d 55%,transparent)}
+
+@media(max-width:700px){
+main,#m{padding-left:max(8px,env(safe-area-inset-left,0px))!important;padding-right:max(8px,env(safe-area-inset-right,0px))!important}
+.wk2 .card,.cmg{padding:8px 6px!important;border-radius:20px}
+.day{grid-template-columns:22px 26px minmax(0,1fr) 40px!important;column-gap:6px!important;padding:5px 0!important}
+.day .pk{min-height:40px;padding:3px 8px 3px 3px!important}
+.day .pk .pkc{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center;column-gap:6px;row-gap:1px;min-width:0}
+.day .pk .pkn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:13.5px}
+.day .pk .pkm{display:inline-flex!important;flex-wrap:wrap;align-items:center;gap:4px;margin:0!important}
+.day .pk .tm{font-size:12px}
+.day .lpt{font-size:10px!important;padding:0 5px!important}
+.day .fl0.ic{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;max-height:34px!important}
+.day{grid-template-rows:auto auto;align-items:center}.day>.dn{grid-column:1;grid-row:1}.day>.wd{grid-column:2;grid-row:1}.day>span:nth-child(3){grid-column:3;grid-row:1/3}.day>span:nth-child(4){grid-column:4;grid-row:1/3}.day .hrs{grid-column:1/3!important;grid-row:2!important;font-size:10.5px!important;margin:0!important;color:var(--mut);white-space:nowrap;align-self:start;line-height:1}
+.day:not(:has(.hrs:not(:empty))){grid-template-rows:auto}
+}
+@media(max-width:700px){.day .pk:has(.dchip) .lpt,.day .pk:has(.vv) .lpt{font-size:0!important;padding:0!important;width:8px;height:8px;border-radius:50%;background:var(--acc)!important;display:inline-block;margin-right:4px;flex:none}}
 </style></head><body>
 <header id="top"><nav id="nav"></nav><div id="bb"></div></header><main id="m"></main>
 <script>
