@@ -3640,7 +3640,8 @@ function lpApply(e,evs,map,ovr){ovr=ovr||{};
   if(had)r.u++;else{r.n++;r.news.push({k,f:x.code+' '+x.a+'–'+x.b})}}
  /* Dage der er fjernet i Loop og stadig er urørt */
  if(ks.length){const lo=ks[0],hi=ks[ks.length-1];
-  for(const k of Object.keys(S.imp)){const im=S.imp[k];if(im.x||k<lo||k>hi||days[k]||k<(e.from||'0000')||(e.to&&k>e.to))continue;
+  for(const k of Object.keys(dl))if(k>=lo&&k<=hi&&!days[k]&&(dl[k].k==='own'||dl[k].k==='nomap'))delete dl[k];
+  for(const k of Object.keys(S.imp)){const im=S.imp[k];if(im.x&&k>=lo&&k<=hi&&!days[k]&&!(k<(e.from||'0000')||(e.to&&k>e.to))){delete S.imp[k];if(e.loop&&e.loop.seen)delete e.loop.seen[k];continue}if(im.x||k<lo||k>hi||days[k]||k<(e.from||'0000')||(e.to&&k>e.to))continue;
    if(S.plan[k]===im.v){delete S.plan[k];if(im.act)delete S.act[k];delete S.imp[k];r.del++;r.chg.push({k,f:(im.code||'')+' '+(im.a||'')+(im.b?'–'+im.b:''),t:'fjernet'})}}}
  for(const c of r.chg)dl[c.k]={k:c.t==='fjernet'?'del':'chg',f:c.f,t:c.t,dm:c.dm,at:Date.now()};
  for(const k of Object.keys(dl))if(Date.now()-(dl[k].at||0)>60*864e5)delete dl[k];
